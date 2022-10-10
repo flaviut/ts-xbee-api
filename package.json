@@ -3,6 +3,7 @@
   "description": "Node.js and Chrome communicate with XBee/ZigBee devices in API mode",
   "version": "0.6.0",
   "homepage": "https://github.com/jankolkmeier/xbee-api",
+  "type": "module",
   "author": {
     "name": "Jan Kolkmeier",
     "email": "jankolkmeier@gmail.com",
@@ -21,15 +22,12 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "test": "grunt nodeunit"
+    "build": "tsc"
   },
   "devDependencies": {
+    "@tsconfig/node14": "^1.0.3",
     "serialport": "~10.4.0",
-    "grunt-contrib-jshint": "~3.2.0",
-    "grunt-contrib-nodeunit": "~4.0.0",
-    "grunt-contrib-watch": "~1.1.0",
-    "grunt-browserify": "~6.0.0",
-    "grunt": "~1.5.3"
+    "typescript": "^4.8.4"
   },
   "keywords": [],
   "dependencies": {
