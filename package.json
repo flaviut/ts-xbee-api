@@ -24,17 +24,17 @@
     "test": "grunt nodeunit"
   },
   "devDependencies": {
-    "serialport": "~6.0.4",
-    "grunt-contrib-jshint": "~1.0.0",
-    "grunt-contrib-nodeunit": "~1.0.0",
-    "grunt-contrib-watch": "~1.0.0",
-    "grunt-browserify": "~5.0.0",
-    "grunt": "~1.0.1"
+    "serialport": "~10.4.0",
+    "grunt-contrib-jshint": "~3.2.0",
+    "grunt-contrib-nodeunit": "~4.0.0",
+    "grunt-contrib-watch": "~1.1.0",
+    "grunt-browserify": "~6.0.0",
+    "grunt": "~1.5.3"
   },
   "keywords": [],
   "dependencies": {
     "buffer-builder": "^0.2.0",
     "buffer-reader": "https://github.com/prodatakey/node-buffer-reader/archive/v0.0.3.tar.gz",
-    "safe-buffer": "~5.0.1"
+    "safe-buffer": "~5.2.1"
   }
 }
