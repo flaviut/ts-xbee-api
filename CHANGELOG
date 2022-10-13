@@ -1,0 +1,8 @@
+- `FRAME_TYPE`, `DISCOVERY_STATUS`, `DELIVERY_STATUS`, `COMMAND_STATUS`, `MODEM_STATUS`, `RECEIVE_OPTIONS`, and `DEVICE_TYPE` can no longer be queried to get the name of the value. Please use `FOO_NAME` instead.
+- PIN_MODE no longer contains the reverse number-to-mode mapping. If you need this functionality, please implement it yourself using `.filter()`
+- some internal helper methods that should never have been exposed are no longer exposed.
+- support for old node-serialport has been dropped
+- support for old (<14) node has been dropped
+- `DEVICE_AUTHENITCATED_INDICATOR` -> `DEVICE_AUTHENTICATED_INDICATOR`, `MAC_ACK_FALIURE` -> `MAC_ACK_FAILURE`
+- `rawParser()` has been removed, since it's only usable with Node Serialport 4.0.7. `newStream` has also been removed since it is only compatible with old Serialport.
+- Literal AT command values must be replaced with the AT_COMMAND enum

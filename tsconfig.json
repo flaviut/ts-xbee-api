@@ -5,7 +5,9 @@
     "checkJs": true,
 
     "sourceMap": true,
-    "outDir": "out"
+    "outDir": "out",
+
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
-  "include": ["lib/**/*"],
+  "include": ["lib/**/*", "types/**/*"],
 }
