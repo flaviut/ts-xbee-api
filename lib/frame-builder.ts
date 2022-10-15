@@ -8,13 +8,14 @@
 
 import {Buffer} from "safe-buffer"
 import assert from "assert"
+import BufferBuilder from "buffer-builder"
 
 import * as C from "./constants"
 
 type BufferConstructable = number[] | ArrayBuffer | Buffer | string
 
 // Appends data provided as Array, String, or Buffer
-function appendData(data: BufferConstructable, builder) {
+function appendData(data: BufferConstructable, builder: BufferBuilder) {
     let buf: Buffer
 
     if (Array.isArray(data)) {
@@ -46,7 +47,7 @@ const atCommandParser = function (frame: {
     id?: Uint8,
     command: C.AT_COMMAND,
     commandParameter: BufferConstructable,
-}, builder) {
+}, builder: BufferBuilder) {
     builder.appendUInt8(frame.type)
     builder.appendUInt8(this.getFrameId(frame))
     builder.appendString(frame.command, 'ascii')
@@ -79,7 +80,7 @@ const frame_builder = {
         remoteCommandOptions?: number, // optional, 0x02 is default
         command: C.AT_COMMAND,
         commandParameter: BufferConstructable,
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex')
@@ -99,7 +100,7 @@ const frame_builder = {
         broadcastRadius: Uint8,
         options: Uint8,
         data: BufferConstructable,
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex')
@@ -123,7 +124,7 @@ const frame_builder = {
         broadcastRadius?: Uint8,  // default 0
         options?: Uint8,  // default 0
         data: BufferConstructable,
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex')
@@ -155,7 +156,7 @@ const frame_builder = {
         destination64: BufferConstructable,  // 64-bit
         destination16: BufferConstructable,  // 16-bit
         addresses: number[], // max 30 addresses, 16 bit integer addresses
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(0); // Frame ID is always zero for this
         builder.appendString(frame.destination64, 'hex')
@@ -174,7 +175,7 @@ const frame_builder = {
         destination64?: BufferConstructable,  // 64-bit
         options?: number, // 0x00 is default
         data: BufferConstructable,
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex')
@@ -189,7 +190,7 @@ const frame_builder = {
         destination16?: BufferConstructable,  // 16-bit
         options?: number, // 0x00 is default
         data: BufferConstructable,
-    }, builder) {
+    }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
         builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.destination16 || C.BROADCAST_16_XB, 'hex')
@@ -202,4 +203,3 @@ export default frame_builder
 type NewOmit<T, K extends PropertyKey> =
     { [P in keyof T as Exclude<P, K>]: T[P] }
 export type BuildableFrame = Parameters<typeof frame_builder[keyof NewOmit<typeof frame_builder, 'frameId' | 'nextFrameId' | 'getFrameId'>]>[0]
-export type SpecificBuildableFrame<FT extends typeof C.FRAME_TYPE> = Extract<BuildableFrame, { type: FT }>

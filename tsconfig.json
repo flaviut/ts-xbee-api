@@ -5,7 +5,9 @@
     "skipLibCheck": true,
     "allowJs": true,
     "outDir": "dist",
-    "checkJs": true
+    "checkJs": true,
+
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
     "lib/*"

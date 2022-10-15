@@ -9,8 +9,9 @@
 'use strict'
 
 import * as C from './constants'
+import BufferReader from 'buffer-reader'
 
-const parseNodeIdentificationPayload = function (frame, reader) {
+const parseNodeIdentificationPayload = function (frame, reader: BufferReader) {
     frame.remote16 = reader.nextString(2, 'hex')
     frame.remote64 = reader.nextString(8, 'hex')
 
@@ -26,7 +27,7 @@ const parseNodeIdentificationPayload = function (frame, reader) {
     }
 }
 
-const ParseIOSamplePayload = function (frame, reader, options) {
+const ParseIOSamplePayload = function (frame, reader: BufferReader, options) {
     frame.digitalSamples = {}
     frame.analogSamples = {}
     frame.numSamples = 0
@@ -62,7 +63,7 @@ const ParseIOSamplePayload = function (frame, reader, options) {
 }
 
 // Series 1 Support
-const received16BitPacketIO = function (frame, reader) {
+const received16BitPacketIO = function (frame, reader: BufferReader) {
     let hasDigital = 0
     const data = {
         sampleQuantity: reader.nextUInt8(),
@@ -125,7 +126,7 @@ const parseAtCommand = (frame: {
     id: Uint8,
     command: C.AT_COMMAND,
     commandParameter: Buffer,
-}, reader) => {
+}, reader: BufferReader) => {
     frame.id = reader.nextUInt8()
     frame.command = reader.nextString(2, 'ascii')
     frame.commandParameter = reader.nextAll()
@@ -152,7 +153,7 @@ const frame_parser = {
         sender64: string,  // 64-bit
         sender16: string,  // 16-bit
         receiveOptions: Uint8
-    } & NodeIdentification<string>), reader) => {
+    } & NodeIdentification<string>), reader: BufferReader) => {
         frame.sender64 = reader.nextString(8, 'hex')
         frame.sender16 = reader.nextString(2, 'hex')
         frame.receiveOptions = reader.nextUInt8()
@@ -165,7 +166,7 @@ const frame_parser = {
         remote16: string,  // 16-bit
         receiveOptions: number,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.remote16 = reader.nextString(2, 'hex')
         frame.receiveOptions = reader.nextUInt8()
@@ -182,7 +183,7 @@ const frame_parser = {
         profileId: string,  // 16-bit
         receiveOptions: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.remote16 = reader.nextString(2, 'hex')
         frame.sourceEndpoint = reader.nextString(1, 'hex')
@@ -210,7 +211,7 @@ const frame_parser = {
             trueHumidity?: number
             waterPresent: boolean
         }
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.remote16 = reader.nextString(2, 'hex')
         frame.receiveOptions = reader.nextUInt8()
@@ -252,7 +253,7 @@ const frame_parser = {
     [C.FRAME_TYPE.MODEM_STATUS]: (frame: {
         type: typeof C.FRAME_TYPE.MODEM_STATUS,
         modemStatus: number,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.modemStatus = reader.nextUInt8()
     },
 
@@ -284,7 +285,7 @@ const frame_parser = {
         nodeIdentification: NodeIdentification<string>
     } | {
         commandData: Buffer,
-    })), reader) => {
+    })), reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.command = reader.nextString(2, 'ascii')
         frame.commandStatus = reader.nextUInt8()
@@ -332,7 +333,7 @@ const frame_parser = {
         transmitRetryCount: number,
         deliveryStatus: number,
         discoveryStatus: number,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.remote16 = reader.nextString(2, 'hex')
         frame.transmitRetryCount = reader.nextUInt8()
@@ -347,7 +348,7 @@ const frame_parser = {
         receiveOptions: Uint8,
         hopCount: Uint8,
         addresses: Uint16[],
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.remote16 = reader.nextString(2, 'hex')
         frame.receiveOptions = reader.nextUInt8()
@@ -370,7 +371,7 @@ const frame_parser = {
         remoteCommandOptions: Uint8,
         command: C.AT_COMMAND,
         commandParameter: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.destination64 = reader.nextString(8, 'hex')
         frame.destination16 = reader.nextString(2, 'hex')
@@ -389,7 +390,7 @@ const frame_parser = {
         broadcastRadius: Uint8,
         options: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.destination64 = reader.nextString(8, 'hex')
         frame.destination16 = reader.nextString(2, 'hex')
@@ -411,7 +412,7 @@ const frame_parser = {
         broadcastRadius: Uint8,
         options: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.destination64 = reader.nextString(8, 'hex')
         frame.destination16 = reader.nextString(2, 'hex')
@@ -431,7 +432,7 @@ const frame_parser = {
         destination64: string,  // 64-bit
         options: number, // 0x00 is default
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.destination64 = reader.nextString(8, 'hex')
         frame.options = reader.nextUInt8()
@@ -445,7 +446,7 @@ const frame_parser = {
         destination16: string,  // 16-bit
         options: number, // 0x00 is default
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.destination16 = reader.nextString(2, 'hex')
         frame.options = reader.nextUInt8()
@@ -457,7 +458,7 @@ const frame_parser = {
         /** sequence number of the frame */
         id: Uint8,
         deliveryStatus: Uint8,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.id = reader.nextUInt8()
         frame.deliveryStatus = reader.nextUInt8()
     },
@@ -468,7 +469,7 @@ const frame_parser = {
         rssi: Uint8,
         receiveOptions: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.rssi = reader.nextUInt8()
         frame.receiveOptions = reader.nextUInt8()
@@ -481,7 +482,7 @@ const frame_parser = {
         rssi: Uint8,
         receiveOptions: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote16 = reader.nextString(2, 'hex')
         frame.rssi = reader.nextUInt8()
         frame.receiveOptions = reader.nextUInt8()
@@ -494,7 +495,7 @@ const frame_parser = {
         rssi: Uint8,
         receiveOptions: Uint8,
         data: Buffer,
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote64 = reader.nextString(8, 'hex')
         frame.rssi = reader.nextUInt8()
         frame.receiveOptions = reader.nextUInt8()
@@ -515,7 +516,7 @@ const frame_parser = {
             analogSamples: Array<Partial<Record<LegacyChannelsKey, Uint16>>>,
             digitalSamples: string[],
         },
-    }, reader) => {
+    }, reader: BufferReader) => {
         frame.remote16 = reader.nextString(2, 'hex')
         frame.rssi = reader.nextUInt8()
         frame.receiveOptions = reader.nextUInt8()
@@ -525,4 +526,3 @@ const frame_parser = {
 export default frame_parser
 
 export type ParsableFrame = Parameters<typeof frame_parser[keyof typeof frame_parser]>[0]
-export type SpecificParsableFrame<FT extends typeof C.FRAME_TYPE> = Extract<ParsableFrame, { type: FT }>

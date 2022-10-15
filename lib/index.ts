@@ -12,13 +12,13 @@ import events from "events";
 import {Buffer} from "safe-buffer";
 import BufferBuilder from "buffer-builder";
 import BufferReader from "buffer-reader";
+import TypedEmitter from "typed-emitter";
 
 export * as C from './constants'
 import * as C from './constants'
 import frame_parser, {ParsableFrame} from './frame-parser'
 import frame_builder, {BuildableFrame} from './frame-builder'
 import {ChecksumMismatchError, FrameBuildingNotSupportedError} from "./errors";
-import TypedEmitter from "typed-emitter";
 
 
 export interface XBeeAPIOptions {
