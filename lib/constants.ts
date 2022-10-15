@@ -25,167 +25,193 @@ export const ESCAPE_BYTES = [
     XON
 ];
 
-export const FRAME_TYPE = {
+export enum FRAME_TYPE {
     // Frame Type
-    AT_COMMAND: 0x08,
-    0x08: "AT Command (0x08)",
-    AT_COMMAND_QUEUE_PARAMETER_VALUE: 0x09,
-    0x09: "AT Command - Queue Parameter Value (0x09)",
-    ZIGBEE_TRANSMIT_REQUEST: 0x10,
-    0x10: "ZigBee Transmit Request (0x10)",
-    EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME: 0x11,
-    0x11: "Explicit Addressing ZigBee Command Frame (0x11)",
-    REMOTE_AT_COMMAND_REQUEST: 0x17,
-    0x17: "Remote Command Request (0x17)",
-    CREATE_SOURCE_ROUTE: 0x21,
-    0x21: "Create Source Route (0x21)",
-    REGISTER_JOINING_DEVICE: 0x24,
-    0x24: "Register Joining Device (0x24)",
-    AT_COMMAND_RESPONSE: 0x88,
-    0x88: "AT Command Response (0x88)",
-    MODEM_STATUS: 0x8A,
-    0x8A: "Modem Status (0x8A)",
-    ZIGBEE_TRANSMIT_STATUS: 0x8B,
-    0x8B: "ZigBee Transmit Status (0x8B)",
-    ZIGBEE_RECEIVE_PACKET: 0x90,
-    0x90: "ZigBee Receive Packet (AO=0) (0x90)",
-    ZIGBEE_EXPLICIT_RX: 0x91,
-    0x91: "ZigBee Explicit Rx Indicator (AO=1) (0x91)",
-    ZIGBEE_IO_DATA_SAMPLE_RX: 0x92,
-    0x92: "ZigBee IO Data Sample Rx Indicator (0x92)",
-    XBEE_SENSOR_READ: 0x94,
-    0x94: "XBee Sensor Read Indicator (AO=0) (0x94)",
-    NODE_IDENTIFICATION: 0x95,
-    0x95: "Node Identification Indicator (AO=0) (0x95)",
-    REMOTE_COMMAND_RESPONSE: 0x97,
-    0x97: "Remote Command Response (0x97)",
-    OTA_FIRMWARE_UPDATE_STATUS: 0xA0,
-    0xA0: "Over-the-Air Firmware Update Status (0xA0)",
-    ROUTE_RECORD: 0xA1,
-    0xA1: "Route Record Indicator (0xA1)",
-    DEVICE_AUTHENITCATED_INDICATOR: 0xA2,
-    0xA2: "Device Authenticated Indicator (0xA2)",
-    MTO_ROUTE_REQUEST: 0xA3,
-    0xA3: "Many-to-One Route Request Indicator (0xA3)",
-    REGISTER_JOINING_DEVICE_STATUS: 0xA4,
-    0xA4: "Register Joining Device Status (0xA4)",
-    JOIN_NOTIFICATION_STATUS: 0xA5,
-    0xA5: "Join Notification Status (0xA5)",
+    AT_COMMAND = 0x08,
+    AT_COMMAND_QUEUE_PARAMETER_VALUE = 0x09,
+    ZIGBEE_TRANSMIT_REQUEST = 0x10,
+    EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME = 0x11,
+    REMOTE_AT_COMMAND_REQUEST = 0x17,
+    CREATE_SOURCE_ROUTE = 0x21,
+    REGISTER_JOINING_DEVICE = 0x24,
+    AT_COMMAND_RESPONSE = 0x88,
+    MODEM_STATUS = 0x8A,
+    ZIGBEE_TRANSMIT_STATUS = 0x8B,
+    ZIGBEE_RECEIVE_PACKET = 0x90,
+    ZIGBEE_EXPLICIT_RX = 0x91,
+    ZIGBEE_IO_DATA_SAMPLE_RX = 0x92,
+    XBEE_SENSOR_READ = 0x94,
+    NODE_IDENTIFICATION = 0x95,
+    REMOTE_COMMAND_RESPONSE = 0x97,
+    OTA_FIRMWARE_UPDATE_STATUS = 0xA0,
+    ROUTE_RECORD = 0xA1,
+    DEVICE_AUTHENITCATED_INDICATOR = 0xA2,
+    MTO_ROUTE_REQUEST = 0xA3,
+    REGISTER_JOINING_DEVICE_STATUS = 0xA4,
+    JOIN_NOTIFICATION_STATUS = 0xA5,
 
     // Series 1/802.15.4 Support
-    TX_REQUEST_64: 0x00,
+    TX_REQUEST_64 = 0x00,
+    TX_REQUEST_16 = 0x01,
+    TX_STATUS = 0x89,
+    RX_PACKET_64 = 0x80,
+    RX_PACKET_16 = 0x81,
+    RX_PACKET_64_IO = 0x82,
+    RX_PACKET_16_IO = 0x83,
+}
+
+export const FRAME_NAMES = {
+    0x08: "AT Command (0x08)",
+    0x09: "AT Command - Queue Parameter Value (0x09)",
+    0x10: "ZigBee Transmit Request (0x10)",
+    0x11: "Explicit Addressing ZigBee Command Frame (0x11)",
+    0x17: "Remote Command Request (0x17)",
+    0x21: "Create Source Route (0x21)",
+    0x24: "Register Joining Device (0x24)",
+    0x88: "AT Command Response (0x88)",
+    0x8A: "Modem Status (0x8A)",
+    0x8B: "ZigBee Transmit Status (0x8B)",
+    0x90: "ZigBee Receive Packet (AO=0) (0x90)",
+    0x91: "ZigBee Explicit Rx Indicator (AO=1) (0x91)",
+    0x92: "ZigBee IO Data Sample Rx Indicator (0x92)",
+    0x94: "XBee Sensor Read Indicator (AO=0) (0x94)",
+    0x95: "Node Identification Indicator (AO=0) (0x95)",
+    0x97: "Remote Command Response (0x97)",
+    0xA0: "Over-the-Air Firmware Update Status (0xA0)",
+    0xA1: "Route Record Indicator (0xA1)",
+    0xA2: "Device Authenticated Indicator (0xA2)",
+    0xA3: "Many-to-One Route Request Indicator (0xA3)",
+    0xA4: "Register Joining Device Status (0xA4)",
+    0xA5: "Join Notification Status (0xA5)",
     0x00: "TX (Transmit) Request: 64-bit address (0x00)",
-    TX_REQUEST_16: 0x01,
     0x01: "TX (Transmit) Request: 16-bit address (0x01)",
-    TX_STATUS: 0x89,
     0x89: "TX (Transmit) Status (0x89)",
-    RX_PACKET_64: 0x80,
     0x80: "RX (Receive) Packet: 64-bit Address (0x80)",
-    RX_PACKET_16: 0x81,
     0x81: "RX (Receive) Packet: 16-bit Address (0x81)",
-    RX_PACKET_64_IO: 0x82,
     0x82: "RX (Receive) Packet: 64-bit Address IO (0x82)",
-    RX_PACKET_16_IO: 0x83,
     0x83: "RX (Receive) Packet: 16-bit Address IO (0x83)",
-} as const;
-export const DISCOVERY_STATUS = {
-    NO_DISCOVERY_OVERHEAD: 0x00,
+}
+
+export enum DISCOVERY_STATUS {
+    NO_DISCOVERY_OVERHEAD = 0x00,
+    ADDRESS_DISCOVERY = 0x01,
+    ROUTE_DISCOVERY = 0x02,
+    ADDRESS_AND_ROUTE_DISCOVERY = 0x03,
+    EXTENDED_TIMEOUT_DISCOVERY = 0x40,
+}
+
+export const DISCOVERY_STATUS_NAMES = {
     0x00: "No Discovery Overhead (0x00)",
-    ADDRESS_DISCOVERY: 0x01,
     0x01: "Address Discovery (0x01)",
-    ROUTE_DISCOVERY: 0x02,
     0x02: "Route Discovery (0x02)",
-    ADDRESS_AND_ROUTE_DISCOVERY: 0x03,
     0x03: "Address and Route (0x03)",
-    EXTENDED_TIMEOUT_DISCOVERY: 0x40,
     0x40: "Extended Timeout Discovery (0x40)",
-} as const;
-export const DELIVERY_STATUS = {
-    SUCCESS: 0x00,
+}
+
+export enum DELIVERY_STATUS {
+    SUCCESS = 0x00,
+    MAC_ACK_FALIURE = 0x01,
+    CA_FAILURE = 0x02,
+    INVALID_DESTINATION_ENDPOINT = 0x15,
+    NETWORK_ACK_FAILURE = 0x21,
+    NOT_JOINED_TO_NETWORK = 0x22,
+    SELF_ADDRESSED = 0x23,
+    ADDRESS_NOT_FOUND = 0x24,
+    ROUTE_NOT_FOUND = 0x25,
+    BROADCAST_SOURCE_FAILED = 0x26,
+    INVALID_BINDING_TABLE_INDEX = 0x2B,
+    RESOURCE_ERROR = 0x2C,
+    ATTEMPTED_BROADCAST_WITH_APS_TRANS = 0x2D,
+    ATTEMPTED_BROADCAST_WITH_APS_TRANS_EE0 = 0x2D,
+    RESOURCE_ERROR_B = 0x32,
+    DATA_PAYLOAD_TOO_LARGE = 0x74,
+    INDIRECT_MESSAGE_UNREQUESTED = 0x75,
+}
+
+export const DELIVERY_STATUS_NAMES = {
     0x00: "Success (0x00)",
-    MAC_ACK_FALIURE: 0x01,
     0x01: "MAC ACK Failure (0x01)",
-    CA_FAILURE: 0x02,
     0x02: "CA Failure (0x02)",
-    INVALID_DESTINATION_ENDPOINT: 0x15,
     0x15: "Invalid destination endpoint (0x15)",
-    NETWORK_ACK_FAILURE: 0x21,
     0x21: "Network ACK Failure (0x21)",
-    NOT_JOINED_TO_NETWORK: 0x22,
     0x22: "Not Joined to Network (0x22)",
-    SELF_ADDRESSED: 0x23,
     0x23: "Self-addressed (0x23)",
-    ADDRESS_NOT_FOUND: 0x24,
     0x24: "Address Not Found (0x24)",
-    ROUTE_NOT_FOUND: 0x25,
     0x25: "Route Not Found (0x25)",
-    BROADCAST_SOURCE_FAILED: 0x26,
     0x26: "Broadcast source failed to hear a neighbor relay the message (0x26)",
-    INVALID_BINDING_TABLE_INDEX: 0x2B,
     0x2B: "Invalid binding table index (0x2B)",
-    RESOURCE_ERROR: 0x2C,
     0x2C: "Resource error lack of free buffers, timers, etc. (0x2C)",
-    ATTEMPTED_BROADCAST_WITH_APS_TRANS: 0x2D,
     0x2D: "Attempted broadcast with APS transmission (0x2D)",
-    ATTEMPTED_BROADCAST_WITH_APS_TRANS_EE0: 0x2D,
     0x2E: "Attempted unicast with APS transmission, but EE=0 (0x2E)",
-    RESOURCE_ERROR_B: 0x32,
     0x32: "Resource error lack of free buffers, timers, etc. (0x32)",
-    DATA_PAYLOAD_TOO_LARGE: 0x74,
     0x74: "Data payload too large (0x74)",
-    INDIRECT_MESSAGE_UNREQUESTED: 0x75,
     0x75: "Indirect message unrequested (0x75)",
-} as const;
-export const COMMAND_STATUS = {
-    OK: 0x00,
-    0x00: "OK (0x00)",
-    ERROR: 0x01,
-    0x01: "ERROR (0x01)",
-    INVALID_COMMAND: 0x02,
-    0x02: "Invalid Command (0x02)",
-    INVALID_PARAMETER: 0x03,
-    0x03: "Invalid Parameter (0x03)",
-    REMOTE_CMD_TRANS_FAILURE: 0x04,
-    0x04: "Remote Command Transmission Failed (0x04)",
+}
+
+export enum COMMAND_STATUS {
+    OK = 0x00,
+    ERROR = 0x01,
+    INVALID_COMMAND = 0x02,
+    INVALID_PARAMETER = 0x03,
+    REMOTE_CMD_TRANS_FAILURE = 0x04,
 };
-export const MODEM_STATUS = {
-    HARDWARE_RESET: 0x00,
+export const COMMAND_STATUS_NAMES = {
+    0x00: "OK (0x00)",
+    0x01: "ERROR (0x01)",
+    0x02: "Invalid Command (0x02)",
+    0x03: "Invalid Parameter (0x03)",
+    0x04: "Remote Command Transmission Failed (0x04)",
+}
+
+export enum MODEM_STATUS {
+    HARDWARE_RESET = 0x00,
+    WATCHDOG_RESET = 0x01,
+    JOINED_NETWORK = 0x02,
+    DISASSOCIATED = 0x03,
+    COORDINATOR_STARTED = 0x06,
+    SECURITY_KEY_UPDATED = 0x07,
+    VOLTAGE_SUPPLY_LIMIT_EXCEEDED = 0x0D,
+    CONFIGURATION_CHANGED_DURING_JOIN = 0x11,
+    STACK_ERROR = 0x80,
+}
+
+export const MODEM_STATUS_NAMES = {
     0x00: "Hardware Reset (0x00)",
-    WATCHDOG_RESET: 0x01,
     0x01: "Watchdog timer reset (0x01)",
-    JOINED_NETWORK: 0x02,
     0x02: "Joined Network (0x02)",
-    DISASSOCIATED: 0x03,
     0x03: "Disassociated (0x03)",
-    COORDINATOR_STARTED: 0x06,
     0x06: "Coordinator started (0x06)",
-    SECURITY_KEY_UPDATED: 0x07,
     0x07: "Network security key was updated (0x07)",
-    VOLTAGE_SUPPLY_LIMIT_EXCEEDED: 0x0D,
     0x0D: "Voltage supply limit exceeded (0x0D)",
-    CONFIGURATION_CHANGED_DURING_JOIN: 0x11,
     0x11: "Modem Configuration changed while join in progress (0x11)",
-    STACK_ERROR: 0x80,
     0x80: "Stack Error (0x80)",
-} as const;
-export const RECEIVE_OPTIONS = {
-    PACKET_ACKNOWLEDGED: 0x01,
+}
+
+export enum RECEIVE_OPTIONS {
+    PACKET_ACKNOWLEDGED = 0x01,
+    PACKET_WAS_BROADCAST = 0x02,
+    PACKET_ENCRYPTED = 0x20,
+    PACKET_SENT_FROM_END_DEVICE = 0x40,
+}
+
+export const RECEIVE_OPTIONS_NAMES = {
     0x01: "Packet Acknowledged (0x01)",
-    PACKET_WAS_BROADCAST: 0x02,
     0x02: "Packet was a broadcast packet (0x02)",
-    PACKET_ENCRYPTED: 0x20,
     0x20: "Packet encrypted with APS encryption (0x20)",
-    PACKET_SENT_FROM_END_DEVICE: 0x40,
     0x40: "Packet was sent from an end device (if known) (0x40)",
-} as const;
-export const DEVICE_TYPE = {
-    COORDINATOR: 0x00,
+}
+
+export enum DEVICE_TYPE {
+    COORDINATOR = 0x00,
+    ROUTER = 0x01,
+    END_DEVICE = 0x02,
+}
+
+export const DEVICE_TYPE_NAMES = {
     0x00: "Coordinator (0x00)",
-    ROUTER: 0x01,
     0x01: "Router (0x01)",
-    END_DEVICE: 0x02,
     0x02: "End Device (0x02)",
-} as const;
+}
 
 export const DIGITAL_CHANNELS = {
     // Map mask to name

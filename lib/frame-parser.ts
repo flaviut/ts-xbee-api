@@ -115,13 +115,13 @@ type Uint8 = number
 type Uint16 = number
 
 const parseAtCommand = (frame: {
-    type: typeof C.FRAME_TYPE.AT_COMMAND
+    type: C.FRAME_TYPE.AT_COMMAND
     /** sequence number of the frame */
     id: Uint8,
     command: C.AT_COMMAND,
     commandParameter: Buffer, // Can either be string or byte array.
 } | {
-    type: typeof C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
+    type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
     /** sequence number of the frame */
     id: Uint8,
     command: C.AT_COMMAND,
@@ -149,7 +149,7 @@ export type NodeIdentification<BufferType> = {
 
 const frame_parser = {
     [C.FRAME_TYPE.NODE_IDENTIFICATION]: (frame: ({
-        type: typeof C.FRAME_TYPE.NODE_IDENTIFICATION
+        type: C.FRAME_TYPE.NODE_IDENTIFICATION
         sender64: string,  // 64-bit
         sender16: string,  // 16-bit
         receiveOptions: Uint8
@@ -161,7 +161,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET]: (frame: {
-        type: typeof C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET,
+        type: C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET,
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
         receiveOptions: number,
@@ -174,7 +174,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.ZIGBEE_EXPLICIT_RX]: (frame: {
-        type: typeof C.FRAME_TYPE.ZIGBEE_EXPLICIT_RX
+        type: C.FRAME_TYPE.ZIGBEE_EXPLICIT_RX
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
         sourceEndpoint: string,  // 8-bit
@@ -195,7 +195,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.XBEE_SENSOR_READ]: (frame: {
-        type: typeof C.FRAME_TYPE.XBEE_SENSOR_READ
+        type: C.FRAME_TYPE.XBEE_SENSOR_READ
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
         receiveOptions: Uint8,
@@ -251,14 +251,14 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.MODEM_STATUS]: (frame: {
-        type: typeof C.FRAME_TYPE.MODEM_STATUS,
+        type: C.FRAME_TYPE.MODEM_STATUS,
         modemStatus: number,
     }, reader: BufferReader) => {
         frame.modemStatus = reader.nextUInt8()
     },
 
     [C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX]: (frame: ({
-        type: typeof C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX
+        type: C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
         receiveOptions: Uint8,
@@ -276,7 +276,7 @@ const frame_parser = {
 
     [C.FRAME_TYPE.AT_COMMAND_RESPONSE]: (frame: ({
         // aka Local AT Command Response
-        type: typeof C.FRAME_TYPE.AT_COMMAND_RESPONSE,
+        type: C.FRAME_TYPE.AT_COMMAND_RESPONSE,
         /** sequence number of the frame */
         id: Uint8,
         command: C.AT_COMMAND,
@@ -298,7 +298,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE]: (frame: ({
-        type: typeof C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE
+        type: C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE
         /** sequence number of the frame */
         id: Uint8,
         remote64: string,  // 64-bit
@@ -326,7 +326,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS]: (frame: {
-        type: typeof C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS,
+        type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS,
         /** sequence number of the frame */
         id: Uint8,
         remote16: string,  // 16-bit
@@ -342,7 +342,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.ROUTE_RECORD]: (frame: {
-        type: typeof C.FRAME_TYPE.ROUTE_RECORD
+        type: C.FRAME_TYPE.ROUTE_RECORD
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
         receiveOptions: Uint8,
@@ -363,7 +363,7 @@ const frame_parser = {
     [C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE]: parseAtCommand,
 
     [C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST]: (frame: {
-        type: typeof C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
         /** sequence number of the frame */
         id: Uint8,
         destination64: string,  // 64-bit
@@ -382,7 +382,7 @@ const frame_parser = {
 
     [C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST]: (frame: {
         // aka Extended Transmit Status
-        type: typeof C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
+        type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
         /** sequence number of the frame */
         id: Uint8,
         destination64: string,  // 64-bit
@@ -400,7 +400,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME]: (frame: {
-        type: typeof C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME
+        type: C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME
         /** sequence number of the frame */
         id: Uint8,
         destination64: string,  // 64-bit
@@ -426,7 +426,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.TX_REQUEST_64]: (frame: {
-        type: typeof C.FRAME_TYPE.TX_REQUEST_64,
+        type: C.FRAME_TYPE.TX_REQUEST_64,
         /** sequence number of the frame */
         id: Uint8,
         destination64: string,  // 64-bit
@@ -440,7 +440,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.TX_REQUEST_16]: (frame: {
-        type: typeof C.FRAME_TYPE.TX_REQUEST_16,
+        type: C.FRAME_TYPE.TX_REQUEST_16,
         /** sequence number of the frame */
         id: Uint8,
         destination16: string,  // 16-bit
@@ -454,7 +454,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.TX_STATUS]: (frame: {
-        type: typeof C.FRAME_TYPE.TX_STATUS,
+        type: C.FRAME_TYPE.TX_STATUS,
         /** sequence number of the frame */
         id: Uint8,
         deliveryStatus: Uint8,
@@ -464,7 +464,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.RX_PACKET_64]: (frame: {
-        type: typeof C.FRAME_TYPE.RX_PACKET_64,
+        type: C.FRAME_TYPE.RX_PACKET_64,
         remote64: string,  // 64-bit
         rssi: Uint8,
         receiveOptions: Uint8,
@@ -477,7 +477,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.RX_PACKET_16]: (frame: {
-        type: typeof C.FRAME_TYPE.RX_PACKET_16,
+        type: C.FRAME_TYPE.RX_PACKET_16,
         remote16: string,  // 16-bit
         rssi: Uint8,
         receiveOptions: Uint8,
@@ -490,7 +490,7 @@ const frame_parser = {
     },
 
     [C.FRAME_TYPE.RX_PACKET_64_IO]: (frame: {
-        type: typeof C.FRAME_TYPE.RX_PACKET_64_IO,
+        type: C.FRAME_TYPE.RX_PACKET_64_IO,
         remote64: string,  // 64-bit
         rssi: Uint8,
         receiveOptions: Uint8,
@@ -505,7 +505,7 @@ const frame_parser = {
 
 
     [C.FRAME_TYPE.RX_PACKET_16_IO]: (frame: {
-        type: typeof C.FRAME_TYPE.RX_PACKET_16_IO,
+        type: C.FRAME_TYPE.RX_PACKET_16_IO,
         remote16: string,  // 16-bit
         rssi: Uint8,
         receiveOptions: Uint8,

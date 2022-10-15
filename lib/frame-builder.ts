@@ -35,13 +35,13 @@ type Uint16 = number
 
 
 const atCommandParser = function (frame: {
-    type: typeof C.FRAME_TYPE.AT_COMMAND
+    type: C.FRAME_TYPE.AT_COMMAND
     /** sequence number of the frame */
     id?: Uint8,
     command: C.AT_COMMAND,
     commandParameter: BufferConstructable,
 } | {
-    type: typeof C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
+    type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
     /** sequence number of the frame */
     id?: Uint8,
     command: C.AT_COMMAND,
@@ -71,7 +71,7 @@ const frame_builder = {
     [C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE]: atCommandParser,
 
     [C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST]: function (frame: {
-        type: typeof C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
         /** sequence number of the frame */
         id?: Uint8,
         destination64?: BufferConstructable,  // 64-bit, optional, default UNKNOWN_64
@@ -91,7 +91,7 @@ const frame_builder = {
 
     [C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST]: function (frame: {
         // aka Extended Transmit Status
-        type: typeof C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
+        type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
         /** sequence number of the frame */
         id?: Uint8,
         destination64: BufferConstructable,  // 64-bit
@@ -111,7 +111,7 @@ const frame_builder = {
 
 
     [C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME]: function (frame: {
-        type: typeof C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME
+        type: C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME
         /** sequence number of the frame */
         id?: Uint8,
         destination64?: BufferConstructable,  // 64-bit, optional, default UNKNOWN_64
@@ -149,7 +149,7 @@ const frame_builder = {
     },
 
     [C.FRAME_TYPE.CREATE_SOURCE_ROUTE]: function (frame: {
-        type: typeof C.FRAME_TYPE.CREATE_SOURCE_ROUTE,
+        type: C.FRAME_TYPE.CREATE_SOURCE_ROUTE,
         /** sequence number of the frame */
         id?: Uint8,
         destination64: BufferConstructable,  // 64-bit
@@ -168,7 +168,7 @@ const frame_builder = {
     },
 
     [C.FRAME_TYPE.TX_REQUEST_64]: function (frame: {
-        type: typeof C.FRAME_TYPE.TX_REQUEST_64,
+        type: C.FRAME_TYPE.TX_REQUEST_64,
         /** sequence number of the frame */
         id?: Uint8,
         destination64?: BufferConstructable,  // 64-bit
@@ -183,7 +183,7 @@ const frame_builder = {
     },
 
     [C.FRAME_TYPE.TX_REQUEST_16]: function (frame: {
-        type: typeof C.FRAME_TYPE.TX_REQUEST_16,
+        type: C.FRAME_TYPE.TX_REQUEST_16,
         /** sequence number of the frame */
         id?: Uint8,
         destination16?: BufferConstructable,  // 16-bit
