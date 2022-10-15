@@ -474,3 +474,243 @@ export const FRAME_TYPE_SETS = {
     "ZigBee": [0x08, 0x09, 0x10, 0x11, 0x17, 0x21, 0x24, 0x88, 0x8A, 0x8B, 0x90, 0x91, 0x92, 0x94, 0x95, 0x97, 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5],
     "Any": [0x00, 0x01, 0x08, 0x09, 0x17, 0x80, 0x81, 0x82, 0x83, 0x88, 0x89, 0x8a, 0x97, 0x10, 0x11, 0x8b, 0x90, 0x91, 0x92, 0x94, 0x95, 0x21, 0x24, 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5]
 };
+
+export enum AT_COMMAND {
+    // Network commands
+    /** Extended PAN ID */
+    ID = 'ID',
+    /** Scan Channels */
+    SC = 'SC',
+    /** Scan Duration */
+    SD = 'SD',
+    /** Zigbee Stack Profile */
+    ZS = 'ZS',
+    /** Node Join Time */
+    NJ = 'NJ',
+    /** Network Watchdog Timeout */
+    NW = 'NW',
+    /** Coordinator Join Verification */
+    JV = 'JV',
+    /** Join Notification */
+    JN = 'JN',
+    /** Operating Extended PAN ID */
+    OP = 'OP',
+    /** Operating 16-bit PAN ID */
+    OI = 'OI',
+    /** Operating Channel */
+    CH = 'CH',
+    /** Number of Remaining Children */
+    NC = 'NC',
+    /** Coordinator Enable */
+    CE = 'CE',
+    /** Miscellaneous Device Options */
+    DO = 'DO',
+    /** Joining Device Controls */
+    DC = 'DC',
+    /** Initial 16-bit PAN ID */
+    II = 'II',
+    /** Energy Detect */
+    ED = 'ED',
+
+// Addressing commands
+    /** Serial Number High */
+    SH = 'SH',
+    /** Serial Number Low */
+    SL = 'SL',
+    /** 16-bit Network Address */
+    MY = 'MY',
+    /** 16-bit Parent Network Address */
+    MP = 'MP',
+    /** Destination Address High */
+    DH = 'DH',
+    /** Destination Address Low */
+    DL = 'DL',
+    /** Node Identifier */
+    NI = 'NI',
+    /** Maximum Unicast Hops */
+    NH = 'NH',
+    /** Broadcast Hops */
+    BH = 'BH',
+    /** Aggregate Routing Notification */
+    AR = 'AR',
+    /** Device Type Identifier */
+    DD = 'DD',
+    /** Node Discover Timeout */
+    NT = 'NT',
+    /** Network Discovery Options */
+    NO = 'NO',
+    /** Maximum Packet Payload Bytes */
+    NP = 'NP',
+    /** Conflict Report */
+    CR = 'CR',
+
+// Zigbee addressing commands
+    /** Source Endpoint */
+    SE = 'SE',
+    /** Destination Endpoint */
+    DE = 'DE',
+    /** Cluster ID */
+    CI = 'CI',
+    /** Transmit Options */
+    TO = 'TO',
+
+// RF interfacing commands
+    /** TX Power Level */
+    PL = 'PL',
+    /** Power at PL4 */
+    PP = 'PP',
+    /** Power Mode */
+    PM = 'PM',
+
+// Security commands
+    /** Encryption Enable */
+    EE = 'EE',
+    /** Encryption Options */
+    EO = 'EO',
+    /** Link Key */
+    KY = 'KY',
+    /** Trust Center Network Key */
+    NK = 'NK',
+
+// Serial interfacing commands
+    /** Interface Data Rate */
+    BD = 'BD',
+    /** Parity */
+    NB = 'NB',
+    /** Stop Bits */
+    SB = 'SB',
+    /** Packetization Timeout */
+    RO = 'RO',
+    /** DIO6/RTS */
+    D6 = 'D6',
+    /** DIO7/CTS */
+    D7 = 'D7',
+    /** API Enable */
+    AP = 'AP',
+    /** API Options */
+    AO = 'AO',
+
+// Command mode options
+    /** Command Mode Timeout */
+    CT = 'CT',
+    /** Guard Times */
+    GT = 'GT',
+    /** Command Character */
+    CC = 'CC',
+    /** Exit Command mode */
+    CN = 'CN',
+
+// Sleep commands
+    /** Sleep Period */
+    SP = 'SP',
+    /** Number of Cycles Between ON_SLEEP */
+    SN = 'SN',
+    /** Sleep Mode */
+    SM = 'SM',
+    /** Time before Sleep */
+    ST = 'ST',
+    /** Sleep Options */
+    SO = 'SO',
+    /** Wake Host Delay */
+    WH = 'WH',
+    /** Polling Rate */
+    PO = 'PO',
+
+// I/O settings commands
+    /** AD0/DIO0 Configuration */
+    D0 = 'D0',
+    /** AD1/DIO1/PTI_En Configuration */
+    D1 = 'D1',
+    /** AD2/DIO2 Configuration */
+    D2 = 'D2',
+    /** AD3/DIO3 Configuration */
+    D3 = 'D3',
+    /** DIO4 Configuration */
+    D4 = 'D4',
+    /** DIO5/Associate Configuration */
+    D5 = 'D5',
+    /** DIO8/DTR/SLP_RQ */
+    D8 = 'D8',
+    /** DIO9/ON_SLEEP */
+    D9 = 'D9',
+    /** RSSI/PWM0 Configuration */
+    P0 = 'P0',
+    /** DIO11/PWM1 Configuration */
+    P1 = 'P1',
+    /** DIO12 Configuration */
+    P2 = 'P2',
+    /** DIO13/DOUT Configuration */
+    P3 = 'P3',
+    /** DIO14/DIN */
+    P4 = 'P4',
+    /** DIO15/SPI_MISO */
+    P5 = 'P5',
+    /** SPI_MOSI Configuration */
+    P6 = 'P6',
+    /** DIO17/SPI_SSEL  */
+    P7 = 'P7',
+    /** DIO18/SPI_SCLK */
+    P8 = 'P8',
+    /** DIO19/SPI_ATTN/PTI_DATA */
+    P9 = 'P9',
+    /** Pull-up/Down Resistor Enable */
+    PR = 'PR',
+    /** Pull Up/Down Direction */
+    PD = 'PD',
+    /** Associate LED Blink Time */
+    LT = 'LT',
+    /** RSSI PWM Timer */
+    RP = 'RP',
+
+// I/O sampling commands
+    /** I/O Sample Rate */
+    IR = 'IR',
+    /** Digital Change Detection */
+    IC = 'IC',
+    /** Voltage Supply Monitoring */
+    V_PLUS = 'V+',
+
+// Diagnostic commands
+    /** Firmware Version */
+    VR = 'VR',
+    /** Hardware Version */
+    HV = 'HV',
+    /** Association Indication */
+    AI = 'AI',
+    /** Voltage Supply Monitoring */
+    PERCENT_V = '%V',
+    /** Received Signal Strength */
+    DB = 'DB',
+    /** Temperature */
+    TP = 'TP',
+    /** Version Long */
+    VL = 'VL',
+
+// Execution commands
+    /** Apply Changes */
+    AC = 'AC',
+    /** Active Scan */
+    AS = 'AS',
+    /** Write */
+    WR = 'WR',
+    /** Restore Defaults */
+    RE = 'RE',
+    /** Software Reset */
+    FR = 'FR',
+    /** Network Reset */
+    NR = 'NR',
+    /** Sleep Immediately */
+    SI = 'SI',
+    /** Commissioning Pushbutton */
+    CB = 'CB',
+    /** Clear Binding and Group Tables */
+    AMP_X = '&X',
+    /** Node Discovery */
+    ND = 'ND',
+    /** Destination Node */
+    DN = 'DN',
+    /** Disable Joining */
+    DJ = 'DJ',
+    /** Force Sample */
+    IS = 'IS',
+}

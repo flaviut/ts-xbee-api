@@ -176,12 +176,6 @@ export class XBeeAPI extends events.EventEmitter {
         return frame_builder.nextFrameId();
     }
 
-    rawParser() { // Custom parsers are supported up to Node Serialport 4.0.7
-        return function (emitter, buffer) {
-            this.parseRaw(buffer);
-        }.bind(this);
-    }
-
     newStream(): stream.Transform { // Transform stream for Node Serialport 5.0.0+
         return this.parser;
     }
