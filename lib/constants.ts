@@ -6,9 +6,6 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
-
-
 export const START_BYTE = 0x7E;
 export const ESCAPE = 0x7D;
 export const XOFF = 0x13;
@@ -90,7 +87,7 @@ export const FRAME_TYPE = {
     0x82: "RX (Receive) Packet: 64-bit Address IO (0x82)",
     RX_PACKET_16_IO: 0x83,
     0x83: "RX (Receive) Packet: 16-bit Address IO (0x83)",
-};
+} as const;
 export const DISCOVERY_STATUS = {
     NO_DISCOVERY_OVERHEAD: 0x00,
     0x00: "No Discovery Overhead (0x00)",
@@ -102,7 +99,7 @@ export const DISCOVERY_STATUS = {
     0x03: "Address and Route (0x03)",
     EXTENDED_TIMEOUT_DISCOVERY: 0x40,
     0x40: "Extended Timeout Discovery (0x40)",
-};
+} as const;
 export const DELIVERY_STATUS = {
     SUCCESS: 0x00,
     0x00: "Success (0x00)",
@@ -138,7 +135,7 @@ export const DELIVERY_STATUS = {
     0x74: "Data payload too large (0x74)",
     INDIRECT_MESSAGE_UNREQUESTED: 0x75,
     0x75: "Indirect message unrequested (0x75)",
-};
+} as const;
 export const COMMAND_STATUS = {
     OK: 0x00,
     0x00: "OK (0x00)",
@@ -170,7 +167,7 @@ export const MODEM_STATUS = {
     0x11: "Modem Configuration changed while join in progress (0x11)",
     STACK_ERROR: 0x80,
     0x80: "Stack Error (0x80)",
-};
+} as const;
 export const RECEIVE_OPTIONS = {
     PACKET_ACKNOWLEDGED: 0x01,
     0x01: "Packet Acknowledged (0x01)",
@@ -180,7 +177,7 @@ export const RECEIVE_OPTIONS = {
     0x20: "Packet encrypted with APS encryption (0x20)",
     PACKET_SENT_FROM_END_DEVICE: 0x40,
     0x40: "Packet was sent from an end device (if known) (0x40)",
-};
+} as const;
 export const DEVICE_TYPE = {
     COORDINATOR: 0x00,
     0x00: "Coordinator (0x00)",
@@ -188,7 +185,7 @@ export const DEVICE_TYPE = {
     0x01: "Router (0x01)",
     END_DEVICE: 0x02,
     0x02: "End Device (0x02)",
-};
+} as const;
 
 export const DIGITAL_CHANNELS = {
     // Map mask to name
@@ -385,7 +382,7 @@ export const PIN_COMMAND: {
     DIO4: string
     DIO5: string
     ASSOC: string
-}  = {
+} = {
     PIN: {}
 } as any;
 const pc = PIN_COMMAND;

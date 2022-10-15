@@ -15,7 +15,7 @@ import BufferReader from "buffer-reader";
 
 export * as C from './constants'
 import * as C from './constants'
-import * as frame_parser from './frame-parser'
+import frame_parser from './frame-parser'
 import frame_builder from './frame-builder'
 import {ChecksumMismatchError, FrameBuildingNotSupportedError} from "./errors";
 
