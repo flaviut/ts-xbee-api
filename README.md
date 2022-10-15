@@ -492,7 +492,7 @@ C.DEVICE_TYPE.END_DEVICE // 0x02
 C.DEVICE_TYPE[0x02] // "End Device (0x02)"
 ```
 
-Please refer to `lib/constants.js` for a more complete list, and your module's documentation for more explanation.
+Please refer to `lib/constants.ts` for a more complete list, and your module's documentation for more explanation.
 
 ## EXAMPLES
 To combine with [serialport](https://github.com/node-serialport/node-serialport/), using the streaming API, we use the builder and parser transform streams. 

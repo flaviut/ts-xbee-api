@@ -8,8 +8,8 @@
 
 'use strict';
 
-var xbee_api = require('../lib/xbee-api.js');
-var C = require('../lib/constants.js');
+var xbee_api = require('../lib/xbee-api.ts');
+var C = require('../lib/constants.ts');
 
 exports['Main'] = {
   setUp: function(done) {

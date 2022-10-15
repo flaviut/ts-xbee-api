@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "outDir": "dist",
+    "checkJs": true
+  },
+  "include": [
+    "lib/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
