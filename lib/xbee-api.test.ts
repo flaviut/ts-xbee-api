@@ -6,8 +6,8 @@
 * Licensed under the MIT license.
 */
 
-import * as xbee_api from "./xbee-api";
-import {C} from "./xbee-api";
+import * as xbee_api from ".";
+import {C} from ".";
 import * as stream from "stream";
 
 describe('Main', () => {

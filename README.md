@@ -17,7 +17,7 @@ Install the module with: **[npm](https://npmjs.org/) install xbee-api**
 
 ```javascript
 var xbee_api = require('xbee-api');
-var C = xbee_api.constants;
+var C = xbee_api.C;
 var xbeeAPI = new xbee_api.XBeeAPI();
 
 // Something we might want to send to an XBee...
@@ -154,7 +154,7 @@ Note that many parameters have default values. For example, `destination16/64` d
 #### 0x08: AT Command (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x08, // xbee_api.constants.FRAME_TYPE.AT_COMMAND
+	type: 0x08, // xbee_api.C.FRAME_TYPE.AT_COMMAND
 	id: 0x52, // optional, nextFrameId() is called per default
 	command: "NJ",
 	commandParameter: [],
@@ -165,7 +165,7 @@ Execute the AT command set in `command`, optionally set a `comandParameter` valu
 #### 0x09: AT Command Queue Parameter Value (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x09, // xbee_api.constants.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
+	type: 0x09, // xbee_api.C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE
 	id: 0x01, // optional, nextFrameId() is called per default
 	command: "BD",
 	commandParameter: [ 0x07 ]
@@ -176,7 +176,7 @@ Pretty much the same as AT Command Requests, except that the commands are queued
 #### 0x17: Remote Command Request (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x17, // xbee_api.constants.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
+	type: 0x17, // xbee_api.C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST
 	id: 0x01, // optional, nextFrameId() is called per default
 	destination64: "0013a20040401122",
 	destination16: "fffe", // optional, "fffe" is default
@@ -190,7 +190,7 @@ Behaves just as AT Command Requests, with additional `destination64/16` paramete
 #### 0x10: ZigBee Transmit Request (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x10, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST
+	type: 0x10, // xbee_api.C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST
 	id: 0x01, // optional, nextFrameId() is called per default
 	destination64: "0013a200400a0127",
 	destination16: "fffe", // optional, "fffe" is default
@@ -205,7 +205,7 @@ Transmit your own `data` to a remote node.
 #### 0x00: TX (Transmit) Request: 64-bit address (802.15.4)
 ```javascript
 {
-	type: 0x00, // xbee_api.constants.FRAME_TYPE.TX_REQUEST_64 
+	type: 0x00, // xbee_api.C.FRAME_TYPE.TX_REQUEST_64 
 	id: 0x01, // optional, nextFrameId() is called per default
 	destination64: "0013a200400a0127",
 	options: 0x00, // optional, 0x00 is default
@@ -217,7 +217,7 @@ Transmit your own `data` to a remote node using a 64 bit address. This is for Se
 #### 0x01: TX (Transmit) Request: 16-bit address (802.15.4)
 ```javascript
 {
-	type: 0x01, // xbee_api.constants.FRAME_TYPE.TX_REQUEST_16 
+	type: 0x01, // xbee_api.C.FRAME_TYPE.TX_REQUEST_16 
 	id: 0x01, // optional, nextFrameId() is called per default
 	destination16: "ab00",
 	options: 0x00, // optional, 0x00 is default
@@ -229,7 +229,7 @@ Transmit your own `data` to a remote node using a 16 bit address. This is for Se
 #### 0x11: Explicit Addressing ZigBee Command Frame (ZNet, ZigBee)
 ```javascript
 {
-    type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST
+    type: 0x11, // xbee_api.C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST
     id: 0x01, // optional, nextFrameId() is called per default
     destination64: "0013a200400a0127", // default is broadcast address
     destination16: "fffe", // default is "fffe" (unknown/broadcast)
@@ -247,7 +247,7 @@ Allows ZigBee application layer fields (endpoint and cluster ID) to be specified
 #### 0x21: Create Source Route (ZNet, ZigBee)
 ```javascript
 {
-    type: 0x21, // xbee_api.constants.FRAME_TYPE.CREATE_SOURCE_ROUTE
+    type: 0x21, // xbee_api.C.FRAME_TYPE.CREATE_SOURCE_ROUTE
     destination64: "deadbeefcafebabe", // Must be a unicast address
     destination16: "adad", // Must be a unicast address
 	addresses: [ // List of hops to destination (usually get these from route record indicator frames)
@@ -265,7 +265,7 @@ Objects created from API frames that the XBee would recieve contain a `type` pro
 #### 0x88: AT Command Response (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x88, // xbee_api.constants.FRAME_TYPE.AT_COMMAND_RESPONSE 
+	type: 0x88, // xbee_api.C.FRAME_TYPE.AT_COMMAND_RESPONSE 
 	id: 0x01,
 	command: "BD",
 	commandStatus: 0x00,
@@ -277,7 +277,7 @@ This is a response to a AT command request, for example to query or change an AT
 #### 0x97: Remote Command Response (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x97, // xbee_api.constants.FRAME_TYPE.REMOTE_COMMAND_RESPONSE 
+	type: 0x97, // xbee_api.C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE 
 	id: 0x01,
 	remote64: "0013a20040522baa",
 	remote16: "7d84",
@@ -292,7 +292,7 @@ This is a response to a *remote* AT command request, for example to query or cha
 #### 0x8B: ZigBee Transmit Status (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x8B, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS 
+	type: 0x8B, // xbee_api.C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS 
 	id: 0x01,
 	remote16: "7d84",
 	transmitRetryCount: 0,
@@ -305,7 +305,7 @@ This status is received after sending out a transmit request to the XBee (i.e. t
 #### 0x8A: Modem Status (802.15.4, ZNet, ZigBee)
 ```javascript
 {
-	type: 0x8a, // xbee_api.constants.FRAME_TYPE.MODEM_STATUS 
+	type: 0x8a, // xbee_api.C.FRAME_TYPE.MODEM_STATUS 
 	modemStatus: 0x06
 }
 ```
@@ -314,7 +314,7 @@ These statuses give information about the general operation of the XBee. See the
 #### 0x90: ZigBee Receive Packet (AO=0) (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x90, // xbee_api.constants.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET 
+	type: 0x90, // xbee_api.C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET 
 	remote64: "0013a20040522baa",
 	remote16: "7d84",
 	receiveOptions: 0x01,
@@ -326,7 +326,7 @@ This frame contains general data (such as text data) received from remote nodes.
 #### 0x91: ZigBee Explicit Rx Indicator (AO=1) (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x90, // xbee_api.constants.FRAME_TYPE.ZIGBEE_EXPLICIT_RX
+	type: 0x90, // xbee_api.C.FRAME_TYPE.ZIGBEE_EXPLICIT_RX
 	remote64: "0013a20040522baa",
 	remote16: "7d84",
 	sourceEndpoint: "e8",
@@ -341,7 +341,7 @@ This frame contains general data (such as text data) received from remote nodes.
 #### 0x92: ZigBee IO Data Sample Rx Indicator (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x92, // xbee_api.constants.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX 
+	type: 0x92, // xbee_api.C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX 
 	remote64: "0013a20040522baa",
 	remote16: "7d84",
 	receiveOptions: 0x01,
@@ -361,7 +361,7 @@ An I/O data sample that contains information about the state of the digital and 
 #### 0x94: XBee Sensor Read Indicator (AO=0) (ZNet, ZigBee)
 ```javascript
 {
-    type: 0x94, // xbee_api.constants.FRAME_TYPE.XBEE_SENSOR_READ 
+    type: 0x94, // xbee_api.C.FRAME_TYPE.XBEE_SENSOR_READ 
     remote64: "0013a20040522baa",
     remote16: "7d84",
     sensors: 0x03,
@@ -384,7 +384,7 @@ When the module receives a sensor sample (from a Digi 1-wire sensor adapter).
 #### 0x95: Node Identification Indicator (AO=0) (ZNet, ZigBee)
 ```javascript
 {
-	type: 0x95, // xbee_api.constants.FRAME_TYPE.NODE_IDENTIFICATION
+	type: 0x95, // xbee_api.C.FRAME_TYPE.NODE_IDENTIFICATION
 	sender64: "0013a20040522baa"
 	sender16: "7d84"
 	receiveOptions: 0x02
@@ -401,7 +401,7 @@ Modules with the `JN` (Join Notification) parameter enabled will transmit a broa
 #### 0x80: RX (Receive) Packet: 64-bit Address (802.15.4)
 ```javascript
 {
-	type: 0x80, // xbee_api.constants.FRAME_TYPE.RX_PACKET_64 
+	type: 0x80, // xbee_api.C.FRAME_TYPE.RX_PACKET_64 
 	remote64: "0013a20040522baa",
 	rssi: 0x3f
 	receiveOptions: 0x01,
@@ -413,7 +413,7 @@ This frame contains general data (such as text data) received from remote nodes(
 #### 0x81: RX (Receive) Packet: 16-bit Address (802.15.4)
 ```javascript
 {
-	type: 0x81, // xbee_api.constants.FRAME_TYPE.RX_PACKET_16 
+	type: 0x81, // xbee_api.C.FRAME_TYPE.RX_PACKET_16 
 	remote64: "522b",
 	rssi: 0x3f
 	receiveOptions: 0x01,
@@ -425,7 +425,7 @@ This frame contains general data (such as text data) received from remote nodes(
 #### 0x82: RX (Receive) Packet: 64-bit Address IO (802.15.4)
 ```javascript
 {
-	type: 0x82, // xbee_api.constants.FRAME_TYPE.RX_PACKET_64_IO 
+	type: 0x82, // xbee_api.C.FRAME_TYPE.RX_PACKET_64_IO 
 	remote64: "0013a20040522baa",
 	rssi: 0x3f
 	receiveOptions: 0x01,
@@ -437,7 +437,7 @@ This frame contains I/O data received from remote nodes (64 bit address). This i
 #### 0x83: RX (Receive) Packet: 16-bit Address IO (802.15.4)
 ```javascript
 {
-	type: 0x83, // xbee_api.constants.FRAME_TYPE.RX_PACKET_16_IO 
+	type: 0x83, // xbee_api.C.FRAME_TYPE.RX_PACKET_16_IO 
 	remote64: "522b",
 	rssi: 0x3f
 	receiveOptions: 0x01,
@@ -449,7 +449,7 @@ This frame contains I/O data received from remote nodes (16 bit address). This i
 #### 0x89: TX (Transmit) Status (802.15.4)
 ```javascript
 {
-	type: 0x89, // xbee_api.constants.FRAME_TYPE.TX_STATUS 
+	type: 0x89, // xbee_api.C.FRAME_TYPE.TX_STATUS 
 	id: 0x01,
 	deliveryStatus: 0
 }
@@ -461,7 +461,7 @@ You don't have to remember the hex-numbers of the frame types, command options, 
 
 ```javascript
 var xbee_api = require('xbee-api');
-var C = xbee_api.constants;
+var C = xbee_api.C;
 
 // Frame types (frame.type):
 C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST; // 0x10
@@ -499,7 +499,7 @@ To combine with [serialport](https://github.com/node-serialport/node-serialport/
 ```javascript
 var SerialPort = require('serialport').SerialPort;
 var xbee_api = require('xbee-api');
-var C = xbee_api.constants;
+var C = xbee_api.C;
 
 var xbeeAPI = new xbee_api.XBeeAPI({
   api_mode: 1

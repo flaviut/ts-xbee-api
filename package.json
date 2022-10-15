@@ -16,7 +16,11 @@
     "url": "https://github.com/jankolkmeier/xbee-api/issues"
   },
   "license": "MIT",
-  "main": "lib/xbee-api",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "engines": {
     "node": ">=14.0.0"
   },

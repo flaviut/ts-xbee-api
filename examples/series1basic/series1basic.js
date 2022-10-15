@@ -1,6 +1,6 @@
 var util = require('util');
 var SerialPort = require('serialport').SerialPort;
-var xbee_api = require('../../lib/xbee-api.ts');
+var xbee_api = require('ts-xbee-api');
 
 var C = xbee_api.constants;
 
