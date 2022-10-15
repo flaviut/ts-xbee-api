@@ -19,6 +19,12 @@ import frame_parser, {ParsableFrame} from './frame-parser'
 import frame_builder, {BuildableFrame} from './frame-builder'
 import {ChecksumMismatchError, FrameBuildingNotSupportedError} from "./errors";
 
+export {ParsableFrame} from './frame-parser'
+export {BuildableFrame} from './frame-builder'
+
+export type SpecificParsableFrame<FT extends C.FRAME_TYPE> = Extract<ParsableFrame, { type: FT }>
+export type SpecificBuildableFrame<FT extends C.FRAME_TYPE> = Extract<BuildableFrame, { type: FT }>
+
 
 export interface XBeeAPIOptions {
     /** 1 is default, 2 is with escaping (set ATAP=2) */
@@ -186,7 +192,7 @@ export class XBeeAPI extends (events.EventEmitter as { new(): TypedEmitter<XBeeE
         return this.parser;
     }
 
-    parseRaw(buffer, enc, cb) {
+    parseRaw(buffer, enc?, cb?) {
         const S = this.parseState;
         for (let i = 0; i < buffer.length; i++) {
             S.b = buffer[i];

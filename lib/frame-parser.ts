@@ -277,13 +277,13 @@ const frame_parser = {
     [C.FRAME_TYPE.AT_COMMAND_RESPONSE]: (frame: ({
         // aka Local AT Command Response
         type: C.FRAME_TYPE.AT_COMMAND_RESPONSE,
-        /** sequence number of the frame */
         id: Uint8,
-        command: C.AT_COMMAND,
         commandStatus: Uint8,
     } & ({
+        command: C.AT_COMMAND.ND,
         nodeIdentification: NodeIdentification<string>
     } | {
+        command: Exclude<C.AT_COMMAND, C.AT_COMMAND.ND>,
         commandData: Buffer,
     })), reader: BufferReader) => {
         frame.id = reader.nextUInt8()
@@ -303,11 +303,12 @@ const frame_parser = {
         id: Uint8,
         remote64: string,  // 64-bit
         remote16: string,  // 16-bit
-        command: C.AT_COMMAND,
         commandStatus: Uint8,  // 0 means success
     } & ({
+        command: C.AT_COMMAND.ND,
         nodeIdentification: NodeIdentification<string>
     } | {
+        command: Exclude<C.AT_COMMAND, C.AT_COMMAND.ND>,
         commandData: Buffer,
     })), reader, options) => {
         frame.id = reader.nextUInt8()

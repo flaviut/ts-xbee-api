@@ -94,10 +94,10 @@ const frame_builder = {
         type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
         /** sequence number of the frame */
         id?: Uint8,
-        destination64: BufferConstructable,  // 64-bit
-        destination16: BufferConstructable,  // 16-bit
-        broadcastRadius: Uint8,
-        options: Uint8,
+        destination64?: BufferConstructable,  // 64-bit
+        destination16?: BufferConstructable,  // 16-bit
+        broadcastRadius?: Uint8,
+        options?: Uint8,
         data: BufferConstructable,
     }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
