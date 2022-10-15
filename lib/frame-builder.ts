@@ -199,15 +199,12 @@ const frame_builder = {
 
     [C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET]: function (frame: {
         type: C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET,
-        /** sequence number of the frame */
-        id?: Uint8,
         sender64?: BufferConstructable,  // 64-bit
         sender16?: BufferConstructable,  // 16-bit
         receiveOptions?: Set<C.RECEIVE_OPTIONS>,
         data: BufferConstructable,
     }, builder: BufferBuilder) {
         builder.appendUInt8(frame.type)
-        builder.appendUInt8(this.getFrameId(frame))
         builder.appendString(frame.sender64 || C.UNKNOWN_64, 'hex')
         builder.appendString(frame.sender16 || C.UNKNOWN_16 , 'hex')
         builder.appendUInt8(

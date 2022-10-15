@@ -35,7 +35,36 @@ describe('frameId', () => {
 
 // These have to be tested both for AP=1 and 2
 describe('API Frame building', () => {
-    it('AT Command Requests', () => {
+    it('Keep Frame ID Zero', () => {
+        const frame: BuildableFrame = {
+            type: C.FRAME_TYPE.AT_COMMAND,
+            id: 0x00,
+            command: C.AT_COMMAND.NJ,
+            commandParameter: [],
+        }
+
+        // AT Command; 0x08; Queries ATNJ
+        const expected0 = Buffer.from([0x7E, 0x00, 0x04, 0x08, 0x00, 0x4E, 0x4A, 0x5F])
+
+        const xbeeAPI = new xbee_api.XBeeAPI()
+        expect(xbeeAPI.buildFrame(frame)).toEqual(expected0)
+    })
+    it('Assign ID When Missing', () => {
+        const frame: BuildableFrame = {
+            type: C.FRAME_TYPE.AT_COMMAND,
+            command: C.AT_COMMAND.NJ,
+            commandParameter: [],
+        }
+
+        const xbeeAPI = new xbee_api.XBeeAPI()
+        const firstId = xbeeAPI.nextFrameId()
+
+        const buf = xbeeAPI.buildFrame(frame)
+
+        expect(buf[4]).toEqual(firstId + 1)
+    })
+
+    it('AT_COMMAND', () => {
         const frame: BuildableFrame = {
             type: C.FRAME_TYPE.AT_COMMAND,
             id: 0x52,
@@ -47,9 +76,9 @@ describe('API Frame building', () => {
         const expected0 = Buffer.from([0x7E, 0x00, 0x04, 0x08, 0x52, 0x4E, 0x4A, 0x0D])
 
         const xbeeAPI = new xbee_api.XBeeAPI()
-        expect(expected0).toEqual(xbeeAPI.buildFrame(frame))
+        expect(xbeeAPI.buildFrame(frame)).toEqual(expected0)
     })
-    it('AT Command Queue Requests', () => {
+    it('AT_COMMAND_QUEUE_PARAMETER_VALUE', () => {
         const frame: BuildableFrame = {
             type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE,
             id: 0x01,
@@ -61,9 +90,9 @@ describe('API Frame building', () => {
         const expected0 = Buffer.from([0x7E, 0x00, 0x05, 0x09, 0x01, 0x42, 0x44, 0x07, 0x68])
 
         const xbeeAPI = new xbee_api.XBeeAPI()
-        expect(expected0).toEqual(xbeeAPI.buildFrame(frame))
+        expect(xbeeAPI.buildFrame(frame)).toEqual(expected0)
     })
-    it('AT Remote Command Requests', () => {
+    it('REMOTE_AT_COMMAND_REQUEST', () => {
         const frame: BuildableFrame = {
             type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
             id: 0x01,
@@ -78,9 +107,9 @@ describe('API Frame building', () => {
         const expected0 = Buffer.from([0x7E, 0x00, 0x10, 0x17, 0x01, 0x00, 0x13, 0xA2, 0x00, 0x40, 0x40, 0x11, 0x22, 0xFF, 0xFE, 0x02, 0x42, 0x48, 0x01, 0xF5])
 
         const xbeeAPI = new xbee_api.XBeeAPI()
-        expect(expected0).toEqual(xbeeAPI.buildFrame(frame))
+        expect(xbeeAPI.buildFrame(frame)).toEqual(expected0)
     })
-    it('Transmit Requests', () => {
+    it('ZIGBEE_TRANSMIT_REQUEST', () => {
         const frame: BuildableFrame = {
             type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
             id: 0x01,
@@ -95,35 +124,23 @@ describe('API Frame building', () => {
         const expected0 = Buffer.from([0x7E, 0x00, 0x16, 0x10, 0x01, 0x00, 0x13, 0xA2, 0x00, 0x40, 0x0A, 0x01, 0x27, 0xFF, 0xFE, 0x00, 0x00, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0x30, 0x41, 0x13])
 
         const xbeeAPI = new xbee_api.XBeeAPI()
-        expect(expected0).toEqual(xbeeAPI.buildFrame(frame))
+        expect(xbeeAPI.buildFrame(frame)).toEqual(expected0)
     })
-    it('Keep Frame ID Zero', () => {
+
+    it('ZIGBEE_RECEIVE_PACKET', () => {
         const frame: BuildableFrame = {
-            type: C.FRAME_TYPE.AT_COMMAND,
-            id: 0x00,
-            command: C.AT_COMMAND.NJ,
-            commandParameter: [],
+            type: C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET,
+            sender64: '0013A20087654321',
+            sender16: '5614',
+            receiveOptions: new Set([C.RECEIVE_OPTIONS.PACKET_ACKNOWLEDGED]),
+            data: "TxData",
         }
 
-        // AT Command; 0x08; Queries ATNJ
-        const expected0 = Buffer.from([0x7E, 0x00, 0x04, 0x08, 0x00, 0x4E, 0x4A, 0x5F])
+        // Transmit response; 0x90; sends chars: TxData
+        const expected0 = Buffer.from([0x7E, 0x00, 0x12, 0x90, 0x00, 0x13, 0xA2, 0x00, 0x87, 0x65, 0x43, 0x21, 0x56, 0x14, 0x01, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0xB9,])
 
         const xbeeAPI = new xbee_api.XBeeAPI()
         expect(expected0).toEqual(xbeeAPI.buildFrame(frame))
-    })
-    it('Assign ID When Missing', () => {
-        const frame: BuildableFrame = {
-            type: C.FRAME_TYPE.AT_COMMAND,
-            command: C.AT_COMMAND.NJ,
-            commandParameter: [],
-        }
-
-        const xbeeAPI = new xbee_api.XBeeAPI()
-        const firstId = xbeeAPI.nextFrameId()
-
-        const buf = xbeeAPI.buildFrame(frame)
-
-        expect(firstId + 1).toEqual(buf[4])
     })
 })
 
@@ -519,7 +536,7 @@ describe('API Frame Parsing', () => {
         let parsed = 0
 
         xbeeAPI.on("frame_object", function (frame) {
-            if(frame.type !== C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS) {
+            if (frame.type !== C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS) {
                 expect(frame.type).toEqual(C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS)
                 return
             }
