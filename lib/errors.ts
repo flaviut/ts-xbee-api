@@ -1,5 +1,3 @@
-import {Buffer} from "safe-buffer";
-
 interface ParseState {
     buffer: Buffer;
     offset: number; // Offset in buffer

@@ -9,7 +9,6 @@
 import stream from "stream";
 import assert from "assert";
 import events from "events";
-import {Buffer} from "safe-buffer";
 import BufferBuilder from "buffer-builder";
 import BufferReader from "buffer-reader";
 import TypedEmitter from "typed-emitter";

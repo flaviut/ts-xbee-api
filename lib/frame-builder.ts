@@ -6,7 +6,6 @@
  * Licensed under the MIT license.
  */
 
-import {Buffer} from "safe-buffer"
 import assert from "assert"
 import BufferBuilder from "buffer-builder"
 
