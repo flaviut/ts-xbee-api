@@ -202,3 +202,4 @@ export default frame_builder
 type NewOmit<T, K extends PropertyKey> =
     { [P in keyof T as Exclude<P, K>]: T[P] }
 export type BuildableFrame = Parameters<typeof frame_builder[keyof NewOmit<typeof frame_builder, 'frameId' | 'nextFrameId' | 'getFrameId'>]>[0]
+export type SpecificBuildableFrame<FT extends typeof C.FRAME_TYPE> = Extract<BuildableFrame, { type: FT }>

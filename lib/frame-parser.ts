@@ -525,3 +525,4 @@ const frame_parser = {
 export default frame_parser
 
 export type ParsableFrame = Parameters<typeof frame_parser[keyof typeof frame_parser]>[0]
+export type SpecificParsableFrame<FT extends typeof C.FRAME_TYPE> = Extract<ParsableFrame, { type: FT }>

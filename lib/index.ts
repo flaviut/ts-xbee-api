@@ -15,9 +15,10 @@ import BufferReader from "buffer-reader";
 
 export * as C from './constants'
 import * as C from './constants'
-import frame_parser from './frame-parser'
-import frame_builder from './frame-builder'
+import frame_parser, {ParsableFrame} from './frame-parser'
+import frame_builder, {BuildableFrame} from './frame-builder'
 import {ChecksumMismatchError, FrameBuildingNotSupportedError} from "./errors";
+import TypedEmitter from "typed-emitter";
 
 
 export interface XBeeAPIOptions {
@@ -50,7 +51,13 @@ const DEFAULT_OPTIONS: XBeeAPIOptions = {
     logger: console,
 };
 
-export class XBeeAPI extends events.EventEmitter {
+type XBeeEvents = {
+    error: (err: ChecksumMismatchError) => void,
+    frame_object: (frame: ParsableFrame) => void,
+    frame_raw: (frame: Buffer) => void,
+}
+
+export class XBeeAPI extends (events.EventEmitter as { new(): TypedEmitter<XBeeEvents> }) {
     readonly builder: stream.Transform;
     readonly parser: stream.Transform;
     readonly parseState: {
@@ -115,7 +122,7 @@ export class XBeeAPI extends events.EventEmitter {
         return Buffer.from(this.escapeBuffer.slice(0, offset));
     }
 
-    buildFrame(frame) {
+    buildFrame(frame: BuildableFrame) {
         assert(frame, 'Frame parameter must be a frame object');
 
         let packet = Buffer.alloc(this.options.builder_buffer_size); // Packet buffer
@@ -126,7 +133,7 @@ export class XBeeAPI extends events.EventEmitter {
             throw new FrameBuildingNotSupportedError(frame.type);
 
         // Let the builder fill the payload
-        frame_builder[frame.type](frame, builder);
+        frame_builder[frame.type]((frame as any), builder);
 
         // Calculate & Append Checksum
         let checksum = 0;
@@ -149,7 +156,7 @@ export class XBeeAPI extends events.EventEmitter {
     }
 
     // Note that this expects the whole frame to be escaped!
-    parseFrame(rawFrame) {
+    parseFrame(rawFrame): ParsableFrame {
         // Trim the header and trailing checksum
         const reader = new BufferReader(rawFrame.slice(3, rawFrame.length - 1));
 
@@ -160,7 +167,7 @@ export class XBeeAPI extends events.EventEmitter {
         // Frame type specific parsing.
         frame_parser[frame.type](frame, reader, this.options);
 
-        return frame;
+        return frame as any;
     }
 
     canParse(buffer) {
