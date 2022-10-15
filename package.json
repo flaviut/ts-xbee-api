@@ -25,7 +25,8 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "test": "grunt nodeunit"
+    "test": "jest",
+    "build": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
@@ -40,7 +41,7 @@
   "keywords": [],
   "dependencies": {
     "buffer-builder": "^0.2.0",
-    "buffer-reader": "https://github.com/prodatakey/node-buffer-reader/archive/v0.0.3.tar.gz",
+    "buffer-reader": "^0.1.0",
     "safe-buffer": "~5.2.1"
   }
 }
