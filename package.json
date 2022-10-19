@@ -26,7 +26,9 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "tsc -p tsconfig.dist.json && sed -i -e s,BufferBuilder,{},g -e s,BufferReader,{},g dist/*.d.ts"
+    "build": "tsc -p tsconfig.dist.json && sed -i -e s,BufferBuilder,{},g -e s,BufferReader,{},g dist/*.d.ts",
+    "lint": "eslint types src",
+    "lint:fix": "eslint --fix types src"
   },
   "exports": {
     ".": {
@@ -42,6 +44,12 @@
     "@tsconfig/node14": "^1.0.3",
     "@types/jest": "^29.1.2",
     "@types/node": "^18.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "eslint": "^8.25.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.0",
     "jest": "^29.2.0",
     "serialport": "~10.4.0",
     "ts-jest": "^29.0.3",
