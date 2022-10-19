@@ -209,7 +209,7 @@ const frameBuilder = {
       Array.from(frame.receiveOptions ?? [])
         .reduce((result: number, b) => result | b, 0))
     appendData(frame.data, builder)
-  }
+  },
 }
 
 export default frameBuilder

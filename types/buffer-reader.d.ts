@@ -12,126 +12,126 @@ declare module 'buffer-reader' {
     /**
          * Create a new reader, if no buffer provided, a empty buffer will be used.
          */
-    constructor (buffer?: Buffer)
+    constructor(buffer?: Buffer)
 
     /**
          * Append new buffer to the end of current reader.
          * @param buffer buffer to append
          */
-    append (buffer: Buffer): void
+    append(buffer: Buffer): void
 
     /**
          * Return current position of the reader.
          */
-    tell (): number
+    tell(): number
 
     /**
          * Set new position of the reader, if the pos is invalid, an exception will be raised.
          * @param position new position
          */
-    seek (position: number): void
+    seek(position: number): void
 
     /**
          * Move the position of reader by offset, offset can be negative; it can be used to skip some bytes.
          * @param offset offset to move by
          */
-    move (offset: number): void
+    move(offset: number): void
 
     /**
          * Get all the remaining bytes as a Buffer.
          */
-    restAll (): Buffer
+    restAll(): Buffer
 
     /**
          * Read a buffer with specified length.
          * @param length specified length
          */
-    nextBuffer (length: number): Buffer
+    nextBuffer(length: number): Buffer
 
     /**
          * Read next length of bytes as String, encoding default is 'utf8'.
          * @param length length of the string to read
          * @param encoding encoding of the string
          */
-    nextString (length: number, encoding?: string): string
+    nextString(length: number, encoding?: string): string
 
     /**
          * Read next bytes till the end of buffer as null-terminated string, encoding default is 'utf8'.
          * @param encoding encoding of the string
          */
-    nextStringZero (encoding?: string): string
+    nextStringZero(encoding?: string): string
 
     /**
          * Read next bytes as Int8, the value is just as the same format Buffer in nodejs doc.
          */
-    nextInt8 (): number
+    nextInt8(): number
 
     /**
          * Read next bytes as UInt8, the value is just as the same format Buffer in nodejs doc.
          */
-    nextUInt8 (): number
+    nextUInt8(): number
 
     /**
          * Read next bytes as Int16LE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextInt16LE (): number
+    nextInt16LE(): number
 
     /**
          * Read next bytes as UInt16LE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextUInt16LE (): number
+    nextUInt16LE(): number
 
     /**
          * Read next bytes as Int16BE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextInt16BE (): number
+    nextInt16BE(): number
 
     /**
          * Read next bytes as UInt16BE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextUInt16BE (): number
+    nextUInt16BE(): number
 
     /**
          * Read next bytes as Int32LE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextInt32LE (): number
+    nextInt32LE(): number
 
     /**
          * Read next bytes as UInt32LE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextUInt32LE (): number
+    nextUInt32LE(): number
 
     /**
          * Read next bytes as Int32BE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextInt32BE (): number
+    nextInt32BE(): number
 
     /**
          * Read next bytes as UInt32BE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextUInt32BE (): number
+    nextUInt32BE(): number
 
     /**
          * Read next bytes as FloatLE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextFloatLE (): number
+    nextFloatLE(): number
 
     /**
          * Read next bytes as FloatBE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextFloatBE (): number
+    nextFloatBE(): number
 
     /**
          * Read next bytes as Double32LE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextDouble32LE (): number
+    nextDouble32LE(): number
 
     /**
          * Read next bytes as Double32BE, the value is just as the same format Buffer in nodejs doc.
          */
-    nextDouble32BE (): number
+    nextDouble32BE(): number
 
-    nextAll (): Buffer
+    nextAll(): Buffer
   }
 
   export = BufferReader

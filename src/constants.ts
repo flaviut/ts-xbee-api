@@ -22,7 +22,7 @@ export const ESCAPE_BYTES = [
   START_BYTE,
   ESCAPE,
   XOFF,
-  XON
+  XON,
 ]
 
 export enum FRAME_TYPE {
@@ -89,7 +89,7 @@ export const FRAME_NAMES = {
   0x80: 'RX (Receive) Packet: 64-bit Address (0x80)',
   0x81: 'RX (Receive) Packet: 16-bit Address (0x81)',
   0x82: 'RX (Receive) Packet: 64-bit Address IO (0x82)',
-  0x83: 'RX (Receive) Packet: 16-bit Address IO (0x83)'
+  0x83: 'RX (Receive) Packet: 16-bit Address IO (0x83)',
 }
 
 export enum DISCOVERY_STATUS {
@@ -105,7 +105,7 @@ export const DISCOVERY_STATUS_NAMES = {
   0x01: 'Address Discovery (0x01)',
   0x02: 'Route Discovery (0x02)',
   0x03: 'Address and Route (0x03)',
-  0x40: 'Extended Timeout Discovery (0x40)'
+  0x40: 'Extended Timeout Discovery (0x40)',
 }
 
 export enum DELIVERY_STATUS {
@@ -145,7 +145,7 @@ export const DELIVERY_STATUS_NAMES = {
   0x2E: 'Attempted unicast with APS transmission, but EE=0 (0x2E)',
   0x32: 'Resource error lack of free buffers, timers, etc. (0x32)',
   0x74: 'Data payload too large (0x74)',
-  0x75: 'Indirect message unrequested (0x75)'
+  0x75: 'Indirect message unrequested (0x75)',
 }
 
 export enum COMMAND_STATUS {
@@ -160,7 +160,7 @@ export const COMMAND_STATUS_NAMES = {
   0x01: 'ERROR (0x01)',
   0x02: 'Invalid Command (0x02)',
   0x03: 'Invalid Parameter (0x03)',
-  0x04: 'Remote Command Transmission Failed (0x04)'
+  0x04: 'Remote Command Transmission Failed (0x04)',
 }
 
 export enum MODEM_STATUS {
@@ -184,7 +184,7 @@ export const MODEM_STATUS_NAMES = {
   0x07: 'Network security key was updated (0x07)',
   0x0D: 'Voltage supply limit exceeded (0x0D)',
   0x11: 'Modem Configuration changed while join in progress (0x11)',
-  0x80: 'Stack Error (0x80)'
+  0x80: 'Stack Error (0x80)',
 }
 
 export enum RECEIVE_OPTIONS {
@@ -198,7 +198,7 @@ export const RECEIVE_OPTIONS_NAMES = {
   0x01: 'Packet Acknowledged (0x01)',
   0x02: 'Packet was a broadcast packet (0x02)',
   0x20: 'Packet encrypted with APS encryption (0x20)',
-  0x40: 'Packet was sent from an end device (if known) (0x40)'
+  0x40: 'Packet was sent from an end device (if known) (0x40)',
 }
 
 export enum DEVICE_TYPE {
@@ -210,7 +210,7 @@ export enum DEVICE_TYPE {
 export const DEVICE_TYPE_NAMES = {
   0x00: 'Coordinator (0x00)',
   0x01: 'Router (0x01)',
-  0x02: 'End Device (0x02)'
+  0x02: 'End Device (0x02)',
 }
 
 export const DIGITAL_CHANNELS = {
@@ -226,9 +226,9 @@ export const DIGITAL_CHANNELS = {
     7: ['DIO7', 'CTS'],
     10: ['DIO10', 'RSSI'],
     11: ['DIO11', 'PWM'],
-    12: ['DIO12', 'CD']
+    12: ['DIO12', 'CD'],
   } as const,
-  PIN: {}
+  PIN: {},
 }
 const dc = DIGITAL_CHANNELS
 export const ANALOG_CHANNELS = {
@@ -238,9 +238,9 @@ export const ANALOG_CHANNELS = {
     1: ['AD1', 'DIO1'],
     2: ['AD2', 'DIO2'],
     3: ['AD3', 'DIO3'],
-    7: ['SUPPLY']
+    7: ['SUPPLY'],
   } as const,
-  PIN: {}
+  PIN: {},
 }
 const ac = ANALOG_CHANNELS
 // Map pin/name to mask
@@ -291,9 +291,9 @@ export const PULLUP_RESISTOR = {
     10: ['DIO12'],
     11: ['DIO10', 'RSSI', 'PWM0'],
     12: ['DIO11', 'PWM1'],
-    13: ['DIO7', 'CTS']
+    13: ['DIO7', 'CTS'],
   } as const,
-  PIN: {}
+  PIN: {},
 }
 const pr = PULLUP_RESISTOR
 // Map pin/name to maks
@@ -340,7 +340,7 @@ export const CHANGE_DETECTION = {
     8: ['DIO8'],
     9: ['DIO9'],
     10: ['DIO10'],
-    11: ['DIO11']
+    11: ['DIO11'],
   },
   PIN: {
     20: 0,
@@ -354,7 +354,7 @@ export const CHANGE_DETECTION = {
     9: 8,
     13: 9,
     6: 10,
-    7: 11
+    7: 11,
   },
   DIO0: 0,
   DIO1: 1,
@@ -367,7 +367,7 @@ export const CHANGE_DETECTION = {
   DIO8: 8,
   DIO9: 9,
   DIO10: 10,
-  DIO11: 11
+  DIO11: 11,
 } as const
 export const PIN_MODE: Record<string, {
   UNMONITORED_INPUT?: number
@@ -408,7 +408,7 @@ export const PIN_COMMAND: {
   DIO5: string
   ASSOC: string
 } = {
-  PIN: {}
+  PIN: {},
 } as any
 const pc = PIN_COMMAND
 
@@ -419,7 +419,7 @@ pm.P2 = pm.P1 = {
   UNMONITORED_INPUT: 0x00,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 pm.P0 = {
@@ -427,14 +427,14 @@ pm.P0 = {
   RSSI_PWM: 0x01,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 pm.D4 = {
   DISABLED: 0x00,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 pm.D7 = {
@@ -444,7 +444,7 @@ pm.D7 = {
   DIGITAL_OUTPUT_LOW: 0x04,
   DIGITAL_OUTPUT_HIGH: 0x05,
   RS485_TX_LOW: 0x06,
-  RS485_TX_HIGH: 0x07
+  RS485_TX_HIGH: 0x07,
 }
 
 pm.D5 = {
@@ -452,7 +452,7 @@ pm.D5 = {
   ASSOC_LED: 0x01,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 pm.D6 = {
@@ -460,7 +460,7 @@ pm.D6 = {
   RTS_FLOW_CTRL: 0x01,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 pm.D0 = pm.D1 = pm.D2 = pm.D3 = {
@@ -469,7 +469,7 @@ pm.D0 = pm.D1 = pm.D2 = pm.D3 = {
   ANALOG_INPUT: 0x02,
   DIGITAL_INPUT: 0x03,
   DIGITAL_OUTPUT_LOW: 0x04,
-  DIGITAL_OUTPUT_HIGH: 0x05
+  DIGITAL_OUTPUT_HIGH: 0x05,
 }
 
 for (const pin in pm) {
@@ -494,7 +494,7 @@ export const FRAME_TYPE_SETS = {
   '802.15.4': [0x00, 0x01, 0x08, 0x09, 0x17, 0x80, 0x81, 0x82, 0x83, 0x88, 0x89, 0x8A, 0x97],
   ZNet: [0x08, 0x09, 0x10, 0x11, 0x17, 0x88, 0x8A, 0x8B, 0x90, 0x91, 0x92, 0x94, 0x95, 0x97],
   ZigBee: [0x08, 0x09, 0x10, 0x11, 0x17, 0x21, 0x24, 0x88, 0x8A, 0x8B, 0x90, 0x91, 0x92, 0x94, 0x95, 0x97, 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5],
-  Any: [0x00, 0x01, 0x08, 0x09, 0x17, 0x80, 0x81, 0x82, 0x83, 0x88, 0x89, 0x8a, 0x97, 0x10, 0x11, 0x8b, 0x90, 0x91, 0x92, 0x94, 0x95, 0x21, 0x24, 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5]
+  Any: [0x00, 0x01, 0x08, 0x09, 0x17, 0x80, 0x81, 0x82, 0x83, 0x88, 0x89, 0x8a, 0x97, 0x10, 0x11, 0x8b, 0x90, 0x91, 0x92, 0x94, 0x95, 0x21, 0x24, 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5],
 }
 
 export enum AT_COMMAND {

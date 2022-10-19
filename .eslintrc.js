@@ -20,6 +20,13 @@ module.exports = {
       "named": "never",
       "asyncArrow": "always"
     }],
+    '@typescript-eslint/space-before-function-paren': ["error", {
+      "anonymous": "always",
+      // stupid rule, https://github.com/standard/standard/issues/318#issuecomment-172366283
+      "named": "never",
+      "asyncArrow": "always"
+    }],
     'comma-dangle': ['error', 'always-multiline'],
+    '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
   },
 }

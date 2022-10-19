@@ -52,7 +52,7 @@ const DEFAULT_OPTIONS: XBeeAPIOptions = {
   vref_adc: 1200,
   parser_buffer_size: 512,
   builder_buffer_size: 512,
-  logger: console
+  logger: console,
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -94,7 +94,7 @@ export class XBeeAPI extends XBeeEmitter {
 
     this.options = {
       ...DEFAULT_OPTIONS,
-      ...options
+      ...options,
     }
 
     this.parseState = {
@@ -105,7 +105,7 @@ export class XBeeAPI extends XBeeEmitter {
       checksum: 0x00,
       b: 0x00,
       escape_next: false,
-      waiting: true
+      waiting: true,
     }
   }
 
@@ -168,7 +168,7 @@ export class XBeeAPI extends XBeeEmitter {
     const reader = new BufferReader(rawFrame.slice(3, rawFrame.length - 1))
 
     const frame = {
-      type: reader.nextUInt8() // Read Frame Type
+      type: reader.nextUInt8(), // Read Frame Type
     }
 
     // Frame type specific parsing.

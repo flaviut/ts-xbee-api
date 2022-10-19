@@ -40,7 +40,7 @@ describe('API Frame building', () => {
       type: C.FRAME_TYPE.AT_COMMAND,
       id: 0x00,
       command: C.AT_COMMAND.NJ,
-      commandParameter: []
+      commandParameter: [],
     }
 
     // AT Command; 0x08; Queries ATNJ
@@ -53,7 +53,7 @@ describe('API Frame building', () => {
     const frame: BuildableFrame = {
       type: C.FRAME_TYPE.AT_COMMAND,
       command: C.AT_COMMAND.NJ,
-      commandParameter: []
+      commandParameter: [],
     }
 
     const xbeeAPI = new xbee_api.XBeeAPI()
@@ -69,7 +69,7 @@ describe('API Frame building', () => {
       type: C.FRAME_TYPE.AT_COMMAND,
       id: 0x52,
       command: C.AT_COMMAND.NJ,
-      commandParameter: []
+      commandParameter: [],
     }
 
     // AT Command; 0x08; Queries ATNJ
@@ -83,7 +83,7 @@ describe('API Frame building', () => {
       type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE,
       id: 0x01,
       command: C.AT_COMMAND.BD,
-      commandParameter: [0x07]
+      commandParameter: [0x07],
     }
 
     // AT Command - Queue Param. Value; 0x09; Queues ATBD7
@@ -100,7 +100,7 @@ describe('API Frame building', () => {
       destination16: 'fffe',
       remoteCommandOptions: 0x02,
       command: C.AT_COMMAND.BH,
-      commandParameter: [0x01]
+      commandParameter: [0x01],
     }
 
     // Remote AT Command Req.; 0x17; ATBH1
@@ -117,7 +117,7 @@ describe('API Frame building', () => {
       destination16: 'fffe',
       broadcastRadius: 0x00,
       options: 0x00,
-      data: 'TxData0A'
+      data: 'TxData0A',
     }
 
     // Transmit request; 0x10; sends chars: TxData0A (AP=1)
@@ -133,7 +133,7 @@ describe('API Frame building', () => {
       sender64: '0013A20087654321',
       sender16: '5614',
       receiveOptions: new Set([C.RECEIVE_OPTIONS.PACKET_ACKNOWLEDGED]),
-      data: 'TxData'
+      data: 'TxData',
     }
 
     // Transmit response; 0x90; sends chars: TxData
@@ -155,7 +155,7 @@ describe('Stream Interface', () => {
       destination16: 'fffe',
       broadcastRadius: 0x00,
       options: 0x00,
-      data: 'TxData0A'
+      data: 'TxData0A',
     }
     // Transmit request; 0x10; sends chars: TxData0A (AP=1)
     const expected0 = Buffer.from([0x7E, 0x00, 0x16, 0x10, 0x01, 0x00, 0x13, 0xA2, 0x00, 0x40, 0x0A, 0x01, 0x27, 0xFF, 0xFE, 0x00, 0x00, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0x30, 0x41, 0x13])
@@ -213,7 +213,7 @@ describe('API Frame Parsing', () => {
         remote16: '7d84',
         command: 'SL',
         commandStatus: 0,
-        commandData: Buffer.from([0x40, 0x52, 0x2b, 0xaa])
+        commandData: Buffer.from([0x40, 0x52, 0x2b, 0xaa]),
       })
     })
 
@@ -229,7 +229,7 @@ describe('API Frame Parsing', () => {
       expect(frame).toEqual({
         id: 0x01,
         command: 'BD',
-        commandStatus: 0
+        commandStatus: 0,
       })
     })
 
@@ -246,7 +246,7 @@ describe('API Frame Parsing', () => {
         id: 0x01,
         command: 'ND',
         commandStatus: 0,
-        commandData: Buffer.from([])
+        commandData: Buffer.from([]),
       })
     })
 
@@ -266,8 +266,8 @@ describe('API Frame Parsing', () => {
         nodeIdentification: {
           remote16: 'fffe',
           remote64: '0013a20040d814a8',
-          nodeIdentifier: '4d'
-        }
+          nodeIdentifier: '4d',
+        },
       })
     })
 
@@ -284,7 +284,7 @@ describe('API Frame Parsing', () => {
         id: 0x01,
         transmitRetryCount: 0,
         deliveryStatus: 0,
-        discoveryStatus: 1
+        discoveryStatus: 1,
       })
     })
     // ZigBee Transmit Status; 0x8B; 0 retransmit, Success, Address Discovery
@@ -296,7 +296,7 @@ describe('API Frame Parsing', () => {
     const parser = xbeeAPI.newStream()
     xbeeAPI.once('frame_object', function (frame) {
       expect(frame).toEqual({
-        modemStatus: 6
+        modemStatus: 6,
       })
     })
     // Modem status; 0x8A; Coordinator Started
@@ -312,7 +312,7 @@ describe('API Frame Parsing', () => {
         remote64: '0013a20040522baa',
         remote16: '7d84',
         receiveOptions: 1,
-        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61])
+        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
       })
     })
     // Receive Packet; 0x90; Receive packet with chars RxData
@@ -328,7 +328,7 @@ describe('API Frame Parsing', () => {
         remote64: '0013a20040522baa',
         remote16: '7d84',
         receiveOptions: 1,
-        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61])
+        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
       })
     })
     // Receive Packet; 0x90; Receive packet with chars RxData
@@ -351,7 +351,7 @@ describe('API Frame Parsing', () => {
         clusterId: '0011',
         profileId: 'c105',
         receiveOptions: 1,
-        data: Buffer.from([0x74, 0x65, 0x73, 0x74, 0x20, 0x6D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65])
+        data: Buffer.from([0x74, 0x65, 0x73, 0x74, 0x20, 0x6D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65]),
       })
     })
     // Receive Packet; 0x90; Receive packet with chars RxData
@@ -385,7 +385,7 @@ describe('API Frame Parsing', () => {
         remote16: '6d32',
         receiveOptions: 0,
         hopCount: 3,
-        addresses: [0x1234, 0x5678, 0x90AB]
+        addresses: [0x1234, 0x5678, 0x90AB],
       })
     })
     // Receive Packet; 0xa1; Receive packet with 3 intermediate hops
@@ -406,11 +406,11 @@ describe('API Frame Parsing', () => {
         digitalSamples: {
           DIO2: 1,
           DIO3: 0,
-          DIO4: 1
+          DIO4: 1,
         },
         analogSamples: {
-          AD1: 644
-        }
+          AD1: 644,
+        },
       })
     })
 
@@ -431,8 +431,8 @@ describe('API Frame Parsing', () => {
         digitalSamples: {},
         analogSamples: {
           AD2: 1200,
-          AD3: 1200
-        }
+          AD3: 1200,
+        },
       })
     })
     const rawFrame = Buffer.from([0x7e, 0x00, 0x14, 0x92, 0x00, 0x13, 0xa2, 0x00, 0x41, 0x5b, 0x7e, 0xd6, 0xff, 0xfe, 0xc2, 0x01, 0x00, 0x00, 0x0c, 0x03, 0xff, 0x03, 0xff, 0xf8])
@@ -453,11 +453,11 @@ describe('API Frame Parsing', () => {
           digitalSamples: {
             DIO2: 1,
             DIO3: 0,
-            DIO4: 1
+            DIO4: 1,
           },
           analogSamples: {
-            AD1: 644
-          }
+            AD1: 644,
+          },
         })
       } else if (parsed === 1) {
         expect(frame).toEqual({
@@ -468,8 +468,8 @@ describe('API Frame Parsing', () => {
           digitalSamples: {},
           analogSamples: {
             AD2: 1200,
-            AD3: 1200
-          }
+            AD3: 1200,
+          },
         })
       }
       parsed++
@@ -497,8 +497,8 @@ describe('API Frame Parsing', () => {
           temperature: 22.625,
           relativeHumidity: 30.71,
           trueHumidity: 30.54,
-          waterPresent: false
-        }
+          waterPresent: false,
+        },
       })
     })
 
@@ -520,7 +520,7 @@ describe('API Frame Parsing', () => {
         nodeIdentifier: ' ',
         remoteParent16: 'fffe',
         deviceType: 1,
-        sourceEvent: 1
+        sourceEvent: 1,
       })
       // digi app profile...
     })

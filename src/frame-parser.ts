@@ -67,7 +67,7 @@ const received16BitPacketIO = function (frame, reader: BufferReader): void {
     channelMask: reader.nextUInt16BE(),
     channels: {},
     analogSamples: [],
-    digitalSamples: []
+    digitalSamples: [],
   }
 
   // analog channels
@@ -221,7 +221,7 @@ const frameParser = {
       temperature: undefined,
       relativeHumidity: undefined,
       trueHumidity: undefined,
-      waterPresent: frame.sensors === 0x60
+      waterPresent: frame.sensors === 0x60,
     }
 
     if (frame.sensors === 2 || frame.sensors === 3) {
@@ -516,7 +516,7 @@ const frameParser = {
     frame.rssi = reader.nextUInt8()
     frame.receiveOptions = reader.nextUInt8()
     received16BitPacketIO(frame, reader)
-  }
+  },
 }
 export default frameParser
 
