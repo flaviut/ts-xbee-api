@@ -1,7 +1,7 @@
 {
   "name": "ts-xbee-api",
   "description": "Node.js and Chrome communicate with XBee/ZigBee devices in API mode",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/flaviut/ts-xbee-api",
   "author": {
     "name": "Jan Kolkmeier",
@@ -26,7 +26,17 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.dist.json && sed -i -e s,BufferBuilder,{},g -e s,BufferReader,{},g dist/*.d.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors.js",
+      "types": "./dist/errors.d.ts"
+    }
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",

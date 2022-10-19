@@ -3,20 +3,15 @@
   "compilerOptions": {
     "strict": false,
     "skipLibCheck": true,
-    "allowJs": true,
-    "outDir": "dist",
-    "checkJs": true,
+    "sourceMap": true,
     "declaration": true,
     "typeRoots": [
       "./types",
       "./node_modules/@types"
-    ]
+    ],
+    "outDir": "dist"
   },
   "include": [
-    "lib/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
+    "src"
   ]
 }

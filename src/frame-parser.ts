@@ -6,8 +6,6 @@
  * Licensed under the MIT license.
  */
 
-'use strict'
-
 import * as C from './constants'
 import BufferReader from 'buffer-reader'
 
