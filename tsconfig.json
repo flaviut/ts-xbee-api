@@ -5,14 +5,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,
-    "typeRoots": [
-      "./types",
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "outDir": "dist"
   },
-  "include": [
-    "src",
-    "types"
-  ]
+  "include": ["src", "types"]
 }

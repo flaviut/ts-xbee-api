@@ -1,9 +1,9 @@
-var xbee_api = require('ts-xbee-api');
-var C = xbee_api.constants;
-var xbeeAPI = new xbee_api.XBeeAPI();
+const xbee_api = require("ts-xbee-api");
+const C = xbee_api.constants;
+const xbeeAPI = new xbee_api.XBeeAPI();
 
 // Something we might want to send to an XBee...
-var frame_obj = {
+const frame_obj = {
   type: C.FRAME_TYPE.AT_COMMAND,
   command: "NI",
   commandParameter: [],
@@ -11,9 +11,11 @@ var frame_obj = {
 console.log(xbeeAPI.buildFrame(frame_obj));
 // <Buffer 7e 00 04 08 01 4e 49 5f>
 
-
 // Something we might receive from an XBee...
-var raw_frame = new Buffer([ 0x7E, 0x00, 0x13, 0x97, 0x55, 0x00, 0x13, 0xA2, 0x00, 0x40, 0x52, 0x2B, 0xAA, 0x7D, 0x84, 0x53, 0x4C, 0x00, 0x40, 0x52, 0x2B, 0xAA, 0xF0 ]);
+const raw_frame = new Buffer([
+  0x7e, 0x00, 0x13, 0x97, 0x55, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
+  0x7d, 0x84, 0x53, 0x4c, 0x00, 0x40, 0x52, 0x2b, 0xaa, 0xf0,
+]);
 console.log(xbeeAPI.parseFrame(raw_frame));
 // { type: 151,
 //   id: 85,
