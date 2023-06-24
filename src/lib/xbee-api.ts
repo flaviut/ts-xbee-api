@@ -125,7 +125,7 @@ export class XbeeParser
     // Frame type specific parsing.
     frame_parser[frame.type](frame, reader, options);
 
-    return frame as any;
+    return frame as unknown as ParsableFrame;
   }
 
   private readonly parseState: {

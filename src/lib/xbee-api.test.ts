@@ -185,7 +185,9 @@ describe('Stream Interface', () => {
     mockserialW._write = vi.fn((chunk) => {
       expect(expected0).toEqual(chunk);
     });
-    mockserialR._read = function () {};
+    mockserialR._read = function () {
+      return;
+    };
     mockserialR.pipe(parser);
     builder.pipe(mockserialW);
 

@@ -151,7 +151,7 @@ export type NodeIdentification<BufferType> = {
   remote64: BufferType; // 64-bit
   nodeIdentifier: string;
 } & (
-  | {}
+  | Record<string, never>
   | {
       remoteParent16: BufferType; // 8-bit
       deviceType: Uint8;
@@ -297,7 +297,7 @@ const frameParser = {
       remote16: string; // 16-bit
       receiveOptions: Uint8;
     } & (
-      | {}
+      | Record<string, never>
       | {
           receiveOptions: 0;
           digitalSamples: Record<number, number>;

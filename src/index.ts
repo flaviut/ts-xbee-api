@@ -9,7 +9,7 @@ import * as C from './lib/constants';
 
 export const FRAME_TYPES = C.FRAME_TYPES;
 
-import { FrameType, AtCommand } from './lib/xbee-api';
+import { FrameType } from './lib/xbee-api';
 
 export { FrameType, AtCommand } from './lib/xbee-api';
 
