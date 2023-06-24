@@ -6,9 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { AtCommand, FrameType, XbeeBuilder, XbeeParser, C } from '../index';
+import { FrameType, XbeeBuilder, XbeeParser, C } from '../index';
 import * as stream from 'stream';
-import { BuildableFrame } from './frame-builder';
+import { concat } from "./buffer-tools";
+import { BuildableFrame } from "ts-xbee-api";
 import { vi } from 'vitest';
 
 describe('Main', () => {
@@ -39,12 +40,12 @@ describe('API Frame building', () => {
     const frame: BuildableFrame = {
       type: FrameType.AT_COMMAND,
       id: 0x00,
-      command: AtCommand.NJ,
+      command: C.AT_COMMAND.NJ,
       commandParameter: [],
     };
 
     // AT Command; 0x08; Queries ATNJ
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x04, 0x08, 0x00, 0x4e, 0x4a, 0x5f,
     ]);
 
@@ -53,7 +54,7 @@ describe('API Frame building', () => {
   it('Assign ID When Missing', () => {
     const frame: BuildableFrame = {
       type: FrameType.AT_COMMAND,
-      command: AtCommand.NJ,
+      command: C.AT_COMMAND.NJ,
       commandParameter: [],
     };
 
@@ -65,12 +66,12 @@ describe('API Frame building', () => {
     const frame: BuildableFrame = {
       type: FrameType.AT_COMMAND,
       id: 0x52,
-      command: AtCommand.NJ,
+      command: C.AT_COMMAND.NJ,
       commandParameter: [],
     };
 
     // AT Command; 0x08; Queries ATNJ
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x04, 0x08, 0x52, 0x4e, 0x4a, 0x0d,
     ]);
 
@@ -80,12 +81,12 @@ describe('API Frame building', () => {
     const frame: BuildableFrame = {
       type: FrameType.AT_COMMAND_QUEUE_PARAMETER_VALUE,
       id: 0x01,
-      command: AtCommand.BD,
+      command: C.AT_COMMAND.BD,
       commandParameter: [0x07],
     };
 
     // AT Command - Queue Param. Value; 0x09; Queues ATBD7
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x05, 0x09, 0x01, 0x42, 0x44, 0x07, 0x68,
     ]);
 
@@ -98,12 +99,12 @@ describe('API Frame building', () => {
       destination64: '0013a20040401122',
       destination16: 'fffe',
       remoteCommandOptions: 0x02,
-      command: AtCommand.BH,
+      command: C.AT_COMMAND.BH,
       commandParameter: [0x01],
     };
 
     // Remote AT Command Req.; 0x17; ATBH1
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x10, 0x17, 0x01, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x40, 0x11,
       0x22, 0xff, 0xfe, 0x02, 0x42, 0x48, 0x01, 0xf5,
     ]);
@@ -122,7 +123,7 @@ describe('API Frame building', () => {
     };
 
     // Transmit request; 0x10; sends chars: TxData0A (AP=1)
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x16, 0x10, 0x01, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x0a, 0x01,
       0x27, 0xff, 0xfe, 0x00, 0x00, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0x30,
       0x41, 0x13,
@@ -141,7 +142,7 @@ describe('API Frame building', () => {
     };
 
     // Transmit response; 0x90; sends chars: TxData
-    const expected0 = Buffer.from([
+    const expected0 = Uint8Array.from([
       0x7e, 0x00, 0x12, 0x90, 0x00, 0x13, 0xa2, 0x00, 0x87, 0x65, 0x43, 0x21,
       0x56, 0x14, 0x01, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0xb9,
     ]);
@@ -171,23 +172,19 @@ describe('Stream Interface', () => {
       0x41, 0x13,
     ]);
     // Remote Command Response; 0x97; ATSL [OK] 40522BAA
-    const rawFrame0 = Buffer.from([
+    const rawFrame0 = Uint8Array.from([
       0x7e, 0x00, 0x13, 0x97, 0x55, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b,
       0xaa, 0x7d, 0x84, 0x53, 0x4c, 0x00, 0x40, 0x52, 0x2b, 0xaa, 0xf0,
     ]);
     // ZigBee Transmit Status; 0x8B; 0 retransmit, Success, Address Discovery
-    const rawFrame1 = Buffer.from([
+    const rawFrame1 = Uint8Array.from([
       0x7e, 0x00, 0x07, 0x8b, 0x01, 0x7d, 0x84, 0x00, 0x00, 0x01, 0x71,
     ]);
 
     const mockserialR = new stream.Readable();
     const mockserialW = new stream.Writable();
-    mockserialW._write = vi.fn((chunk) => {
-      expect(expected0).toEqual(chunk);
-    });
-    mockserialR._read = function () {
-      return;
-    };
+    mockserialW._write = vi.fn();
+    mockserialR._read = vi.fn();
     mockserialR.pipe(parser);
     builder.pipe(mockserialW);
 
@@ -203,7 +200,7 @@ describe('Stream Interface', () => {
         expect(frame.command).toEqual('SL');
         expect(frame.commandStatus).toEqual(0);
         expect(frame.commandData).toEqual(
-          Buffer.from([0x40, 0x52, 0x2b, 0xaa])
+          Uint8Array.from([0x40, 0x52, 0x2b, 0xaa])
         );
       }
     });
@@ -216,6 +213,7 @@ describe('Stream Interface', () => {
 
     expect(onData).toHaveBeenCalledTimes(2);
     expect(mockserialW._write).toHaveBeenCalledTimes(1);
+    expect(mockserialW._write).toBeCalledWith(expected0, 'buffer', expect.anything());
   });
 });
 
@@ -231,12 +229,12 @@ describe('API Frame Parsing', () => {
         remote16: '7d84',
         command: 'SL',
         commandStatus: 0,
-        commandData: Buffer.from([0x40, 0x52, 0x2b, 0xaa]),
+        commandData: Uint8Array.from([0x40, 0x52, 0x2b, 0xaa]),
       });
     });
 
     // Remote Command Response; 0x97; ATSL [OK] 40522BAA
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x13, 0x97, 0x55, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b,
       0xaa, 0x7d, 0x84, 0x53, 0x4c, 0x00, 0x40, 0x52, 0x2b, 0xaa, 0xf0,
     ]);
@@ -254,7 +252,7 @@ describe('API Frame Parsing', () => {
     });
 
     // AT Command Response; 0x88; ATBD [OK] (no data)
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x05, 0x88, 0x01, 0x42, 0x44, 0x00, 0xf0,
     ]);
     parser.write(rawFrame);
@@ -267,12 +265,12 @@ describe('API Frame Parsing', () => {
         id: 0x01,
         command: 'ND',
         commandStatus: 0,
-        commandData: Buffer.from([]),
+        commandData: Uint8Array.from([]),
       });
     });
 
     // AT Command Response; 0x88; ATND [OK] (no data)
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x05, 0x88, 0x01, 0x4e, 0x44, 0x00, 0xe4,
     ]);
     parser.write(rawFrame);
@@ -294,7 +292,7 @@ describe('API Frame Parsing', () => {
     });
 
     // AT Command Response; 0x88; ATND [OK] (with data)
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x12, 0x88, 0x01, 0x4e, 0x44, 0x00, 0xff, 0xfe, 0x00, 0x7d,
       0x33, 0xa2, 0x00, 0x40, 0xd8, 0x14, 0xa8, 0x34, 0x64, 0x00, 0xc6,
     ]);
@@ -312,7 +310,7 @@ describe('API Frame Parsing', () => {
       });
     });
     // ZigBee Transmit Status; 0x8B; 0 retransmit, Success, Address Discovery
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x07, 0x8b, 0x01, 0x7d, 0x84, 0x00, 0x00, 0x01, 0x71,
     ]);
     parser.write(rawFrame);
@@ -325,7 +323,7 @@ describe('API Frame Parsing', () => {
       });
     });
     // Modem status; 0x8A; Coordinator Started
-    const rawFrame = Buffer.from([0x7e, 0x00, 0x02, 0x8a, 0x06, 0x6f]);
+    const rawFrame = Uint8Array.from([0x7e, 0x00, 0x02, 0x8a, 0x06, 0x6f]);
     parser.write(rawFrame);
   });
 
@@ -336,11 +334,11 @@ describe('API Frame Parsing', () => {
         remote64: '0013a20040522baa',
         remote16: '7d84',
         receiveOptions: 1,
-        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
+        data: Uint8Array.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
       });
     });
     // Receive Packet; 0x90; Receive packet with chars RxData
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x12, 0x90, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0x7d, 0x84, 0x01, 0x52, 0x78, 0x44, 0x61, 0x74, 0x61, 0x0d,
     ]);
@@ -354,18 +352,18 @@ describe('API Frame Parsing', () => {
         remote64: '0013a20040522baa',
         remote16: '7d84',
         receiveOptions: 1,
-        data: Buffer.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
+        data: Uint8Array.from([0x52, 0x78, 0x44, 0x61, 0x74, 0x61]),
       });
     });
     // Receive Packet; 0x90; Receive packet with chars RxData
     const garbage = [];
     for (let i = 0; i < 520; i++) garbage.push(0x00);
-    const garbageBuffer = Buffer.from(garbage);
-    const rawFrame = Buffer.from([
+    const garbageBuffer = Uint8Array.from(garbage);
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x12, 0x90, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0x7d, 0x84, 0x01, 0x52, 0x78, 0x44, 0x61, 0x74, 0x61, 0x0d,
     ]);
-    const garbagedFrame = Buffer.concat([garbageBuffer, rawFrame]);
+    const garbagedFrame = concat(garbageBuffer, rawFrame);
     parser.write(garbagedFrame);
   });
   it('Receive Packet with AO=1', () => {
@@ -379,14 +377,14 @@ describe('API Frame Parsing', () => {
         clusterId: '0011',
         profileId: 'c105',
         receiveOptions: 1,
-        data: Buffer.from([
+        data: Uint8Array.from([
           0x74, 0x65, 0x73, 0x74, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
           0x65,
         ]),
       });
     });
     // Receive Packet; 0x90; Receive packet with chars RxData
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x1e, 0x91, 0x00, 0x13, 0xa2, 0x00, 0x40, 0xc4, 0x01, 0xa9,
       0x00, 0x00, 0xe8, 0xe8, 0x00, 0x11, 0xc1, 0x05, 0x01, 0x74, 0x65, 0x73,
       0x74, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x9e,
@@ -408,7 +406,7 @@ describe('API Frame Parsing', () => {
       }
     });
     // Receive Packet; 0x83; Receive packet from IC or IR setting
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x10, 0x83, 0x12, 0x34, 0x1b, 0x00, 0x01, 0x0e, 0x58, 0x00,
       0x18, 0x00, 0x46, 0x01, 0x54, 0x02, 0x0a, 0xf5,
     ]);
@@ -427,7 +425,7 @@ describe('API Frame Parsing', () => {
       });
     });
     // Receive Packet; 0xa1; Receive packet with 3 intermediate hops
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x13, 0xa1, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x68, 0xf6, 0x5b,
       0x6d, 0x32, 0x00, 0x03, 0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xbf,
     ]);
@@ -454,7 +452,7 @@ describe('API Frame Parsing', () => {
     });
 
     // Receive IO Data Sample; 0x92; ...
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x14, 0x92, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0x7d, 0x84, 0x01, 0x01, 0x00, 0x1c, 0x02, 0x00, 0x14, 0x02, 0x25, 0xf5,
     ]);
@@ -475,7 +473,7 @@ describe('API Frame Parsing', () => {
         },
       });
     });
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x14, 0x92, 0x00, 0x13, 0xa2, 0x00, 0x41, 0x5b, 0x7e, 0xd6,
       0xff, 0xfe, 0xc2, 0x01, 0x00, 0x00, 0x0c, 0x03, 0xff, 0x03, 0xff, 0xf8,
     ]);
@@ -518,7 +516,7 @@ describe('API Frame Parsing', () => {
       parsed++;
     });
 
-    const rawFrames = Buffer.from([
+    const rawFrames = Uint8Array.from([
       0x7e, 0x00, 0x14, 0x92, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0x7d, 0x84, 0x01, 0x01, 0x00, 0x1c, 0x02, 0x00, 0x14, 0x02, 0x25, 0xf5,
       0x7e, 0x00, 0x14, 0x92, 0x00, 0x13, 0xa2, 0x00, 0x41, 0x55, 0x08, 0x83,
@@ -549,7 +547,7 @@ describe('API Frame Parsing', () => {
     });
 
     // Receive IO Data Sample; 0x94; ...
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x17, 0x94, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0xdd, 0x6c, 0x01, 0x03, 0x00, 0x02, 0x00, 0xce, 0x00, 0xea, 0x00, 0x52,
       0x01, 0x6a, 0x8b,
@@ -574,7 +572,7 @@ describe('API Frame Parsing', () => {
     });
 
     // Receive IO Data Sample; 0x95; ...
-    const rawFrame = Buffer.from([
+    const rawFrame = Uint8Array.from([
       0x7e, 0x00, 0x20, 0x95, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
       0x7d, 0x84, 0x02, 0x7d, 0x84, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b,
       0xaa, 0x20, 0x00, 0xff, 0xfe, 0x01, 0x01, 0xc1, 0x05, 0x10, 0x1e, 0x1b,
@@ -607,37 +605,37 @@ describe('API Frame Parsing', () => {
     });
 
     // ZigBee Transmit Status; 0x8B; here, frameId happens to be 7D and needs to be escaped
-    const rawFrame0 = Buffer.from([
+    const rawFrame0 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x7d, 0x5d, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x63,
     ]);
     parser.write(rawFrame0);
 
     // ZigBee Transmit Status; 0x8B; here, frameId happens to be 7E and needs to be escaped
-    const rawFrame1 = Buffer.from([
+    const rawFrame1 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x7d, 0x5e, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x62,
     ]);
     parser.write(rawFrame1);
 
     // ZigBee Transmit Status; 0x8B; here, checksum happebs to be 7E and needs to be escaped (frameId 62)
-    const rawFrame2 = Buffer.from([
+    const rawFrame2 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x62, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x7d, 0x5e,
     ]);
     parser.write(rawFrame2);
 
     // ZigBee Transmit Status; 0x8B; some frames without escaping (frameId = 0x64)
-    const rawFrame3 = Buffer.from([
+    const rawFrame3 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x64, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x7c,
     ]);
     parser.write(rawFrame3);
 
     // ZigBee Transmit Status; 0x8B; some frames without escaping (frameId = 0x65)
-    const rawFrame4 = Buffer.from([
+    const rawFrame4 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x65, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x7b,
     ]);
     parser.write(rawFrame4);
 
     // ZigBee Transmit Status; 0x8B; some frames without escaping (frameId = 0x66)
-    const rawFrame5 = Buffer.from([
+    const rawFrame5 = Uint8Array.from([
       0x7e, 0x0, 0x7, 0x8b, 0x66, 0x2a, 0x6a, 0x0, 0x0, 0x0, 0x7a,
     ]);
     parser.write(rawFrame5);

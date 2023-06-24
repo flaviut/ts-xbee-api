@@ -6,28 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import BufferBuilder from 'buffer-builder';
+import { BufferBuilder, BufferConstructable } from "./buffer-tools";
 
 import * as C from './constants';
 
-type BufferConstructable = number[] | ArrayBuffer | Buffer | string;
-
-// Appends data provided as Array, String, or Buffer
-function appendData(data: BufferConstructable, builder: BufferBuilder): void {
-  let buf: Buffer;
-
-  if (Array.isArray(data)) {
-    buf = Buffer.from(data);
-  } else if (data instanceof ArrayBuffer) {
-    buf = Buffer.from(data);
-  } else if (Buffer.isBuffer(data)) {
-    buf = Buffer.from(data);
-  } else {
-    buf = Buffer.from(data, 'ascii');
-  }
-
-  builder.appendBuffer(buf);
-}
 
 type Uint8 = number;
 type Uint16 = number;
@@ -52,8 +34,8 @@ function atCommandParser(
 ): void {
   builder.appendUInt8(frame.type);
   builder.appendUInt8(this.getFrameId(frame));
-  builder.appendString(frame.command, 'ascii');
-  appendData(frame.commandParameter, builder);
+  builder.appendString(frame.command, 'utf8');
+  builder.appendBuffer(frame.commandParameter);
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -92,8 +74,8 @@ function FrameBuilder() {
       builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
       builder.appendString(frame.destination16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(frame.remoteCommandOptions || 0x02);
-      builder.appendString(frame.command, 'ascii');
-      appendData(frame.commandParameter, builder);
+      builder.appendString(frame.command, 'utf8');
+      builder.appendBuffer(frame.commandParameter);
     },
 
     [C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST]: function (
@@ -116,7 +98,7 @@ function FrameBuilder() {
       builder.appendString(frame.destination16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(frame.broadcastRadius || 0x00);
       builder.appendUInt8(frame.options || 0x00);
-      appendData(frame.data, builder);
+      builder.appendBuffer(frame.data);
     },
 
     [C.FRAME_TYPE.EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME]: function (
@@ -144,20 +126,20 @@ function FrameBuilder() {
       builder.appendUInt8(frame.destinationEndpoint);
 
       if (typeof frame.clusterId === 'number') {
-        builder.appendUInt16BE(frame.clusterId, 'hex');
+        builder.appendUInt16BE(frame.clusterId);
       } else {
         builder.appendString(frame.clusterId, 'hex');
       }
 
       if (typeof frame.profileId === 'number') {
-        builder.appendUInt16BE(frame.profileId, 'hex');
+        builder.appendUInt16BE(frame.profileId);
       } else {
         builder.appendString(frame.profileId, 'hex');
       }
 
       builder.appendUInt8(frame.broadcastRadius || 0x00);
       builder.appendUInt8(frame.options || 0x00);
-      appendData(frame.data, builder);
+      builder.appendBuffer(frame.data);
     },
 
     [C.FRAME_TYPE.CREATE_SOURCE_ROUTE]: function (
@@ -178,7 +160,7 @@ function FrameBuilder() {
       builder.appendUInt8(0); // Route command options always zero
       builder.appendUInt8(frame.addresses.length); // Number of hops
       for (let i = 0; i < frame.addresses.length; i++) {
-        builder.appendUInt16BE(frame.addresses[i], 'hex');
+        builder.appendUInt16BE(frame.addresses[i]);
       }
     },
 
@@ -197,7 +179,7 @@ function FrameBuilder() {
       builder.appendUInt8(this.getFrameId(frame));
       builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
       builder.appendUInt8(frame.options || 0x00);
-      appendData(frame.data, builder);
+      builder.appendBuffer(frame.data);
     },
 
     [C.FRAME_TYPE.TX_REQUEST_16]: function (
@@ -215,7 +197,7 @@ function FrameBuilder() {
       builder.appendUInt8(this.getFrameId(frame));
       builder.appendString(frame.destination16 || C.BROADCAST_16_XB, 'hex');
       builder.appendUInt8(frame.options || 0x00);
-      appendData(frame.data, builder);
+      builder.appendBuffer(frame.data);
     },
 
     [C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET]: function (
@@ -237,7 +219,7 @@ function FrameBuilder() {
           0
         )
       );
-      appendData(frame.data, builder);
+      builder.appendBuffer(frame.data);
     },
   } as const;
 }

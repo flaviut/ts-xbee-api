@@ -6,12 +6,11 @@
  * Licensed under the MIT license.
  */
 
-import BufferBuilder from 'buffer-builder';
-import BufferReader from 'buffer-reader';
 import * as stream from 'stream';
 import { EventMap } from 'typed-emitter';
+import { BufferBuilder, BufferReader } from "./buffer-tools";
 import { FRAME_TYPE as FrameType } from './constants';
-import { ChecksumMismatchError, UnknownFrameType } from './errors';
+import { ChecksumMismatchError, ParseState, UnknownFrameType } from "./errors";
 import * as C from './constants';
 import FrameBuilder, { BuildableFrame } from './frame-builder';
 import frame_parser, { ParsableFrame } from './frame-parser';
@@ -71,8 +70,6 @@ const DEFAULT_OPTIONS: XBeeAPIOptions = {
 
 const BUFFER_SIZE = 512;
 
-export { FRAME_TYPE as FrameType, AT_COMMAND as AtCommand } from './constants';
-
 /**
  * Stream that takes Buffers and outputs ParsableFrames. Or, if `options.raw_frames` is true,
  * Buffers that contain exactly one frame's worth of data.
@@ -88,7 +85,7 @@ export class XbeeParser
   implements
     EmitterWithUntypedListeners<{
       error: (err: ChecksumMismatchError | UnknownFrameType) => void;
-      data: (frame: ParsableFrame | Buffer) => void;
+      data: (frame: ParsableFrame | Uint8Array) => void;
     }>
 {
   readonly _options: XBeeAPIOptions;
@@ -100,17 +97,17 @@ export class XbeeParser
     this._options = { ...DEFAULT_OPTIONS, ...options };
   }
 
-  static frameType(buffer: Buffer): FrameType | number {
-    return buffer.readUInt8(3);
+  static frameType(buffer: Uint8Array): FrameType | number {
+    return buffer[3];
   }
 
-  static canParse(buffer: Buffer): boolean {
+  static canParse(buffer: Uint8Array): boolean {
     const type = XbeeParser.frameType(buffer);
     return type in frame_parser;
   }
 
   // Note that this expects the whole frame to be escaped!
-  static parseFrame(rawFrame: Buffer, options: XBeeAPIOptions): ParsableFrame {
+  static parseFrame(rawFrame: Uint8Array, options: XBeeAPIOptions): ParsableFrame {
     // Trim the header and trailing checksum
     const reader = new BufferReader(rawFrame.subarray(3, rawFrame.length - 1));
 
@@ -124,17 +121,8 @@ export class XbeeParser
     return frame as unknown as ParsableFrame;
   }
 
-  private readonly parseState: {
-    buffer: Buffer;
-    offset: number; // Offset in buffer
-    length: number; // Packet Length
-    total: number; // To test Checksum
-    checksum: number; // Checksum byte
-    b: number; // Working byte
-    escape_next: boolean; // For escaping in AP=2
-    waiting: boolean;
-  } = {
-    buffer: Buffer.alloc(BUFFER_SIZE),
+  private readonly parseState: ParseState = {
+    buffer: new Uint8Array(BUFFER_SIZE),
     offset: 0,
     length: 0,
     total: 0,
@@ -145,7 +133,7 @@ export class XbeeParser
   };
 
   _transform(
-    buffer: Buffer,
+    buffer: Uint8Array,
     encoding: BufferEncoding,
     cb: stream.TransformCallback
   ): void {
@@ -156,7 +144,7 @@ export class XbeeParser
         (S.waiting || (this._options.api_mode === 2 && !S.escape_next)) &&
         S.b === C.START_BYTE
       ) {
-        S.buffer = Buffer.alloc(BUFFER_SIZE);
+        S.buffer = new Uint8Array(BUFFER_SIZE);
         S.length = 0;
         S.total = 0;
         S.checksum = 0x00;
@@ -177,7 +165,7 @@ export class XbeeParser
 
       if (!S.waiting) {
         if (S.buffer.length > S.offset) {
-          S.buffer.writeUInt8(S.b, S.offset++);
+          S.buffer[S.offset++] = S.b;
         } else {
           console.assert(false, 'Buffer overrun');
           S.waiting = true;
@@ -258,7 +246,7 @@ export class XbeeBuilder
   implements
     EmitterWithUntypedListeners<{
       error: (err: UnknownFrameType) => void;
-      data: (frame: Buffer) => void;
+      data: (frame: Uint8Array) => void;
     }>
 {
   _options: XBeeAPIOptions;
@@ -290,8 +278,8 @@ export class XbeeBuilder
       api_mode: 1 | 2;
     } = { api_mode: 1 },
     frameBuilder = FrameBuilder()
-  ): Buffer {
-    let packet = Buffer.alloc(BUFFER_SIZE); // Packet buffer
+  ): Uint8Array {
+    let packet = new Uint8Array(BUFFER_SIZE); // Packet buffer
     let payload = packet.subarray(3); // Reference the buffer past the header
     let builder = new BufferBuilder(payload);
 
@@ -340,17 +328,17 @@ export class XbeeBuilder
     }
   }
 
-  private static escape(buffer: Buffer): Buffer {
-    const escapeBuffer = Buffer.alloc(buffer.length * 2);
+  private static escape(buffer: Uint8Array): Uint8Array {
+    const escapeBuffer = new Uint8Array(buffer.length * 2);
 
     let offset = 0;
-    escapeBuffer.writeUInt8(buffer[0], offset++);
+    escapeBuffer[offset++] = buffer[0];
     for (let i = 1; i < buffer.length; i++) {
       if (C.ESCAPE_BYTES.includes(buffer[i])) {
-        escapeBuffer.writeUInt8(C.ESCAPE, offset++);
-        escapeBuffer.writeUInt8(buffer[i] ^ C.ESCAPE_WITH, offset++);
+        escapeBuffer[offset++] = C.ESCAPE;
+        escapeBuffer[offset++] = buffer[i] ^ C.ESCAPE_WITH;
       } else {
-        escapeBuffer.writeUInt8(buffer[i], offset++);
+        escapeBuffer[offset++] = buffer[i];
       }
     }
 

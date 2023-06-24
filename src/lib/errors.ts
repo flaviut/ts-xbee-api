@@ -1,5 +1,5 @@
-interface ParseState {
-  buffer: Buffer;
+export interface ParseState {
+  buffer: Uint8Array;
   offset: number; // Offset in buffer
   length: number; // Packet Length
   total: number; // To test Checksum

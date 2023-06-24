@@ -7,7 +7,7 @@
  */
 
 import * as C from './constants';
-import BufferReader from 'buffer-reader';
+import { BufferReader } from './buffer-tools';
 
 const parseNodeIdentificationPayload = function (
   frame,
@@ -17,7 +17,7 @@ const parseNodeIdentificationPayload = function (
   frame.remote64 = reader.nextString(8, 'hex');
 
   // Extract the NI string from the buffer
-  frame.nodeIdentifier = reader.nextStringZero('ascii');
+  frame.nodeIdentifier = reader.nextStringZero('utf8');
 
   if (reader.buf.length > reader.tell()) {
     frame.remoteParent16 = reader.nextString(2, 'hex');
@@ -127,19 +127,19 @@ const parseAtCommand = (
         /** sequence number of the frame */
         id: Uint8;
         command: C.AT_COMMAND;
-        commandParameter: Buffer; // Can either be string or byte array.
+        commandParameter: Uint8Array; // Can either be string or byte array.
       }
     | {
         type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE;
         /** sequence number of the frame */
         id: Uint8;
         command: C.AT_COMMAND;
-        commandParameter: Buffer;
+        commandParameter: Uint8Array;
       },
   reader: BufferReader
 ): void => {
   frame.id = reader.nextUInt8();
-  frame.command = reader.nextString(2, 'ascii');
+  frame.command = reader.nextString(2, 'utf8') as C.AT_COMMAND;
   frame.commandParameter = reader.nextAll();
 };
 type LegacyChannelsKey =
@@ -183,7 +183,7 @@ const frameParser = {
       remote64: string; // 64-bit
       remote16: string; // 16-bit
       receiveOptions: number;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -203,7 +203,7 @@ const frameParser = {
       clusterId: string; // 16-bit
       profileId: string; // 16-bit
       receiveOptions: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -327,13 +327,13 @@ const frameParser = {
         }
       | {
           command: Exclude<C.AT_COMMAND, C.AT_COMMAND.ND>;
-          commandData: Buffer;
+          commandData: Uint8Array;
         }
     ),
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.command = reader.nextString(2, 'ascii');
+    frame.command = reader.nextString(2, 'utf8') as C.AT_COMMAND;
     frame.commandStatus = reader.nextUInt8();
     if (
       frame.command === 'ND' &&
@@ -362,7 +362,7 @@ const frameParser = {
         }
       | {
           command: Exclude<C.AT_COMMAND, C.AT_COMMAND.ND>;
-          commandData: Buffer;
+          commandData: Uint8Array;
         }
     ),
     reader,
@@ -371,7 +371,7 @@ const frameParser = {
     frame.id = reader.nextUInt8();
     frame.remote64 = reader.nextString(8, 'hex');
     frame.remote16 = reader.nextString(2, 'hex');
-    frame.command = reader.nextString(2, 'ascii');
+    frame.command = reader.nextString(2, 'utf8');
     frame.commandStatus = reader.nextUInt8();
     if (frame.command === 'IS') {
       ParseIOSamplePayload(frame, reader, options);
@@ -438,7 +438,7 @@ const frameParser = {
       destination16: string; // 16-bit
       remoteCommandOptions: Uint8;
       command: C.AT_COMMAND;
-      commandParameter: Buffer;
+      commandParameter: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -446,7 +446,7 @@ const frameParser = {
     frame.destination64 = reader.nextString(8, 'hex');
     frame.destination16 = reader.nextString(2, 'hex');
     frame.remoteCommandOptions = reader.nextUInt8();
-    frame.command = reader.nextString(2, 'ascii');
+    frame.command = reader.nextString(2, 'utf8') as C.AT_COMMAND;
     frame.commandParameter = reader.nextAll();
   },
 
@@ -460,7 +460,7 @@ const frameParser = {
       destination16: string; // 16-bit
       broadcastRadius: Uint8;
       options: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -485,7 +485,7 @@ const frameParser = {
       profileId: Uint16;
       broadcastRadius: Uint8;
       options: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -508,7 +508,7 @@ const frameParser = {
       id: Uint8;
       destination64: string; // 64-bit
       options: number; // 0x00 is default
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -525,7 +525,7 @@ const frameParser = {
       id: Uint8;
       destination16: string; // 16-bit
       options: number; // 0x00 is default
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -554,7 +554,7 @@ const frameParser = {
       remote64: string; // 64-bit
       rssi: Uint8;
       receiveOptions: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -570,7 +570,7 @@ const frameParser = {
       remote16: string; // 16-bit
       rssi: Uint8;
       receiveOptions: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
@@ -586,7 +586,7 @@ const frameParser = {
       remote64: string; // 64-bit
       rssi: Uint8;
       receiveOptions: Uint8;
-      data: Buffer;
+      data: Uint8Array;
     },
     reader: BufferReader
   ) => {
