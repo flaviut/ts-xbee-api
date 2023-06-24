@@ -6,7 +6,7 @@
 
 import "node";
 
-declare module "buffer-reader" {
+declare module "src/buffer-reader" {
   declare class BufferReader {
     buf: { length: number };
     /**

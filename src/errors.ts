@@ -22,10 +22,12 @@ export class ChecksumMismatchError extends Error {
   }
 }
 
-export class FrameBuildingNotSupportedError extends Error {
+export class UnknownFrameType extends Error {
   constructor(readonly frameType: number) {
     super(
-      `Frame building not supported for frame type ${frameType.toString(16)}`
+      `Frame parsing/building not supported for frame type ${frameType.toString(
+        16
+      )}`
     );
   }
 }

@@ -57,7 +57,7 @@ const ParseIOSamplePayload = function (
       if ((mskA & (1 << abit)) >> abit) {
         const valA = reader.nextUInt16BE();
 
-        if (!options.convert_adc) {
+        if (options.vref_adc == null) {
           frame.analogSamples[C.ANALOG_CHANNELS.MASK[abit][0]] = valA;
         } else {
           // Convert to mV, resolution is < 1mV, so rounding is OK

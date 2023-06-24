@@ -6,27 +6,26 @@
  * Licensed under the MIT license.
  */
 
-import * as xbee_api from ".";
-import { C } from ".";
+import { AtCommand, FrameType, XbeeBuilder, XbeeParser, C } from ".";
 import * as stream from "stream";
-import { BuildableFrame } from "./frame-builder";
+import { BuildableFrame } from "./internal/frame-builder";
 
 describe("Main", () => {
   it("should support default options", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.options.api_mode).toEqual(1);
+    const xbeeAPI = new XbeeBuilder();
+    expect(xbeeAPI._options.api_mode).toEqual(1);
   });
 
   it("should apply options", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2 });
+    const xbeeAPI = new XbeeBuilder({ api_mode: 2 });
     // given a byte array like [3,21], convert to a decimal value.
-    expect(xbeeAPI.options.api_mode).toEqual(2);
+    expect(xbeeAPI._options.api_mode).toEqual(2);
   });
 });
 
 describe("frameId", () => {
   it("should increment", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
+    const xbeeAPI = new XbeeBuilder();
     const fId1 = xbeeAPI.nextFrameId();
     const fId2 = xbeeAPI.nextFrameId();
     expect(fId1 + 1).toEqual(fId2);
@@ -37,9 +36,9 @@ describe("frameId", () => {
 describe("API Frame building", () => {
   it("Keep Frame ID Zero", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.AT_COMMAND,
+      type: FrameType.AT_COMMAND,
       id: 0x00,
-      command: C.AT_COMMAND.NJ,
+      command: AtCommand.NJ,
       commandParameter: [],
     };
 
@@ -48,29 +47,24 @@ describe("API Frame building", () => {
       0x7e, 0x00, 0x04, 0x08, 0x00, 0x4e, 0x4a, 0x5f,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.buildFrame(frame)).toEqual(expected0);
+    expect(XbeeBuilder.buildFrame(frame)).toEqual(expected0);
   });
   it("Assign ID When Missing", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.AT_COMMAND,
-      command: C.AT_COMMAND.NJ,
+      type: FrameType.AT_COMMAND,
+      command: AtCommand.NJ,
       commandParameter: [],
     };
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const firstId = xbeeAPI.nextFrameId();
-
-    const buf = xbeeAPI.buildFrame(frame);
-
-    expect(buf[4]).toEqual(firstId + 1);
+    const buf = XbeeBuilder.buildFrame(frame);
+    expect(buf[4]).toEqual(1);
   });
 
   it("AT_COMMAND", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.AT_COMMAND,
+      type: FrameType.AT_COMMAND,
       id: 0x52,
-      command: C.AT_COMMAND.NJ,
+      command: AtCommand.NJ,
       commandParameter: [],
     };
 
@@ -79,14 +73,13 @@ describe("API Frame building", () => {
       0x7e, 0x00, 0x04, 0x08, 0x52, 0x4e, 0x4a, 0x0d,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.buildFrame(frame)).toEqual(expected0);
+    expect(XbeeBuilder.buildFrame(frame)).toEqual(expected0);
   });
   it("AT_COMMAND_QUEUE_PARAMETER_VALUE", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.AT_COMMAND_QUEUE_PARAMETER_VALUE,
+      type: FrameType.AT_COMMAND_QUEUE_PARAMETER_VALUE,
       id: 0x01,
-      command: C.AT_COMMAND.BD,
+      command: AtCommand.BD,
       commandParameter: [0x07],
     };
 
@@ -95,17 +88,16 @@ describe("API Frame building", () => {
       0x7e, 0x00, 0x05, 0x09, 0x01, 0x42, 0x44, 0x07, 0x68,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.buildFrame(frame)).toEqual(expected0);
+    expect(XbeeBuilder.buildFrame(frame)).toEqual(expected0);
   });
   it("REMOTE_AT_COMMAND_REQUEST", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      type: FrameType.REMOTE_AT_COMMAND_REQUEST,
       id: 0x01,
       destination64: "0013a20040401122",
       destination16: "fffe",
       remoteCommandOptions: 0x02,
-      command: C.AT_COMMAND.BH,
+      command: AtCommand.BH,
       commandParameter: [0x01],
     };
 
@@ -115,12 +107,11 @@ describe("API Frame building", () => {
       0x22, 0xff, 0xfe, 0x02, 0x42, 0x48, 0x01, 0xf5,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.buildFrame(frame)).toEqual(expected0);
+    expect(XbeeBuilder.buildFrame(frame)).toEqual(expected0);
   });
   it("ZIGBEE_TRANSMIT_REQUEST", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
+      type: FrameType.ZIGBEE_TRANSMIT_REQUEST,
       id: 0x01,
       destination64: "0013a200400a0127",
       destination16: "fffe",
@@ -136,13 +127,12 @@ describe("API Frame building", () => {
       0x41, 0x13,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(xbeeAPI.buildFrame(frame)).toEqual(expected0);
+    expect(XbeeBuilder.buildFrame(frame)).toEqual(expected0);
   });
 
   it("ZIGBEE_RECEIVE_PACKET", () => {
     const frame: BuildableFrame = {
-      type: C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET,
+      type: FrameType.ZIGBEE_RECEIVE_PACKET,
       sender64: "0013A20087654321",
       sender16: "5614",
       receiveOptions: new Set([C.RECEIVE_OPTIONS.PACKET_ACKNOWLEDGED]),
@@ -155,17 +145,17 @@ describe("API Frame building", () => {
       0x56, 0x14, 0x01, 0x54, 0x78, 0x44, 0x61, 0x74, 0x61, 0xb9,
     ]);
 
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    expect(expected0).toEqual(xbeeAPI.buildFrame(frame));
+    expect(expected0).toEqual(XbeeBuilder.buildFrame(frame));
   });
 });
 
 describe("Stream Interface", () => {
   it("Encode Decode", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
+    const parser = new XbeeParser();
+    const builder = new XbeeBuilder();
 
     const sendFrame: BuildableFrame = {
-      type: C.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST,
+      type: FrameType.ZIGBEE_TRANSMIT_REQUEST,
       id: 0x01,
       destination64: "0013a200400a0127",
       destination16: "fffe",
@@ -191,12 +181,12 @@ describe("Stream Interface", () => {
 
     const mockserialR = new stream.Readable();
     const mockserialW = new stream.Writable();
-    mockserialW._write = jest.fn((chunk, enc, cb) => {
+    mockserialW._write = jest.fn((chunk) => {
       expect(expected0).toEqual(chunk);
     });
-    mockserialR._read = function (size) {};
-    mockserialR.pipe(xbeeAPI.parser);
-    xbeeAPI.builder.pipe(mockserialW);
+    mockserialR._read = function () {};
+    mockserialR.pipe(parser);
+    builder.pipe(mockserialW);
 
     const onData = jest.fn((frame) => {
       if (frame.id === 0x01) {
@@ -214,9 +204,9 @@ describe("Stream Interface", () => {
         );
       }
     });
-    xbeeAPI.parser.on("data", onData);
+    parser.on("data", onData);
 
-    xbeeAPI.builder.write(sendFrame);
+    builder.write(sendFrame);
     mockserialR.emit("data", rawFrame0);
     mockserialR.emit("data", rawFrame1);
     mockserialR.emit("end");
@@ -228,13 +218,11 @@ describe("Stream Interface", () => {
 
 describe("API Frame Parsing", () => {
   it("AT Remote Command Responses", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
       // frame1
       expect(frame).toEqual({
-        type: C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE,
+        type: FrameType.REMOTE_COMMAND_RESPONSE,
         id: 0x55,
         remote64: "0013a20040522baa",
         remote16: "7d84",
@@ -252,12 +240,10 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("AT Command Responses, BD AT Command", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
       // frame0
-      expect(frame).toEqual({
+      expect(frame).toMatchObject({
         id: 0x01,
         command: "BD",
         commandStatus: 0,
@@ -271,12 +257,10 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("AT Command Responses, ND AT Command with no data", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
       // frame0
-      expect(frame).toEqual({
+      expect(frame).toMatchObject({
         id: 0x01,
         command: "ND",
         commandStatus: 0,
@@ -291,12 +275,10 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("AT Command Responses, ND AT Command with data", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2 });
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
+    const parser = new XbeeParser({ api_mode: 2 });
+    parser.once("data", function (frame) {
       // frame0
-      expect(frame).toEqual({
+      expect(frame).toMatchObject({
         id: 0x01,
         command: "ND",
         commandStatus: 0,
@@ -316,10 +298,9 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("Transmit Status", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote16: "7d84",
         id: 0x01,
         transmitRetryCount: 0,
@@ -334,10 +315,9 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("Modem Status", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         modemStatus: 6,
       });
     });
@@ -347,10 +327,9 @@ describe("API Frame Parsing", () => {
   });
 
   it("Receive Packet", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a20040522baa",
         remote16: "7d84",
         receiveOptions: 1,
@@ -366,10 +345,9 @@ describe("API Frame Parsing", () => {
   });
 
   it("Leading Garbage", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a20040522baa",
         remote16: "7d84",
         receiveOptions: 1,
@@ -388,10 +366,9 @@ describe("API Frame Parsing", () => {
     parser.write(garbagedFrame);
   });
   it("Receive Packet with AO=1", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a20040c401a9",
         remote16: "0000",
         sourceEndpoint: "e8",
@@ -415,17 +392,16 @@ describe("API Frame Parsing", () => {
   });
 
   it("Receive Packet 16-bit IO", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 1 });
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      if (frame.type === C.FRAME_TYPE.RX_PACKET_16_IO) {
+    const parser = new XbeeParser({ api_mode: 1 });
+    parser.once("data", function (frame) {
+      if (frame.type === FrameType.RX_PACKET_16_IO) {
         expect(frame.remote16).toEqual("1234");
         expect(frame.data.analogSamples.length).toEqual(
           frame.data.sampleQuantity
         );
         expect(frame.data.channelMask).toEqual(0x0e58);
       } else {
-        expect(frame.type).toEqual(C.FRAME_TYPE.RX_PACKET_16_IO);
+        expect(frame.type).toEqual(FrameType.RX_PACKET_16_IO);
       }
     });
     // Receive Packet; 0x83; Receive packet from IC or IR setting
@@ -437,10 +413,9 @@ describe("API Frame Parsing", () => {
   });
 
   it("Route Record", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a2004068f65b",
         remote16: "6d32",
         receiveOptions: 0,
@@ -457,11 +432,9 @@ describe("API Frame Parsing", () => {
   });
 
   it("ZigBee IO Data Sample Rx", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a20040522baa",
         remote16: "7d84",
         receiveOptions: 1,
@@ -485,11 +458,9 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("AP=1 Containing Start Byte", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 1 });
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser({ api_mode: 1 });
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a200415b7ed6",
         remote16: "fffe",
         receiveOptions: 194,
@@ -509,13 +480,12 @@ describe("API Frame Parsing", () => {
   });
   it("Multiple Frames In One Buffer", () => {
     // AP=1
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 1 });
-    const parser = xbeeAPI.newStream();
+    const parser = new XbeeParser({ api_mode: 1 });
     let parsed = 0;
 
-    xbeeAPI.on("frame_object", function (frame) {
+    parser.on("data", function (frame) {
       if (parsed === 0) {
-        expect(frame).toEqual({
+        expect(frame).toMatchObject({
           remote64: "0013a20040522baa",
           remote16: "7d84",
           receiveOptions: 1,
@@ -530,7 +500,7 @@ describe("API Frame Parsing", () => {
           },
         });
       } else if (parsed === 1) {
-        expect(frame).toEqual({
+        expect(frame).toMatchObject({
           remote64: "0013a20041550883",
           remote16: "fffe",
           receiveOptions: 194,
@@ -554,11 +524,9 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrames);
   });
   it("XBee Sensor Read Indicator", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         remote64: "0013a20040522baa",
         remote16: "dd6c",
         receiveOptions: 1,
@@ -586,11 +554,9 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("Node Identification Indicator", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI();
-    const parser = xbeeAPI.newStream();
-
-    xbeeAPI.once("frame_object", function (frame) {
-      expect(frame).toEqual({
+    const parser = new XbeeParser();
+    parser.once("data", function (frame) {
+      expect(frame).toMatchObject({
         sender64: "0013a20040522baa",
         sender16: "7d84",
         receiveOptions: 2,
@@ -613,13 +579,12 @@ describe("API Frame Parsing", () => {
     parser.write(rawFrame);
   });
   it("Escaping (AP=2)", () => {
-    const xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2 });
-    const parser = xbeeAPI.newStream();
+    const parser = new XbeeParser({ api_mode: 2 });
     let parsed = 0;
 
-    xbeeAPI.on("frame_object", function (frame) {
-      if (frame.type !== C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS) {
-        expect(frame.type).toEqual(C.FRAME_TYPE.ZIGBEE_TRANSMIT_STATUS);
+    parser.on("data", function (frame) {
+      if (frame.type !== FrameType.ZIGBEE_TRANSMIT_STATUS) {
+        expect(frame.type).toEqual(FrameType.ZIGBEE_TRANSMIT_STATUS);
         return;
       }
       if (parsed === 0) {

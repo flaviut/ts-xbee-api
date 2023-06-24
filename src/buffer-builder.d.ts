@@ -4,7 +4,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 import "node";
-declare module "buffer-builder" {
+declare module "src/buffer-builder" {
   declare class BufferBuilder {
     constructor(initialCapacity?: number | Buffer);
 

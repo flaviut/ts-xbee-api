@@ -6,80 +6,146 @@
  * Licensed under the MIT license.
  */
 
-import stream from "stream";
-import assert from "assert";
-import events from "events";
 import BufferBuilder from "buffer-builder";
 import BufferReader from "buffer-reader";
-import TypedEmitter from "typed-emitter";
-import * as C from "./constants";
-import frame_parser, { ParsableFrame } from "./frame-parser";
-import frame_builder, { BuildableFrame } from "./frame-builder";
-import {
-  ChecksumMismatchError,
-  FrameBuildingNotSupportedError,
-} from "./errors";
+import stream from "stream";
+import { EventMap } from "typed-emitter";
+import { ChecksumMismatchError, UnknownFrameType } from "./errors";
+import * as C from "./internal/constants";
+import FrameBuilder, { BuildableFrame } from "./internal/frame-builder";
+import frame_parser, { ParsableFrame } from "./internal/frame-parser";
 
-export * as C from "./constants";
+export * as C from "./internal/constants";
 
-export { ParsableFrame } from "./frame-parser";
-export { BuildableFrame } from "./frame-builder";
+export { ParsableFrame } from "./internal/frame-parser";
+export { BuildableFrame } from "./internal/frame-builder";
 
-export type SpecificParsableFrame<FT extends C.FRAME_TYPE> = Extract<
+export type FrameType = C.FRAME_TYPE;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FrameType = C.FRAME_TYPE;
+export const FRAME_TYPES = C.FRAME_TYPES;
+export type AtCommand = C.AT_COMMAND;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AtCommand = C.AT_COMMAND;
+
+export type SpecificParsableFrame<FT extends FrameType> = Extract<
   ParsableFrame,
   { type: FT }
 >;
-export type SpecificBuildableFrame<FT extends C.FRAME_TYPE> = Extract<
+export type SpecificBuildableFrame<FT extends FrameType> = Extract<
   BuildableFrame,
   { type: FT }
 >;
 
+export type { ChecksumMismatchError, UnknownFrameType } from "./errors";
+
+// can't find a better way to remove the type conflict on listeners & rawListeners
+// than redefining the whole interface
+interface EmitterWithUntypedListeners<Events extends EventMap> {
+  addListener: <E extends keyof Events>(event: E, listener: Events[E]) => this;
+  on: <E extends keyof Events>(event: E, listener: Events[E]) => this;
+  once: <E extends keyof Events>(event: E, listener: Events[E]) => this;
+  prependListener: <E extends keyof Events>(
+    event: E,
+    listener: Events[E]
+  ) => this;
+  prependOnceListener: <E extends keyof Events>(
+    event: E,
+    listener: Events[E]
+  ) => this;
+
+  off: <E extends keyof Events>(event: E, listener: Events[E]) => this;
+  removeAllListeners: <E extends keyof Events>(event?: E) => this;
+  removeListener: <E extends keyof Events>(
+    event: E,
+    listener: Events[E]
+  ) => this;
+
+  emit: <E extends keyof Events>(
+    event: E,
+    ...args: Parameters<Events[E]>
+  ) => boolean;
+  // The sloppy `eventNames()` return type is to mitigate type incompatibilities - see #5
+  eventNames: () => Array<keyof Events | string | symbol>;
+  listenerCount: <E extends keyof Events>(event: E) => number;
+
+  getMaxListeners: () => number;
+  setMaxListeners: (maxListeners: number) => this;
+}
+
 export interface XBeeAPIOptions {
   /** 1 is default, 2 is with escaping (set ATAP=2) */
   api_mode: 1 | 2;
-  /** This does nothing, yet! */
-  module: "802.15.4" | "ZNet" | "ZigBee" | "Any";
   /** if set to true, only raw byte frames are emitted (after validation) but not parsed to objects. */
   raw_frames: boolean;
-  /** If false, do not convert adc value to millivolt */
-  convert_adc: boolean;
-  /** Set the value to convert adc value to millivolt */
-  vref_adc: number;
-  /** size of the package parser buffer. When receiving A LOT of packets, you might want to decrease this to a smaller value (but typically not less than 128) */
-  parser_buffer_size: number;
-  /** size of the package builder buffer. when sending A LOT of packets, you might want to decrease this to a smaller value (but typically not less than 128) */
-  builder_buffer_size: number;
-  /** a logger object, used to print various information */
-  logger: {
-    log: (msg: string) => void;
-    warn: (msg: string) => void;
-    error: (msg: string) => void;
-  };
+  /**
+   * when null or undefined, do not convert adc value to millivolts.
+   *
+   * when a number, use this as the reference voltage (in mV) for adc conversion.
+   */
+  vref_adc: number | null | undefined;
 }
 
 const DEFAULT_OPTIONS: XBeeAPIOptions = {
   raw_frames: false,
   api_mode: 1,
-  module: "Any",
-  convert_adc: true,
   vref_adc: 1200,
-  parser_buffer_size: 512,
-  builder_buffer_size: 512,
-  logger: console,
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type XBeeEvents = {
-  error: (err: ChecksumMismatchError) => void;
-  frame_object: (frame: ParsableFrame) => void;
-  frame_raw: (frame: Buffer) => void;
-};
-const XBeeEmitter = events.EventEmitter as new () => TypedEmitter<XBeeEvents>;
+const BUFFER_SIZE = 512;
 
-export class XBeeAPI extends XBeeEmitter {
-  readonly builder: stream.Transform;
-  readonly parser: stream.Transform;
-  readonly parseState: {
+/**
+ * Stream that takes Buffers and outputs ParsableFrames. Or, if `options.raw_frames` is true,
+ * Buffers that contain exactly one frame's worth of data.
+ *
+ * @example
+ *  const serialport = new SerialPort({ ... });
+ *  const parser = serialport.pipe(new XbeeParser());
+ *  parser.on("data", (frame) => { ... });
+ *  parser.on("error", (err) => { ... });  // ChecksumMismatchError | UnknownFrameType
+ */
+export class XbeeParser
+  extends stream.Transform
+  implements
+    EmitterWithUntypedListeners<{
+      error: (err: ChecksumMismatchError | UnknownFrameType) => void;
+      data: (frame: ParsableFrame | Buffer) => void;
+    }>
+{
+  readonly _options: XBeeAPIOptions;
+
+  constructor(options: Partial<XBeeAPIOptions> = {}) {
+    super({
+      objectMode: true,
+    });
+    this._options = { ...DEFAULT_OPTIONS, ...options };
+  }
+
+  static frameType(buffer: Buffer): FrameType | number {
+    return buffer.readUInt8(3);
+  }
+
+  static canParse(buffer: Buffer): boolean {
+    const type = XbeeParser.frameType(buffer);
+    return type in frame_parser;
+  }
+
+  // Note that this expects the whole frame to be escaped!
+  static parseFrame(rawFrame: Buffer, options: XBeeAPIOptions): ParsableFrame {
+    // Trim the header and trailing checksum
+    const reader = new BufferReader(rawFrame.subarray(3, rawFrame.length - 1));
+
+    const frame = {
+      type: reader.nextUInt8(), // Read Frame Type
+    };
+
+    // Frame type specific parsing.
+    frame_parser[frame.type](frame, reader, options);
+
+    return frame as any;
+  }
+
+  private readonly parseState: {
     buffer: Buffer;
     offset: number; // Offset in buffer
     length: number; // Packet Length
@@ -88,134 +154,30 @@ export class XBeeAPI extends XBeeEmitter {
     b: number; // Working byte
     escape_next: boolean; // For escaping in AP=2
     waiting: boolean;
+  } = {
+    buffer: Buffer.alloc(BUFFER_SIZE),
+    offset: 0,
+    length: 0,
+    total: 0,
+    checksum: 0x00,
+    b: 0x00,
+    escape_next: false,
+    waiting: true,
   };
 
-  readonly options: XBeeAPIOptions;
-  private escapeBuffer: undefined | Buffer;
-
-  constructor(options: Partial<XBeeAPIOptions> = {}) {
-    super();
-    this.builder = new stream.Transform({ objectMode: true });
-    this.builder._transform = (frame, enc, cb) => {
-      this.builder.push(this.buildFrame(frame));
-      cb();
-    };
-
-    this.parser = new stream.Transform({ objectMode: true });
-    this.parser._transform = (chunk, enc, cb) => this.parseRaw(chunk, enc, cb);
-
-    this.options = {
-      ...DEFAULT_OPTIONS,
-      ...options,
-    };
-
-    this.parseState = {
-      buffer: Buffer.alloc(this.options.parser_buffer_size),
-      offset: 0,
-      length: 0,
-      total: 0,
-      checksum: 0x00,
-      b: 0x00,
-      escape_next: false,
-      waiting: true,
-    };
-  }
-
-  escape(buffer): Buffer {
-    if (this.escapeBuffer === undefined) {
-      this.escapeBuffer = Buffer.alloc(this.options.parser_buffer_size);
-    }
-
-    let offset = 0;
-    this.escapeBuffer.writeUInt8(buffer[0], offset++);
-    for (let i = 1; i < buffer.length; i++) {
-      if (C.ESCAPE_BYTES.includes(buffer[i])) {
-        this.escapeBuffer.writeUInt8(C.ESCAPE, offset++);
-        this.escapeBuffer.writeUInt8(buffer[i] ^ C.ESCAPE_WITH, offset++);
-      } else {
-        this.escapeBuffer.writeUInt8(buffer[i], offset++);
-      }
-    }
-
-    return Buffer.from(this.escapeBuffer.slice(0, offset));
-  }
-
-  buildFrame(frame: BuildableFrame): Buffer {
-    assert(frame, "Frame parameter must be a frame object");
-
-    let packet = Buffer.alloc(this.options.builder_buffer_size); // Packet buffer
-    let payload = packet.slice(3); // Reference the buffer past the header
-    let builder = new BufferBuilder(payload);
-
-    if (!frame_builder[frame.type]) {
-      throw new FrameBuildingNotSupportedError(frame.type);
-    }
-
-    // Let the builder fill the payload
-    frame_builder[frame.type](frame as any, builder);
-
-    // Calculate & Append Checksum
-    let checksum = 0;
-    for (let i = 0; i < builder.length; i++) checksum += payload[i];
-    builder.appendUInt8(255 - (checksum % 256));
-
-    // Get just the payload
-    payload = payload.slice(0, builder.length);
-
-    // Build the header at the start of the packet buffer
-    builder = new BufferBuilder(packet);
-    builder.appendUInt8(C.START_BYTE);
-    builder.appendUInt16BE(payload.length - 1); // Sans checksum
-
-    // Get the header and payload as one contiguous buffer
-    packet = packet.slice(0, (builder.length as number) + payload.length);
-
-    // Escape the packet, if needed
-    return this.options.api_mode === 2 ? this.escape(packet) : packet;
-  }
-
-  // Note that this expects the whole frame to be escaped!
-  parseFrame(rawFrame): ParsableFrame {
-    // Trim the header and trailing checksum
-    const reader = new BufferReader(rawFrame.slice(3, rawFrame.length - 1));
-
-    const frame = {
-      type: reader.nextUInt8(), // Read Frame Type
-    };
-
-    // Frame type specific parsing.
-    frame_parser[frame.type](frame, reader, this.options);
-
-    return frame as any;
-  }
-
-  canParse(buffer): boolean {
-    const type = buffer.readUInt8(3);
-    return type in frame_parser;
-  }
-
-  canBuild(type): boolean {
-    return type in frame_builder;
-  }
-
-  nextFrameId(): number {
-    return frame_builder.nextFrameId();
-  }
-
-  newStream(): stream.Transform {
-    // Transform stream for Node Serialport 5.0.0+
-    return this.parser;
-  }
-
-  parseRaw(buffer, enc?, cb?): void {
+  _transform(
+    buffer: Buffer,
+    encoding: BufferEncoding,
+    cb: stream.TransformCallback
+  ): void {
     const S = this.parseState;
     for (let i = 0; i < buffer.length; i++) {
       S.b = buffer[i];
       if (
-        (S.waiting || (this.options.api_mode === 2 && !S.escape_next)) &&
+        (S.waiting || (this._options.api_mode === 2 && !S.escape_next)) &&
         S.b === C.START_BYTE
       ) {
-        S.buffer = Buffer.alloc(this.options.parser_buffer_size);
+        S.buffer = Buffer.alloc(BUFFER_SIZE);
         S.length = 0;
         S.total = 0;
         S.checksum = 0x00;
@@ -224,7 +186,7 @@ export class XBeeAPI extends XBeeEmitter {
         S.waiting = false;
       }
 
-      if (this.options.api_mode === 2 && S.b === C.ESCAPE) {
+      if (this._options.api_mode === 2 && S.b === C.ESCAPE) {
         S.escape_next = true;
         continue;
       }
@@ -238,10 +200,7 @@ export class XBeeAPI extends XBeeEmitter {
         if (S.buffer.length > S.offset) {
           S.buffer.writeUInt8(S.b, S.offset++);
         } else {
-          this.options.logger.warn(
-            "Packet being parsed doesn't fit allocated buffer.\n" +
-              "Consider increasing parser_buffer_size option."
-          );
+          console.assert(false, "Buffer overrun");
           S.waiting = true;
         }
       }
@@ -275,16 +234,26 @@ export class XBeeAPI extends XBeeEmitter {
           this.emit("error", new ChecksumMismatchError(S, actualChecksum));
         }
 
-        const rawFrame = S.buffer.slice(0, S.offset);
-        if (this.options.raw_frames || !this.canParse(rawFrame)) {
-          if (cb !== undefined && typeof cb === "function")
-            this.parser.push(rawFrame);
-          else this.emit("frame_raw", rawFrame);
+        const rawFrame = S.buffer.subarray(0, S.offset);
+        if (this._options.raw_frames) {
+          this.push(rawFrame);
         } else {
-          const frame = this.parseFrame(rawFrame);
-          if (cb !== undefined && typeof cb === "function")
-            this.parser.push(frame);
-          else this.emit("frame_object", frame);
+          if (!XbeeParser.canParse(rawFrame)) {
+            this.emit(
+              "error",
+              new UnknownFrameType(XbeeParser.frameType(rawFrame))
+            );
+          } else {
+            try {
+              const frame: ParsableFrame = XbeeParser.parseFrame(
+                rawFrame,
+                this._options
+              );
+              this.push(frame);
+            } catch (err) {
+              this.emit("error", err);
+            }
+          }
         }
 
         // Reset some things so we don't try to reeimt the same package if there is more (bogus?) data
@@ -292,6 +261,133 @@ export class XBeeAPI extends XBeeEmitter {
         S.length = 0;
       }
     }
-    if (cb !== undefined && typeof cb === "function") cb();
+    cb();
+  }
+}
+
+/**
+ * Stream that takes BuildableFrames and outputs Buffers.
+ *
+ * @example
+ *   const builder = new XbeeBuilder();
+ *   const serialport = new SerialPort({ ... });
+ *   builder.pipe(serialport);
+ *   builder.write({ type: C.FRAME_TYPE.AT_COMMAND, command: "NI" });
+ */
+export class XbeeBuilder
+  extends stream.Transform
+  implements
+    EmitterWithUntypedListeners<{
+      error: (err: UnknownFrameType) => void;
+      data: (frame: Buffer) => void;
+    }>
+{
+  _options: XBeeAPIOptions;
+  private readonly frameBuilder: FrameBuilder = FrameBuilder();
+
+  constructor(options: Partial<XBeeAPIOptions> = {}) {
+    super({
+      objectMode: true,
+    });
+    this._options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    };
+  }
+
+  /**
+   * Builds a new frame from the given frame and options.
+   *
+   * Note: if you're calling this manually, you will need to define a frame id on your frame
+   * manually, or you will receive a default frame id of 0.
+   *
+   * @param frame
+   * @param options XBeeApiOptions: only api_mode is used
+   * @param frameBuilder leave unset--internal use only
+   */
+  static buildFrame(
+    frame: BuildableFrame,
+    options: {
+      api_mode: 1 | 2;
+    } = { api_mode: 1 },
+    frameBuilder = FrameBuilder()
+  ): Buffer {
+    let packet = Buffer.alloc(BUFFER_SIZE); // Packet buffer
+    let payload = packet.subarray(3); // Reference the buffer past the header
+    let builder = new BufferBuilder(payload);
+
+    if (!(frame.type in frameBuilder)) {
+      throw new UnknownFrameType(frame.type);
+    }
+
+    // Let the builder fill the payload
+    frameBuilder[frame.type](frame as any, builder);
+
+    // Calculate & Append Checksum
+    let checksum = 0;
+    for (let i = 0; i < builder.length; i++) checksum += payload[i];
+    builder.appendUInt8(255 - (checksum % 256));
+
+    // Get just the payload
+    payload = payload.subarray(0, builder.length);
+
+    // Build the header at the start of the packet buffer
+    builder = new BufferBuilder(packet);
+    builder.appendUInt8(C.START_BYTE);
+    builder.appendUInt16BE(payload.length - 1); // Sans checksum
+
+    // Get the header and payload as one contiguous buffer
+    packet = packet.subarray(0, (builder.length as number) + payload.length);
+
+    // Escape the packet, if needed
+    return options.api_mode === 2 ? XbeeBuilder.escape(packet) : packet;
+  }
+
+  _transform(
+    frame: BuildableFrame,
+    encoding: BufferEncoding,
+    cb: stream.TransformCallback
+  ): void {
+    try {
+      const packet = XbeeBuilder.buildFrame(
+        frame,
+        this._options,
+        this.frameBuilder
+      );
+      this.push(packet);
+      cb();
+    } catch (err) {
+      cb(err);
+    }
+  }
+
+  private static escape(buffer: Buffer): Buffer {
+    const escapeBuffer = Buffer.alloc(buffer.length * 2);
+
+    let offset = 0;
+    escapeBuffer.writeUInt8(buffer[0], offset++);
+    for (let i = 1; i < buffer.length; i++) {
+      if (C.ESCAPE_BYTES.includes(buffer[i])) {
+        escapeBuffer.writeUInt8(C.ESCAPE, offset++);
+        escapeBuffer.writeUInt8(buffer[i] ^ C.ESCAPE_WITH, offset++);
+      } else {
+        escapeBuffer.writeUInt8(buffer[i], offset++);
+      }
+    }
+
+    return buffer.subarray(0, offset);
+  }
+
+  /** Returns true if the frame type is supported by the builder. */
+  static canBuild(type: FrameType): boolean {
+    return type in FrameBuilder();
+  }
+
+  /**
+   * Returns the next frame id, incrementing the internal counter. This can be used to
+   * generate frame ids, which can then be used to match requests with responses.
+   */
+  nextFrameId(): number {
+    return this.frameBuilder.nextFrameId();
   }
 }
