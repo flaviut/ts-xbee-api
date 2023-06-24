@@ -20,7 +20,6 @@ export const COORDINATOR_64 = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
 
 export const ESCAPE_BYTES = [START_BYTE, ESCAPE, XOFF, XON];
 
-/** @deprecated use FrameType instead */
 export enum FRAME_TYPE {
   // Frame Type
   AT_COMMAND = 0x08,
@@ -545,7 +544,6 @@ export const FRAME_TYPE_SETS = {
   ],
 };
 
-/** @deprecated use AtCommand */
 export enum AT_COMMAND {
   // Network commands
   /** Extended PAN ID */

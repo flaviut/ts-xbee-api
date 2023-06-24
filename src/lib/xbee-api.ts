@@ -10,6 +10,7 @@ import BufferBuilder from 'buffer-builder';
 import BufferReader from 'buffer-reader';
 import * as stream from 'stream';
 import { EventMap } from 'typed-emitter';
+import { FRAME_TYPE as FrameType } from './constants';
 import { ChecksumMismatchError, UnknownFrameType } from './errors';
 import * as C from './constants';
 import FrameBuilder, { BuildableFrame } from './frame-builder';
@@ -70,12 +71,7 @@ const DEFAULT_OPTIONS: XBeeAPIOptions = {
 
 const BUFFER_SIZE = 512;
 
-export type FrameType = C.FRAME_TYPE;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const FrameType = C.FRAME_TYPE;
-export type AtCommand = C.AT_COMMAND;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const AtCommand = C.AT_COMMAND;
+export { FRAME_TYPE as FrameType, AT_COMMAND as AtCommand } from './constants';
 
 /**
  * Stream that takes Buffers and outputs ParsableFrames. Or, if `options.raw_frames` is true,

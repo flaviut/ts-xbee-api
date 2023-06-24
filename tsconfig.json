@@ -14,7 +14,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@new/.": ["src/index.ts"]
+      "ts-xbee-api": ["src/index.ts"]
     },
     "types": ["vitest"]
   },

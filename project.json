@@ -1,5 +1,5 @@
 {
-  "name": "new",
+  "name": "ts-xbee-api",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "src",
   "projectType": "library",
@@ -8,7 +8,7 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/new",
+        "outputPath": "dist",
         "main": "./src/index.ts",
         "tsConfig": "./tsconfig.lib.json",
         "assets": ["*.md"]
@@ -23,10 +23,10 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/new"],
+      "outputs": ["coverage"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "coverage/new"
+        "reportsDirectory": "coverage"
       }
     }
   },
