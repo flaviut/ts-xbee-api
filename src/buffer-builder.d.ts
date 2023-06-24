@@ -3,8 +3,8 @@
 // Definitions by: Natalie Weizenbaum <https://github.com/nex3>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-import "node";
-declare module "src/buffer-builder" {
+import 'node';
+declare module 'src/buffer-builder' {
   declare class BufferBuilder {
     constructor(initialCapacity?: number | Buffer);
 

@@ -4,9 +4,9 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.7
 
-import "node";
+import 'node';
 
-declare module "src/buffer-reader" {
+declare module 'src/buffer-reader' {
   declare class BufferReader {
     buf: { length: number };
     /**

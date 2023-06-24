@@ -11,14 +11,14 @@ modified, especially as of v2.0.0.
 Install the module with: **[npm](https://npmjs.org/) install ts-xbee-api**
 
 ```javascript
-var xbee_api = require("xbee-api");
+var xbee_api = require('xbee-api');
 var C = xbee_api.C;
 var xbeeAPI = new xbee_api.XBeeAPI();
 
 // Something we might want to send to an XBee...
 var frame_obj = {
   type: C.FRAME_TYPE.AT_COMMAND,
-  command: "NI",
+  command: 'NI',
   commandParameter: [],
 };
 console.log(xbeeAPI.buildFrame(frame_obj));

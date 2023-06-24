@@ -6,25 +6,25 @@
  * Licensed under the MIT license.
  */
 
-import * as C from "./constants";
-import BufferReader from "buffer-reader";
+import * as C from './constants';
+import BufferReader from 'buffer-reader';
 
 const parseNodeIdentificationPayload = function (
   frame,
   reader: BufferReader
 ): void {
-  frame.remote16 = reader.nextString(2, "hex");
-  frame.remote64 = reader.nextString(8, "hex");
+  frame.remote16 = reader.nextString(2, 'hex');
+  frame.remote64 = reader.nextString(8, 'hex');
 
   // Extract the NI string from the buffer
-  frame.nodeIdentifier = reader.nextStringZero("ascii");
+  frame.nodeIdentifier = reader.nextStringZero('ascii');
 
   if (reader.buf.length > reader.tell()) {
-    frame.remoteParent16 = reader.nextString(2, "hex");
+    frame.remoteParent16 = reader.nextString(2, 'hex');
     frame.deviceType = reader.nextUInt8();
     frame.sourceEvent = reader.nextUInt8();
-    frame.digiProfileID = reader.nextString(2, "hex");
-    frame.digiManufacturerID = reader.nextString(2, "hex");
+    frame.digiProfileID = reader.nextString(2, 'hex');
+    frame.digiManufacturerID = reader.nextString(2, 'hex');
   }
 };
 
@@ -139,7 +139,7 @@ const parseAtCommand = (
   reader: BufferReader
 ): void => {
   frame.id = reader.nextUInt8();
-  frame.command = reader.nextString(2, "ascii");
+  frame.command = reader.nextString(2, 'ascii');
   frame.commandParameter = reader.nextAll();
 };
 type LegacyChannelsKey =
@@ -171,8 +171,8 @@ const frameParser = {
     } & NodeIdentification<string>,
     reader: BufferReader
   ) => {
-    frame.sender64 = reader.nextString(8, "hex");
-    frame.sender16 = reader.nextString(2, "hex");
+    frame.sender64 = reader.nextString(8, 'hex');
+    frame.sender16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     parseNodeIdentificationPayload(frame, reader);
   },
@@ -187,8 +187,8 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     frame.data = reader.nextAll();
   },
@@ -207,12 +207,12 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
-    frame.sourceEndpoint = reader.nextString(1, "hex");
-    frame.destinationEndpoint = reader.nextString(1, "hex");
-    frame.clusterId = reader.nextString(2, "hex");
-    frame.profileId = reader.nextString(2, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
+    frame.sourceEndpoint = reader.nextString(1, 'hex');
+    frame.destinationEndpoint = reader.nextString(1, 'hex');
+    frame.clusterId = reader.nextString(2, 'hex');
+    frame.profileId = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     frame.data = reader.nextAll();
   },
@@ -238,8 +238,8 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     frame.sensors = reader.nextUInt8();
     frame.sensorValues = {
@@ -308,8 +308,8 @@ const frameParser = {
     reader,
     options
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     ParseIOSamplePayload(frame, reader, options);
   },
@@ -333,10 +333,10 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.command = reader.nextString(2, "ascii");
+    frame.command = reader.nextString(2, 'ascii');
     frame.commandStatus = reader.nextUInt8();
     if (
-      frame.command === "ND" &&
+      frame.command === 'ND' &&
       frame.commandStatus === C.COMMAND_STATUS.OK &&
       reader.buf.length > reader.tell()
     ) {
@@ -369,14 +369,14 @@ const frameParser = {
     options
   ) => {
     frame.id = reader.nextUInt8();
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
-    frame.command = reader.nextString(2, "ascii");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
+    frame.command = reader.nextString(2, 'ascii');
     frame.commandStatus = reader.nextUInt8();
-    if (frame.command === "IS") {
+    if (frame.command === 'IS') {
       ParseIOSamplePayload(frame, reader, options);
     } else if (
-      frame.command === "ND" &&
+      frame.command === 'ND' &&
       frame.commandStatus === C.COMMAND_STATUS.OK
     ) {
       (frame as any).nodeIdentification = {};
@@ -399,7 +399,7 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.transmitRetryCount = reader.nextUInt8();
     frame.deliveryStatus = reader.nextUInt8();
     frame.discoveryStatus = reader.nextUInt8();
@@ -416,8 +416,8 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
     frame.hopCount = reader.nextUInt8();
     frame.addresses = [];
@@ -443,10 +443,10 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.destination64 = reader.nextString(8, "hex");
-    frame.destination16 = reader.nextString(2, "hex");
+    frame.destination64 = reader.nextString(8, 'hex');
+    frame.destination16 = reader.nextString(2, 'hex');
     frame.remoteCommandOptions = reader.nextUInt8();
-    frame.command = reader.nextString(2, "ascii");
+    frame.command = reader.nextString(2, 'ascii');
     frame.commandParameter = reader.nextAll();
   },
 
@@ -465,8 +465,8 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.destination64 = reader.nextString(8, "hex");
-    frame.destination16 = reader.nextString(2, "hex");
+    frame.destination64 = reader.nextString(8, 'hex');
+    frame.destination16 = reader.nextString(2, 'hex');
     frame.broadcastRadius = reader.nextUInt8();
     frame.options = reader.nextUInt8();
     frame.data = reader.nextAll();
@@ -490,8 +490,8 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.destination64 = reader.nextString(8, "hex");
-    frame.destination16 = reader.nextString(2, "hex");
+    frame.destination64 = reader.nextString(8, 'hex');
+    frame.destination16 = reader.nextString(2, 'hex');
     frame.sourceEndpoint = reader.nextUInt8();
     frame.destinationEndpoint = reader.nextUInt8();
     frame.clusterId = reader.nextUInt16BE();
@@ -513,7 +513,7 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.destination64 = reader.nextString(8, "hex");
+    frame.destination64 = reader.nextString(8, 'hex');
     frame.options = reader.nextUInt8();
     frame.data = reader.nextAll();
   },
@@ -530,7 +530,7 @@ const frameParser = {
     reader: BufferReader
   ) => {
     frame.id = reader.nextUInt8();
-    frame.destination16 = reader.nextString(2, "hex");
+    frame.destination16 = reader.nextString(2, 'hex');
     frame.options = reader.nextUInt8();
     frame.data = reader.nextAll();
   },
@@ -558,7 +558,7 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
     frame.rssi = reader.nextUInt8();
     frame.receiveOptions = reader.nextUInt8();
     frame.data = reader.nextAll();
@@ -574,7 +574,7 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.rssi = reader.nextUInt8();
     frame.receiveOptions = reader.nextUInt8();
     frame.data = reader.nextAll();
@@ -590,7 +590,7 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote64 = reader.nextString(8, "hex");
+    frame.remote64 = reader.nextString(8, 'hex');
     frame.rssi = reader.nextUInt8();
     frame.receiveOptions = reader.nextUInt8();
     frame.data = reader.nextAll();
@@ -613,7 +613,7 @@ const frameParser = {
     },
     reader: BufferReader
   ) => {
-    frame.remote16 = reader.nextString(2, "hex");
+    frame.remote16 = reader.nextString(2, 'hex');
     frame.rssi = reader.nextUInt8();
     frame.receiveOptions = reader.nextUInt8();
     received16BitPacketIO(frame, reader);
@@ -622,5 +622,5 @@ const frameParser = {
 export default frameParser;
 
 export type ParsableFrame = Parameters<
-  typeof frameParser[keyof typeof frameParser]
+  (typeof frameParser)[keyof typeof frameParser]
 >[0];

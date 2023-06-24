@@ -6,9 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import BufferBuilder from "buffer-builder";
+import BufferBuilder from 'buffer-builder';
 
-import * as C from "./constants";
+import * as C from './constants';
 
 type BufferConstructable = number[] | ArrayBuffer | Buffer | string;
 
@@ -23,7 +23,7 @@ function appendData(data: BufferConstructable, builder: BufferBuilder): void {
   } else if (Buffer.isBuffer(data)) {
     buf = Buffer.from(data);
   } else {
-    buf = Buffer.from(data, "ascii");
+    buf = Buffer.from(data, 'ascii');
   }
 
   builder.appendBuffer(buf);
@@ -52,7 +52,7 @@ function atCommandParser(
 ): void {
   builder.appendUInt8(frame.type);
   builder.appendUInt8(this.getFrameId(frame));
-  builder.appendString(frame.command, "ascii");
+  builder.appendString(frame.command, 'ascii');
   appendData(frame.commandParameter, builder);
 }
 
@@ -89,10 +89,10 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
-      builder.appendString(frame.destination64 || C.UNKNOWN_64, "hex");
-      builder.appendString(frame.destination16 || C.UNKNOWN_16, "hex");
+      builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
+      builder.appendString(frame.destination16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(frame.remoteCommandOptions || 0x02);
-      builder.appendString(frame.command, "ascii");
+      builder.appendString(frame.command, 'ascii');
       appendData(frame.commandParameter, builder);
     },
 
@@ -112,8 +112,8 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
-      builder.appendString(frame.destination64 || C.UNKNOWN_64, "hex");
-      builder.appendString(frame.destination16 || C.UNKNOWN_16, "hex");
+      builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
+      builder.appendString(frame.destination16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(frame.broadcastRadius || 0x00);
       builder.appendUInt8(frame.options || 0x00);
       appendData(frame.data, builder);
@@ -138,21 +138,21 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
-      builder.appendString(frame.destination64 || C.UNKNOWN_64, "hex");
-      builder.appendString(frame.destination16 || C.UNKNOWN_16, "hex");
+      builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
+      builder.appendString(frame.destination16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(frame.sourceEndpoint);
       builder.appendUInt8(frame.destinationEndpoint);
 
-      if (typeof frame.clusterId === "number") {
-        builder.appendUInt16BE(frame.clusterId, "hex");
+      if (typeof frame.clusterId === 'number') {
+        builder.appendUInt16BE(frame.clusterId, 'hex');
       } else {
-        builder.appendString(frame.clusterId, "hex");
+        builder.appendString(frame.clusterId, 'hex');
       }
 
-      if (typeof frame.profileId === "number") {
-        builder.appendUInt16BE(frame.profileId, "hex");
+      if (typeof frame.profileId === 'number') {
+        builder.appendUInt16BE(frame.profileId, 'hex');
       } else {
-        builder.appendString(frame.profileId, "hex");
+        builder.appendString(frame.profileId, 'hex');
       }
 
       builder.appendUInt8(frame.broadcastRadius || 0x00);
@@ -173,12 +173,12 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(0); // Frame ID is always zero for this
-      builder.appendString(frame.destination64, "hex");
-      builder.appendString(frame.destination16, "hex");
+      builder.appendString(frame.destination64, 'hex');
+      builder.appendString(frame.destination16, 'hex');
       builder.appendUInt8(0); // Route command options always zero
       builder.appendUInt8(frame.addresses.length); // Number of hops
       for (let i = 0; i < frame.addresses.length; i++) {
-        builder.appendUInt16BE(frame.addresses[i], "hex");
+        builder.appendUInt16BE(frame.addresses[i], 'hex');
       }
     },
 
@@ -195,7 +195,7 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
-      builder.appendString(frame.destination64 || C.UNKNOWN_64, "hex");
+      builder.appendString(frame.destination64 || C.UNKNOWN_64, 'hex');
       builder.appendUInt8(frame.options || 0x00);
       appendData(frame.data, builder);
     },
@@ -213,7 +213,7 @@ function FrameBuilder() {
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
-      builder.appendString(frame.destination16 || C.BROADCAST_16_XB, "hex");
+      builder.appendString(frame.destination16 || C.BROADCAST_16_XB, 'hex');
       builder.appendUInt8(frame.options || 0x00);
       appendData(frame.data, builder);
     },
@@ -229,8 +229,8 @@ function FrameBuilder() {
       builder: BufferBuilder
     ) {
       builder.appendUInt8(frame.type);
-      builder.appendString(frame.sender64 || C.UNKNOWN_64, "hex");
-      builder.appendString(frame.sender16 || C.UNKNOWN_16, "hex");
+      builder.appendString(frame.sender64 || C.UNKNOWN_64, 'hex');
+      builder.appendString(frame.sender16 || C.UNKNOWN_16, 'hex');
       builder.appendUInt8(
         Array.from(frame.receiveOptions ?? []).reduce(
           (result: number, b) => result | b,
@@ -252,6 +252,6 @@ type NewOmit<T, K extends PropertyKey> = {
 export type BuildableFrame = Parameters<
   FrameBuilder[keyof NewOmit<
     FrameBuilder,
-    "frameId" | "nextFrameId" | "getFrameId"
+    'frameId' | 'nextFrameId' | 'getFrameId'
   >]
 >[0];

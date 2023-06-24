@@ -6,15 +6,14 @@
  * Licensed under the MIT license.
  */
 
-import BufferBuilder from "buffer-builder";
-import BufferReader from "buffer-reader";
-import * as stream from "stream";
-import { EventMap } from "typed-emitter";
-import { ChecksumMismatchError, UnknownFrameType } from "./errors";
-import * as C from "./constants";
-import FrameBuilder, { BuildableFrame } from "./frame-builder";
-import frame_parser, { ParsableFrame } from "./frame-parser";
-
+import BufferBuilder from 'buffer-builder';
+import BufferReader from 'buffer-reader';
+import * as stream from 'stream';
+import { EventMap } from 'typed-emitter';
+import { ChecksumMismatchError, UnknownFrameType } from './errors';
+import * as C from './constants';
+import FrameBuilder, { BuildableFrame } from './frame-builder';
+import frame_parser, { ParsableFrame } from './frame-parser';
 
 // can't find a better way to remove the type conflict on listeners & rawListeners
 // than redefining the whole interface
@@ -184,7 +183,7 @@ export class XbeeParser
         if (S.buffer.length > S.offset) {
           S.buffer.writeUInt8(S.b, S.offset++);
         } else {
-          console.assert(false, "Buffer overrun");
+          console.assert(false, 'Buffer overrun');
           S.waiting = true;
         }
       }
@@ -215,7 +214,7 @@ export class XbeeParser
       if (S.length > 0 && S.offset === S.length + 4) {
         const actualChecksum = 0xff - (S.total % 0x100);
         if (S.checksum !== actualChecksum) {
-          this.emit("error", new ChecksumMismatchError(S, actualChecksum));
+          this.emit('error', new ChecksumMismatchError(S, actualChecksum));
         }
 
         const rawFrame = S.buffer.subarray(0, S.offset);
@@ -224,7 +223,7 @@ export class XbeeParser
         } else {
           if (!XbeeParser.canParse(rawFrame)) {
             this.emit(
-              "error",
+              'error',
               new UnknownFrameType(XbeeParser.frameType(rawFrame))
             );
           } else {
@@ -235,7 +234,7 @@ export class XbeeParser
               );
               this.push(frame);
             } catch (err) {
-              this.emit("error", err);
+              this.emit('error', err);
             }
           }
         }

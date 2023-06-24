@@ -57,67 +57,67 @@ export enum FRAME_TYPE {
 }
 
 export const FRAME_TYPES = [
-  "AT_COMMAND",
-  "AT_COMMAND_QUEUE_PARAMETER_VALUE",
-  "ZIGBEE_TRANSMIT_REQUEST",
-  "EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME",
-  "REMOTE_AT_COMMAND_REQUEST",
-  "CREATE_SOURCE_ROUTE",
-  "REGISTER_JOINING_DEVICE",
-  "AT_COMMAND_RESPONSE",
-  "MODEM_STATUS",
-  "ZIGBEE_TRANSMIT_STATUS",
-  "ZIGBEE_RECEIVE_PACKET",
-  "ZIGBEE_EXPLICIT_RX",
-  "ZIGBEE_IO_DATA_SAMPLE_RX",
-  "XBEE_SENSOR_READ",
-  "NODE_IDENTIFICATION",
-  "REMOTE_COMMAND_RESPONSE",
-  "OTA_FIRMWARE_UPDATE_STATUS",
-  "ROUTE_RECORD",
-  "DEVICE_AUTHENITCATED_INDICATOR",
-  "MTO_ROUTE_REQUEST",
-  "REGISTER_JOINING_DEVICE_STATUS",
-  "JOIN_NOTIFICATION_STATUS",
-  "TX_REQUEST_64",
-  "TX_REQUEST_16",
-  "TX_STATUS",
-  "RX_PACKET_64",
-  "RX_PACKET_16",
-  "RX_PACKET_64_IO",
-  "RX_PACKET_16_IO",
+  'AT_COMMAND',
+  'AT_COMMAND_QUEUE_PARAMETER_VALUE',
+  'ZIGBEE_TRANSMIT_REQUEST',
+  'EXPLICIT_ADDRESSING_ZIGBEE_COMMAND_FRAME',
+  'REMOTE_AT_COMMAND_REQUEST',
+  'CREATE_SOURCE_ROUTE',
+  'REGISTER_JOINING_DEVICE',
+  'AT_COMMAND_RESPONSE',
+  'MODEM_STATUS',
+  'ZIGBEE_TRANSMIT_STATUS',
+  'ZIGBEE_RECEIVE_PACKET',
+  'ZIGBEE_EXPLICIT_RX',
+  'ZIGBEE_IO_DATA_SAMPLE_RX',
+  'XBEE_SENSOR_READ',
+  'NODE_IDENTIFICATION',
+  'REMOTE_COMMAND_RESPONSE',
+  'OTA_FIRMWARE_UPDATE_STATUS',
+  'ROUTE_RECORD',
+  'DEVICE_AUTHENITCATED_INDICATOR',
+  'MTO_ROUTE_REQUEST',
+  'REGISTER_JOINING_DEVICE_STATUS',
+  'JOIN_NOTIFICATION_STATUS',
+  'TX_REQUEST_64',
+  'TX_REQUEST_16',
+  'TX_STATUS',
+  'RX_PACKET_64',
+  'RX_PACKET_16',
+  'RX_PACKET_64_IO',
+  'RX_PACKET_16_IO',
 ] as const;
 
 export const FRAME_NAMES = {
-  0x08: "AT Command (0x08)",
-  0x09: "AT Command - Queue Parameter Value (0x09)",
-  0x10: "ZigBee Transmit Request (0x10)",
-  0x11: "Explicit Addressing ZigBee Command Frame (0x11)",
-  0x17: "Remote Command Request (0x17)",
-  0x21: "Create Source Route (0x21)",
-  0x24: "Register Joining Device (0x24)",
-  0x88: "AT Command Response (0x88)",
-  0x8a: "Modem Status (0x8A)",
-  0x8b: "ZigBee Transmit Status (0x8B)",
-  0x90: "ZigBee Receive Packet (AO=0) (0x90)",
-  0x91: "ZigBee Explicit Rx Indicator (AO=1) (0x91)",
-  0x92: "ZigBee IO Data Sample Rx Indicator (0x92)",
-  0x94: "XBee Sensor Read Indicator (AO=0) (0x94)",
-  0x95: "Node Identification Indicator (AO=0) (0x95)",
-  0x97: "Remote Command Response (0x97)",
-  0xa0: "Over-the-Air Firmware Update Status (0xA0)",
-  0xa1: "Route Record Indicator (0xA1)",
-  0xa2: "Device Authenticated Indicator (0xA2)",
-  0xa3: "Many-to-One Route Request Indicator (0xA3)",
-  0xa4: "Register Joining Device Status (0xA4)",
-  0xa5: "Join Notification Status (0xA5)",
-  0x00: "TX (Transmit) Request: 64-bit address (0x00)",
-  0x01: "TX (Transmit) Request: 16-bit address (0x01)",
-  0x89: "TX (Transmit) Status (0x89)",
-  0x80: "RX (Receive) Packet: 64-bit Address (0x80)",
-  0x81: "RX (Receive) Packet: 16-bit Address (0x81)",
-  0x82: "RX (Receive) Packet: 64-bit Address IO (0x82)",
-  0x83: "RX (Receive) Packet: 16-bit Address IO (0x83)",
+  0x08: 'AT Command (0x08)',
+  0x09: 'AT Command - Queue Parameter Value (0x09)',
+  0x10: 'ZigBee Transmit Request (0x10)',
+  0x11: 'Explicit Addressing ZigBee Command Frame (0x11)',
+  0x17: 'Remote Command Request (0x17)',
+  0x21: 'Create Source Route (0x21)',
+  0x24: 'Register Joining Device (0x24)',
+  0x88: 'AT Command Response (0x88)',
+  0x8a: 'Modem Status (0x8A)',
+  0x8b: 'ZigBee Transmit Status (0x8B)',
+  0x90: 'ZigBee Receive Packet (AO=0) (0x90)',
+  0x91: 'ZigBee Explicit Rx Indicator (AO=1) (0x91)',
+  0x92: 'ZigBee IO Data Sample Rx Indicator (0x92)',
+  0x94: 'XBee Sensor Read Indicator (AO=0) (0x94)',
+  0x95: 'Node Identification Indicator (AO=0) (0x95)',
+  0x97: 'Remote Command Response (0x97)',
+  0xa0: 'Over-the-Air Firmware Update Status (0xA0)',
+  0xa1: 'Route Record Indicator (0xA1)',
+  0xa2: 'Device Authenticated Indicator (0xA2)',
+  0xa3: 'Many-to-One Route Request Indicator (0xA3)',
+  0xa4: 'Register Joining Device Status (0xA4)',
+  0xa5: 'Join Notification Status (0xA5)',
+  0x00: 'TX (Transmit) Request: 64-bit address (0x00)',
+  0x01: 'TX (Transmit) Request: 16-bit address (0x01)',
+  0x89: 'TX (Transmit) Status (0x89)',
+  0x80: 'RX (Receive) Packet: 64-bit Address (0x80)',
+  0x81: 'RX (Receive) Packet: 16-bit Address (0x81)',
+  0x82: 'RX (Receive) Packet: 64-bit Address IO (0x82)',
+  0x83: 'RX (Receive) Packet: 16-bit Address IO (0x83)',
 };
 
 export enum DISCOVERY_STATUS {
@@ -129,11 +129,11 @@ export enum DISCOVERY_STATUS {
 }
 
 export const DISCOVERY_STATUS_NAMES = {
-  0x00: "No Discovery Overhead (0x00)",
-  0x01: "Address Discovery (0x01)",
-  0x02: "Route Discovery (0x02)",
-  0x03: "Address and Route (0x03)",
-  0x40: "Extended Timeout Discovery (0x40)",
+  0x00: 'No Discovery Overhead (0x00)',
+  0x01: 'Address Discovery (0x01)',
+  0x02: 'Route Discovery (0x02)',
+  0x03: 'Address and Route (0x03)',
+  0x40: 'Extended Timeout Discovery (0x40)',
 };
 
 export enum DELIVERY_STATUS {
@@ -157,23 +157,23 @@ export enum DELIVERY_STATUS {
 }
 
 export const DELIVERY_STATUS_NAMES = {
-  0x00: "Success (0x00)",
-  0x01: "MAC ACK Failure (0x01)",
-  0x02: "CA Failure (0x02)",
-  0x15: "Invalid destination endpoint (0x15)",
-  0x21: "Network ACK Failure (0x21)",
-  0x22: "Not Joined to Network (0x22)",
-  0x23: "Self-addressed (0x23)",
-  0x24: "Address Not Found (0x24)",
-  0x25: "Route Not Found (0x25)",
-  0x26: "Broadcast source failed to hear a neighbor relay the message (0x26)",
-  0x2b: "Invalid binding table index (0x2B)",
-  0x2c: "Resource error lack of free buffers, timers, etc. (0x2C)",
-  0x2d: "Attempted broadcast with APS transmission (0x2D)",
-  0x2e: "Attempted unicast with APS transmission, but EE=0 (0x2E)",
-  0x32: "Resource error lack of free buffers, timers, etc. (0x32)",
-  0x74: "Data payload too large (0x74)",
-  0x75: "Indirect message unrequested (0x75)",
+  0x00: 'Success (0x00)',
+  0x01: 'MAC ACK Failure (0x01)',
+  0x02: 'CA Failure (0x02)',
+  0x15: 'Invalid destination endpoint (0x15)',
+  0x21: 'Network ACK Failure (0x21)',
+  0x22: 'Not Joined to Network (0x22)',
+  0x23: 'Self-addressed (0x23)',
+  0x24: 'Address Not Found (0x24)',
+  0x25: 'Route Not Found (0x25)',
+  0x26: 'Broadcast source failed to hear a neighbor relay the message (0x26)',
+  0x2b: 'Invalid binding table index (0x2B)',
+  0x2c: 'Resource error lack of free buffers, timers, etc. (0x2C)',
+  0x2d: 'Attempted broadcast with APS transmission (0x2D)',
+  0x2e: 'Attempted unicast with APS transmission, but EE=0 (0x2E)',
+  0x32: 'Resource error lack of free buffers, timers, etc. (0x32)',
+  0x74: 'Data payload too large (0x74)',
+  0x75: 'Indirect message unrequested (0x75)',
 };
 
 export enum COMMAND_STATUS {
@@ -184,11 +184,11 @@ export enum COMMAND_STATUS {
   REMOTE_CMD_TRANS_FAILURE = 0x04,
 }
 export const COMMAND_STATUS_NAMES = {
-  0x00: "OK (0x00)",
-  0x01: "ERROR (0x01)",
-  0x02: "Invalid Command (0x02)",
-  0x03: "Invalid Parameter (0x03)",
-  0x04: "Remote Command Transmission Failed (0x04)",
+  0x00: 'OK (0x00)',
+  0x01: 'ERROR (0x01)',
+  0x02: 'Invalid Command (0x02)',
+  0x03: 'Invalid Parameter (0x03)',
+  0x04: 'Remote Command Transmission Failed (0x04)',
 };
 
 export enum MODEM_STATUS {
@@ -204,15 +204,15 @@ export enum MODEM_STATUS {
 }
 
 export const MODEM_STATUS_NAMES = {
-  0x00: "Hardware Reset (0x00)",
-  0x01: "Watchdog timer reset (0x01)",
-  0x02: "Joined Network (0x02)",
-  0x03: "Disassociated (0x03)",
-  0x06: "Coordinator started (0x06)",
-  0x07: "Network security key was updated (0x07)",
-  0x0d: "Voltage supply limit exceeded (0x0D)",
-  0x11: "Modem Configuration changed while join in progress (0x11)",
-  0x80: "Stack Error (0x80)",
+  0x00: 'Hardware Reset (0x00)',
+  0x01: 'Watchdog timer reset (0x01)',
+  0x02: 'Joined Network (0x02)',
+  0x03: 'Disassociated (0x03)',
+  0x06: 'Coordinator started (0x06)',
+  0x07: 'Network security key was updated (0x07)',
+  0x0d: 'Voltage supply limit exceeded (0x0D)',
+  0x11: 'Modem Configuration changed while join in progress (0x11)',
+  0x80: 'Stack Error (0x80)',
 };
 
 export enum RECEIVE_OPTIONS {
@@ -223,10 +223,10 @@ export enum RECEIVE_OPTIONS {
 }
 
 export const RECEIVE_OPTIONS_NAMES = {
-  0x01: "Packet Acknowledged (0x01)",
-  0x02: "Packet was a broadcast packet (0x02)",
-  0x20: "Packet encrypted with APS encryption (0x20)",
-  0x40: "Packet was sent from an end device (if known) (0x40)",
+  0x01: 'Packet Acknowledged (0x01)',
+  0x02: 'Packet was a broadcast packet (0x02)',
+  0x20: 'Packet encrypted with APS encryption (0x20)',
+  0x40: 'Packet was sent from an end device (if known) (0x40)',
 };
 
 export enum DEVICE_TYPE {
@@ -236,25 +236,25 @@ export enum DEVICE_TYPE {
 }
 
 export const DEVICE_TYPE_NAMES = {
-  0x00: "Coordinator (0x00)",
-  0x01: "Router (0x01)",
-  0x02: "End Device (0x02)",
+  0x00: 'Coordinator (0x00)',
+  0x01: 'Router (0x01)',
+  0x02: 'End Device (0x02)',
 };
 
 export const DIGITAL_CHANNELS = {
   // Map mask to name
   MASK: {
-    0: ["DIO0", "AD0"],
-    1: ["DIO1", "AD1"],
-    2: ["DIO2", "AD2"],
-    3: ["DIO3", "AD3"],
-    4: ["DIO4"],
-    5: ["DIO5", "ASSOCIATE"],
-    6: ["DIO6", "RTS"],
-    7: ["DIO7", "CTS"],
-    10: ["DIO10", "RSSI"],
-    11: ["DIO11", "PWM"],
-    12: ["DIO12", "CD"],
+    0: ['DIO0', 'AD0'],
+    1: ['DIO1', 'AD1'],
+    2: ['DIO2', 'AD2'],
+    3: ['DIO3', 'AD3'],
+    4: ['DIO4'],
+    5: ['DIO5', 'ASSOCIATE'],
+    6: ['DIO6', 'RTS'],
+    7: ['DIO7', 'CTS'],
+    10: ['DIO10', 'RSSI'],
+    11: ['DIO11', 'PWM'],
+    12: ['DIO12', 'CD'],
   } as const,
   PIN: {},
 };
@@ -262,11 +262,11 @@ const dc = DIGITAL_CHANNELS;
 export const ANALOG_CHANNELS = {
   MASK: {
     // Map mask to name
-    0: ["AD0", "DIO0"],
-    1: ["AD1", "DIO1"],
-    2: ["AD2", "DIO2"],
-    3: ["AD3", "DIO3"],
-    7: ["SUPPLY"],
+    0: ['AD0', 'DIO0'],
+    1: ['AD1', 'DIO1'],
+    2: ['AD2', 'DIO2'],
+    3: ['AD3', 'DIO3'],
+    7: ['SUPPLY'],
   } as const,
   PIN: {},
 };
@@ -306,20 +306,20 @@ ac.PIN[17] = ac.SUPPLY = 7; // 17 True?
 export const PULLUP_RESISTOR = {
   MASK: {
     // Map mask to name
-    0: ["DIO4"],
-    1: ["DIO3", "AD3"],
-    2: ["DIO2", "AD2"],
-    3: ["DIO1", "AD1"],
-    4: ["DIO0", "AD0"],
-    5: ["DIO6", "RTS"],
-    6: ["DIO8", "DTR", "SLEEP_REQUEST"],
-    7: ["DIN", "CONFIG"],
-    8: ["DIO5", "ASSOCIATE"],
-    9: ["DIO9", "ON"],
-    10: ["DIO12"],
-    11: ["DIO10", "RSSI", "PWM0"],
-    12: ["DIO11", "PWM1"],
-    13: ["DIO7", "CTS"],
+    0: ['DIO4'],
+    1: ['DIO3', 'AD3'],
+    2: ['DIO2', 'AD2'],
+    3: ['DIO1', 'AD1'],
+    4: ['DIO0', 'AD0'],
+    5: ['DIO6', 'RTS'],
+    6: ['DIO8', 'DTR', 'SLEEP_REQUEST'],
+    7: ['DIN', 'CONFIG'],
+    8: ['DIO5', 'ASSOCIATE'],
+    9: ['DIO9', 'ON'],
+    10: ['DIO12'],
+    11: ['DIO10', 'RSSI', 'PWM0'],
+    12: ['DIO11', 'PWM1'],
+    13: ['DIO7', 'CTS'],
   } as const,
   PIN: {},
 };
@@ -357,18 +357,18 @@ pr.PIN[12] = pr.CTS = pr.DIO7 = 13;
 export const CHANGE_DETECTION = {
   MASK: {
     // Map mask to name
-    0: ["DIO0"],
-    1: ["DIO1"],
-    2: ["DIO2"],
-    3: ["DIO3"],
-    4: ["DIO4"],
-    5: ["DIO5"],
-    6: ["DIO6"],
-    7: ["DIO7"],
-    8: ["DIO8"],
-    9: ["DIO9"],
-    10: ["DIO10"],
-    11: ["DIO11"],
+    0: ['DIO0'],
+    1: ['DIO1'],
+    2: ['DIO2'],
+    3: ['DIO3'],
+    4: ['DIO4'],
+    5: ['DIO5'],
+    6: ['DIO6'],
+    7: ['DIO7'],
+    8: ['DIO8'],
+    9: ['DIO9'],
+    10: ['DIO10'],
+    11: ['DIO11'],
   },
   PIN: {
     20: 0,
@@ -513,20 +513,20 @@ for (const pin in pm) {
   }
 }
 
-pc.PIN[6] = pc.PWM0 = pc.DIO10 = pc.RSSIM = "P0";
-pc.PIN[7] = pc.DIO11 = pc.PWM1 = "P1";
-pc.PIN[4] = pc.DIO12 = "P2";
-pc.PIN[12] = pc.DIO7 = pc.CTS = "D7";
-pc.PIN[16] = pc.DIO6 = "D6";
-pc.PIN[20] = pc.AD0 = pc.DIO0 = "D0";
-pc.PIN[19] = pc.AD1 = pc.DIO1 = "D1";
-pc.PIN[18] = pc.AD2 = pc.DIO2 = "D2";
-pc.PIN[17] = pc.AD3 = pc.DIO3 = "D3";
-pc.PIN[11] = pc.DIO4 = "D4";
-pc.PIN[15] = pc.DIO5 = pc.ASSOC = "D5";
+pc.PIN[6] = pc.PWM0 = pc.DIO10 = pc.RSSIM = 'P0';
+pc.PIN[7] = pc.DIO11 = pc.PWM1 = 'P1';
+pc.PIN[4] = pc.DIO12 = 'P2';
+pc.PIN[12] = pc.DIO7 = pc.CTS = 'D7';
+pc.PIN[16] = pc.DIO6 = 'D6';
+pc.PIN[20] = pc.AD0 = pc.DIO0 = 'D0';
+pc.PIN[19] = pc.AD1 = pc.DIO1 = 'D1';
+pc.PIN[18] = pc.AD2 = pc.DIO2 = 'D2';
+pc.PIN[17] = pc.AD3 = pc.DIO3 = 'D3';
+pc.PIN[11] = pc.DIO4 = 'D4';
+pc.PIN[15] = pc.DIO5 = pc.ASSOC = 'D5';
 
 export const FRAME_TYPE_SETS = {
-  "802.15.4": [
+  '802.15.4': [
     0x00, 0x01, 0x08, 0x09, 0x17, 0x80, 0x81, 0x82, 0x83, 0x88, 0x89, 0x8a,
     0x97,
   ],
@@ -549,239 +549,239 @@ export const FRAME_TYPE_SETS = {
 export enum AT_COMMAND {
   // Network commands
   /** Extended PAN ID */
-  ID = "ID",
+  ID = 'ID',
   /** Scan Channels */
-  SC = "SC",
+  SC = 'SC',
   /** Scan Duration */
-  SD = "SD",
+  SD = 'SD',
   /** Zigbee Stack Profile */
-  ZS = "ZS",
+  ZS = 'ZS',
   /** Node Join Time */
-  NJ = "NJ",
+  NJ = 'NJ',
   /** Network Watchdog Timeout */
-  NW = "NW",
+  NW = 'NW',
   /** Coordinator Join Verification */
-  JV = "JV",
+  JV = 'JV',
   /** Join Notification */
-  JN = "JN",
+  JN = 'JN',
   /** Operating Extended PAN ID */
-  OP = "OP",
+  OP = 'OP',
   /** Operating 16-bit PAN ID */
-  OI = "OI",
+  OI = 'OI',
   /** Operating Channel */
-  CH = "CH",
+  CH = 'CH',
   /** Number of Remaining Children */
-  NC = "NC",
+  NC = 'NC',
   /** Coordinator Enable */
-  CE = "CE",
+  CE = 'CE',
   /** Miscellaneous Device Options */
-  DO = "DO",
+  DO = 'DO',
   /** Joining Device Controls */
-  DC = "DC",
+  DC = 'DC',
   /** Initial 16-bit PAN ID */
-  II = "II",
+  II = 'II',
   /** Energy Detect */
-  ED = "ED",
+  ED = 'ED',
 
   // Addressing commands
   /** Serial Number High */
-  SH = "SH",
+  SH = 'SH',
   /** Serial Number Low */
-  SL = "SL",
+  SL = 'SL',
   /** 16-bit Network Address */
-  MY = "MY",
+  MY = 'MY',
   /** 16-bit Parent Network Address */
-  MP = "MP",
+  MP = 'MP',
   /** Destination Address High */
-  DH = "DH",
+  DH = 'DH',
   /** Destination Address Low */
-  DL = "DL",
+  DL = 'DL',
   /** Node Identifier */
-  NI = "NI",
+  NI = 'NI',
   /** Maximum Unicast Hops */
-  NH = "NH",
+  NH = 'NH',
   /** Broadcast Hops */
-  BH = "BH",
+  BH = 'BH',
   /** Aggregate Routing Notification */
-  AR = "AR",
+  AR = 'AR',
   /** Device Type Identifier */
-  DD = "DD",
+  DD = 'DD',
   /** Node Discover Timeout */
-  NT = "NT",
+  NT = 'NT',
   /** Network Discovery Options */
-  NO = "NO",
+  NO = 'NO',
   /** Maximum Packet Payload Bytes */
-  NP = "NP",
+  NP = 'NP',
   /** Conflict Report */
-  CR = "CR",
+  CR = 'CR',
 
   // Zigbee addressing commands
   /** Source Endpoint */
-  SE = "SE",
+  SE = 'SE',
   /** Destination Endpoint */
-  DE = "DE",
+  DE = 'DE',
   /** Cluster ID */
-  CI = "CI",
+  CI = 'CI',
   /** Transmit Options */
-  TO = "TO",
+  TO = 'TO',
 
   // RF interfacing commands
   /** TX Power Level */
-  PL = "PL",
+  PL = 'PL',
   /** Power at PL4 */
-  PP = "PP",
+  PP = 'PP',
   /** Power Mode */
-  PM = "PM",
+  PM = 'PM',
 
   // Security commands
   /** Encryption Enable */
-  EE = "EE",
+  EE = 'EE',
   /** Encryption Options */
-  EO = "EO",
+  EO = 'EO',
   /** Link Key */
-  KY = "KY",
+  KY = 'KY',
   /** Trust Center Network Key */
-  NK = "NK",
+  NK = 'NK',
 
   // Serial interfacing commands
   /** Interface Data Rate */
-  BD = "BD",
+  BD = 'BD',
   /** Parity */
-  NB = "NB",
+  NB = 'NB',
   /** Stop Bits */
-  SB = "SB",
+  SB = 'SB',
   /** Packetization Timeout */
-  RO = "RO",
+  RO = 'RO',
   /** DIO6/RTS */
-  D6 = "D6",
+  D6 = 'D6',
   /** DIO7/CTS */
-  D7 = "D7",
+  D7 = 'D7',
   /** API Enable */
-  AP = "AP",
+  AP = 'AP',
   /** API Options */
-  AO = "AO",
+  AO = 'AO',
 
   // Command mode options
   /** Command Mode Timeout */
-  CT = "CT",
+  CT = 'CT',
   /** Guard Times */
-  GT = "GT",
+  GT = 'GT',
   /** Command Character */
-  CC = "CC",
+  CC = 'CC',
   /** Exit Command mode */
-  CN = "CN",
+  CN = 'CN',
 
   // Sleep commands
   /** Sleep Period */
-  SP = "SP",
+  SP = 'SP',
   /** Number of Cycles Between ON_SLEEP */
-  SN = "SN",
+  SN = 'SN',
   /** Sleep Mode */
-  SM = "SM",
+  SM = 'SM',
   /** Time before Sleep */
-  ST = "ST",
+  ST = 'ST',
   /** Sleep Options */
-  SO = "SO",
+  SO = 'SO',
   /** Wake Host Delay */
-  WH = "WH",
+  WH = 'WH',
   /** Polling Rate */
-  PO = "PO",
+  PO = 'PO',
 
   // I/O settings commands
   /** AD0/DIO0 Configuration */
-  D0 = "D0",
+  D0 = 'D0',
   /** AD1/DIO1/PTI_En Configuration */
-  D1 = "D1",
+  D1 = 'D1',
   /** AD2/DIO2 Configuration */
-  D2 = "D2",
+  D2 = 'D2',
   /** AD3/DIO3 Configuration */
-  D3 = "D3",
+  D3 = 'D3',
   /** DIO4 Configuration */
-  D4 = "D4",
+  D4 = 'D4',
   /** DIO5/Associate Configuration */
-  D5 = "D5",
+  D5 = 'D5',
   /** DIO8/DTR/SLP_RQ */
-  D8 = "D8",
+  D8 = 'D8',
   /** DIO9/ON_SLEEP */
-  D9 = "D9",
+  D9 = 'D9',
   /** RSSI/PWM0 Configuration */
-  P0 = "P0",
+  P0 = 'P0',
   /** DIO11/PWM1 Configuration */
-  P1 = "P1",
+  P1 = 'P1',
   /** DIO12 Configuration */
-  P2 = "P2",
+  P2 = 'P2',
   /** DIO13/DOUT Configuration */
-  P3 = "P3",
+  P3 = 'P3',
   /** DIO14/DIN */
-  P4 = "P4",
+  P4 = 'P4',
   /** DIO15/SPI_MISO */
-  P5 = "P5",
+  P5 = 'P5',
   /** SPI_MOSI Configuration */
-  P6 = "P6",
+  P6 = 'P6',
   /** DIO17/SPI_SSEL  */
-  P7 = "P7",
+  P7 = 'P7',
   /** DIO18/SPI_SCLK */
-  P8 = "P8",
+  P8 = 'P8',
   /** DIO19/SPI_ATTN/PTI_DATA */
-  P9 = "P9",
+  P9 = 'P9',
   /** Pull-up/Down Resistor Enable */
-  PR = "PR",
+  PR = 'PR',
   /** Pull Up/Down Direction */
-  PD = "PD",
+  PD = 'PD',
   /** Associate LED Blink Time */
-  LT = "LT",
+  LT = 'LT',
   /** RSSI PWM Timer */
-  RP = "RP",
+  RP = 'RP',
 
   // I/O sampling commands
   /** I/O Sample Rate */
-  IR = "IR",
+  IR = 'IR',
   /** Digital Change Detection */
-  IC = "IC",
+  IC = 'IC',
   /** Voltage Supply Monitoring */
-  V_PLUS = "V+",
+  V_PLUS = 'V+',
 
   // Diagnostic commands
   /** Firmware Version */
-  VR = "VR",
+  VR = 'VR',
   /** Hardware Version */
-  HV = "HV",
+  HV = 'HV',
   /** Association Indication */
-  AI = "AI",
+  AI = 'AI',
   /** Voltage Supply Monitoring */
-  PERCENT_V = "%V",
+  PERCENT_V = '%V',
   /** Received Signal Strength */
-  DB = "DB",
+  DB = 'DB',
   /** Temperature */
-  TP = "TP",
+  TP = 'TP',
   /** Version Long */
-  VL = "VL",
+  VL = 'VL',
 
   // Execution commands
   /** Apply Changes */
-  AC = "AC",
+  AC = 'AC',
   /** Active Scan */
-  AS = "AS",
+  AS = 'AS',
   /** Write */
-  WR = "WR",
+  WR = 'WR',
   /** Restore Defaults */
-  RE = "RE",
+  RE = 'RE',
   /** Software Reset */
-  FR = "FR",
+  FR = 'FR',
   /** Network Reset */
-  NR = "NR",
+  NR = 'NR',
   /** Sleep Immediately */
-  SI = "SI",
+  SI = 'SI',
   /** Commissioning Pushbutton */
-  CB = "CB",
+  CB = 'CB',
   /** Clear Binding and Group Tables */
-  AMP_X = "&X",
+  AMP_X = '&X',
   /** Node Discovery */
-  ND = "ND",
+  ND = 'ND',
   /** Destination Node */
-  DN = "DN",
+  DN = 'DN',
   /** Disable Joining */
-  DJ = "DJ",
+  DJ = 'DJ',
   /** Force Sample */
-  IS = "IS",
+  IS = 'IS',
 }
