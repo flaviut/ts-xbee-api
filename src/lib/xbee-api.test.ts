@@ -6,9 +6,10 @@
  * Licensed under the MIT license.
  */
 
-import { AtCommand, FrameType, XbeeBuilder, XbeeParser, C } from ".";
+import { AtCommand, FrameType, XbeeBuilder, XbeeParser, C } from "../index";
 import * as stream from "stream";
-import { BuildableFrame } from "./internal/frame-builder";
+import { BuildableFrame } from "./frame-builder";
+import { vi } from 'vitest'
 
 describe("Main", () => {
   it("should support default options", () => {
@@ -181,14 +182,14 @@ describe("Stream Interface", () => {
 
     const mockserialR = new stream.Readable();
     const mockserialW = new stream.Writable();
-    mockserialW._write = jest.fn((chunk) => {
+    mockserialW._write = vi.fn((chunk) => {
       expect(expected0).toEqual(chunk);
     });
     mockserialR._read = function () {};
     mockserialR.pipe(parser);
     builder.pipe(mockserialW);
 
-    const onData = jest.fn((frame) => {
+    const onData = vi.fn((frame) => {
       if (frame.id === 0x01) {
         expect(frame.remote16).toEqual("7d84");
         expect(frame.transmitRetryCount).toEqual(0);

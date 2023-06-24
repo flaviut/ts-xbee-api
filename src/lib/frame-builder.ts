@@ -6,7 +6,6 @@
  * Licensed under the MIT license.
  */
 
-import assert from "assert";
 import BufferBuilder from "buffer-builder";
 
 import * as C from "./constants";
@@ -68,7 +67,6 @@ function FrameBuilder() {
     },
 
     getFrameId: function getFrameId(frame) {
-      assert(frame, "Frame parameter must be supplied");
       frame.id = frame.id || (frame.id !== 0 && this.nextFrameId()) || frame.id;
       return frame.id;
     },

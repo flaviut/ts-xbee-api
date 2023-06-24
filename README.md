@@ -105,3 +105,11 @@ in particular:
 - 0xA3: Many-to-One Route Request Indicator (ZigBee)
 - 0xA4: Register Joining Device Status (ZigBee)
 - 0xA5: Join Notification Status (ZigBee)
+
+## Building
+
+Run `nx build new` to build the library.
+
+## Running unit tests
+
+Run `nx test new` to execute the unit tests via [Jest](https://jestjs.io).
