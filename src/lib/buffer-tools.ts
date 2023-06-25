@@ -103,6 +103,7 @@ export class BufferBuilder {
     if (encoding === 'hex') {
       buf = fromHex(data as string);
     } else if (encoding === 'utf8' && typeof data === 'string') {
+      buf = new TextEncoder().encode(data);
     }
     return this.appendBuffer(buf);
   }
