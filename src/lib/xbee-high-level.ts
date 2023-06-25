@@ -126,6 +126,13 @@ interface AwaitResponseParams<FT extends FrameType> {
   filter: (f: SpecificParsableFrame<FT>) => boolean;
 }
 
+/**
+ * A high-level, imperative, promise-based interface to the XBee API.
+ *
+ * This class is a wrapper around the XBeeBuilder and XBeeParser classes, but
+ * provides a more convenient interface by avoiding the need to understand and
+ * use streams.
+ */
 export class XBee {
   private readonly frameStreams = new Map(
     FRAME_TYPES.map((type) => [
@@ -365,6 +372,10 @@ export class XBee {
   private prevModemStatus: SpecificParsableFrame<FrameType.MODEM_STATUS> | null =
     null;
 
+  /**
+   * returns the current modem status, or null if no status has been received
+   * @param timeoutMs if 0, returns the last known status
+   */
   async modemStatus(timeoutMs = 100): Promise<number | null> {
     const nextVal = await this.awaitResponse({
       timeoutMs: timeoutMs,
@@ -389,6 +400,9 @@ export class XBee {
    * run remote AT command
    *
    * @param remoteAddress 16-hex-digit address of the remote device
+   * @param parameter parameter to set
+   * @param value value to set, see XBee API documentation for details
+   * @param timeoutMs timeout in milliseconds
    */
   async setRemoteParameter(
     remoteAddress: string,
