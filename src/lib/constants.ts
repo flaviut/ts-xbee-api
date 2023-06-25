@@ -508,6 +508,7 @@ pm.D0 =
 
 for (const pin in pm) {
   for (const key in pm[pin]) {
+    // @ts-expect-error
     pm[pin][pm[pin][key]] = key;
   }
 }

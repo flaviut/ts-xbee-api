@@ -46,7 +46,9 @@ export function fromHex(hexString: string): Uint8Array {
   const bytes = new Uint8Array(Math.floor((hexString || '').length / 2));
   let i;
   for (i = 0; i < bytes.length; i++) {
+    // @ts-expect-error
     const a = MAP_HEX[hexString[i * 2]];
+    // @ts-expect-error
     const b = MAP_HEX[hexString[i * 2 + 1]];
     if (a === undefined || b === undefined) {
       break;
@@ -97,15 +99,10 @@ export class BufferBuilder {
     data: BufferConstructable,
     encoding: Encodings = 'utf8'
   ): BufferBuilder {
-    let buf: BufferConstructable;
+    let buf: BufferConstructable = data;
     if (encoding === 'hex') {
       buf = fromHex(data as string);
-    } else if (encoding === 'utf8') {
-      if (typeof data === 'string') {
-        buf = new TextEncoder().encode(data);
-      } else {
-        buf = data;
-      }
+    } else if (encoding === 'utf8' && typeof data === 'string') {
     }
     return this.appendBuffer(buf);
   }

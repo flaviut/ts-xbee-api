@@ -13,6 +13,8 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
+    "noImplicitAny": true,
     "paths": {
       "ts-xbee-api": ["src/index.ts"]
     },

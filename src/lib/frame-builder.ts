@@ -32,6 +32,7 @@ function atCommandParser(
   builder: BufferBuilder
 ): void {
   builder.appendUInt8(frame.type);
+  // @ts-expect-error  this is being called in a context where `this` is set to the FrameBuilder object
   builder.appendUInt8(this.getFrameId(frame));
   builder.appendString(frame.command, 'utf8');
   builder.appendBuffer(frame.commandParameter);
@@ -47,8 +48,8 @@ function FrameBuilder() {
       return this.frameId;
     },
 
-    getFrameId: function getFrameId(frame) {
-      frame.id = frame.id || (frame.id !== 0 && this.nextFrameId()) || frame.id;
+    getFrameId: function getFrameId(frame: { id?: Uint8 }): Uint8 {
+      frame.id = (frame.id && frame.id !== 0) ? frame.id : this.nextFrameId();
       return frame.id;
     },
 
@@ -220,7 +221,7 @@ function FrameBuilder() {
       );
       builder.appendBuffer(frame.data);
     },
-  } as const;
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare

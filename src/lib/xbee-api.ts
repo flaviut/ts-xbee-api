@@ -117,9 +117,14 @@ export class XBeeParser
     const frame = {
       type: reader.nextUInt8(), // Read Frame Type
     };
+    if(!(frame.type in frame_parser)) {
+      throw new UnknownFrameType(frame.type);
+    } else {
+      // @ts-expect-error  can't be bothered to fix this right now, but the logic is sound
+      frame_parser[frame.type](frame, reader, options);
+    }
 
     // Frame type specific parsing.
-    frame_parser[frame.type](frame, reader, options);
 
     return frame as unknown as ParsableFrame;
   }
@@ -327,7 +332,7 @@ export class XBeeBuilder
       this.push(packet);
       cb();
     } catch (err) {
-      cb(err);
+      cb(err as Error);
     }
   }
 

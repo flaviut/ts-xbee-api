@@ -179,7 +179,7 @@ export class XBee {
     this.parser = new XBeeParser();
     serial.pipe(this.parser);
     this.parser.on('data', (frame: ParsableFrame) => {
-      this.frameStreams.get(frame.type).push(frame);
+      this.frameStreams.get(frame.type)!.push(frame);
     });
   }
 

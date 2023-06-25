@@ -6,11 +6,12 @@
  * Licensed under the MIT license.
  */
 
+import { FrameType, SpecificParsableFrame } from '../index';
 import * as C from './constants';
 import { BufferReader } from './buffer-tools';
 
 const parseNodeIdentificationPayload = function (
-  frame,
+  frame: any,
   reader: BufferReader
 ): void {
   frame.remote16 = reader.nextString(2, 'hex');
@@ -29,9 +30,9 @@ const parseNodeIdentificationPayload = function (
 };
 
 const ParseIOSamplePayload = function (
-  frame,
+  frame: any,
   reader: BufferReader,
-  options
+  options: { vref_adc?: number }
 ): void {
   frame.digitalSamples = {};
   frame.analogSamples = {};
@@ -44,7 +45,9 @@ const ParseIOSamplePayload = function (
 
   if (mskD > 0) {
     const valD = reader.nextUInt16BE();
-    for (const dbit of Object.keys(C.DIGITAL_CHANNELS.MASK).map(Number)) {
+    for (const dbit of Object.keys(C.DIGITAL_CHANNELS.MASK).map(
+      Number
+    ) as Array<keyof typeof C.DIGITAL_CHANNELS.MASK>) {
       if ((mskD & (1 << dbit)) >> dbit) {
         frame.digitalSamples[C.DIGITAL_CHANNELS.MASK[dbit][0]] =
           (valD & (1 << dbit)) >> dbit;
@@ -53,7 +56,9 @@ const ParseIOSamplePayload = function (
   }
 
   if (mskA > 0) {
-    for (const abit of Object.keys(C.ANALOG_CHANNELS.MASK).map(Number)) {
+    for (const abit of Object.keys(C.ANALOG_CHANNELS.MASK).map(Number) as Array<
+      keyof typeof C.ANALOG_CHANNELS.MASK
+    >) {
       if ((mskA & (1 << abit)) >> abit) {
         const valA = reader.nextUInt16BE();
 
@@ -71,20 +76,23 @@ const ParseIOSamplePayload = function (
 };
 
 // Series 1 Support
-const received16BitPacketIO = function (frame, reader: BufferReader): void {
+const received16BitPacketIO = function (
+  frame: SpecificParsableFrame<FrameType.RX_PACKET_16_IO>,
+  reader: BufferReader
+): void {
   const data = {
     sampleQuantity: reader.nextUInt8(),
     channelMask: reader.nextUInt16BE(),
-    channels: {},
-    analogSamples: [],
-    digitalSamples: [],
+    channels: {} as Record<LegacyChannelsKey, 1>,
+    analogSamples: [] as Record<LegacyChannelsKey, number>[],
+    digitalSamples: [] as string[],
   };
 
   // analog channels
   for (let a = 0; a <= 5; a++) {
     // exponent looks odd here because analog pins start at 0000001000000000
     if (data.channelMask & Math.pow(2, a + 9)) {
-      data.channels[`ADC${a}`] = 1;
+      data.channels[`ADC${a}` as LegacyChannelsKey] = 1;
     }
   }
 
@@ -98,17 +106,17 @@ const received16BitPacketIO = function (frame, reader: BufferReader): void {
     // digital channels
     for (let d = 0; d <= 8; d++) {
       if (data.channelMask & Math.pow(2, d)) {
-        data.channels[`DIO${d}`] = 1;
+        data.channels[`DIO${d}` as LegacyChannelsKey] = 1;
       }
     }
   }
 
   for (let si = 0; si < data.sampleQuantity; si++) {
-    const sample = {};
+    const sample = {} as Record<LegacyChannelsKey, number>;
     for (let j = 0; j <= 5; j++) {
-      if (data.channels[`ADC${j}`]) {
+      if (data.channels[`ADC${j}` as LegacyChannelsKey]) {
         // starts at the 7th byte and moved down by the Digital Samples section
-        sample[`ADC${j}`] = reader.nextUInt16BE();
+        sample[`ADC${j}` as LegacyChannelsKey] = reader.nextUInt16BE();
       }
     }
     data.analogSamples.push(sample);
@@ -274,8 +282,8 @@ const frameParser = {
       frame.sensorValues.trueHumidity =
         Math.round(
           100 *
-            (frame.sensorValues.relativeHumidity /
-              (1.0546 - 0.00216 * frame.sensorValues.temperature))
+            (frame.sensorValues.relativeHumidity! /
+              (1.0546 - 0.00216 * frame.sensorValues.temperature!))
         ) / 100;
     }
   },
@@ -305,8 +313,8 @@ const frameParser = {
           numSamples: Uint8;
         }
     ),
-    reader,
-    options
+    reader: BufferReader,
+    options: { vref_adc?: number }
   ) => {
     frame.remote64 = reader.nextString(8, 'hex');
     frame.remote16 = reader.nextString(2, 'hex');
@@ -365,13 +373,13 @@ const frameParser = {
           commandData: Uint8Array;
         }
     ),
-    reader,
-    options
+    reader: BufferReader,
+    options: { vref_adc?: number }
   ) => {
     frame.id = reader.nextUInt8();
     frame.remote64 = reader.nextString(8, 'hex');
     frame.remote16 = reader.nextString(2, 'hex');
-    frame.command = reader.nextString(2, 'utf8');
+    frame.command = reader.nextString(2, 'utf8') as C.AT_COMMAND;
     frame.commandStatus = reader.nextUInt8();
     if (frame.command === 'IS') {
       ParseIOSamplePayload(frame, reader, options);
