@@ -5,17 +5,12 @@ import { CancellablePromise } from 'real-cancellable-promise';
 import { ReadlineParser, SerialPort } from 'serialport';
 import * as stream from 'stream';
 
-import {
-  C,
-  FRAME_TYPES,
-  FrameType,
-  type ParsableFrame,
-  type SpecificParsableFrame,
-  XBeeBuilder,
-  XBeeParser,
-} from 'ts-xbee-api';
 import { BufferConstructable, toHex } from './buffer-tools';
+import  {FRAME_TYPE as FrameType} from "./constants";
+import * as C from './constants';
+import { ParsableFrame } from "./frame-parser";
 import { awaitBufferStream, awaitObjectStream } from './stream-util.js';
+import { SpecificParsableFrame, XBeeBuilder, XBeeParser } from "./xbee-api";
 
 function promisify<A>(fn: (cb: (args: A) => void) => void): () => Promise<A> {
   return () =>
@@ -135,7 +130,7 @@ interface AwaitResponseParams<FT extends FrameType> {
  */
 export class XBee {
   private readonly frameStreams = new Map(
-    FRAME_TYPES.map((type) => [
+    C.FRAME_TYPES.map((type) => [
       FrameType[type],
       new stream.Readable({
         read() {

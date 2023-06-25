@@ -15,6 +15,15 @@ import * as C from './constants';
 import FrameBuilder, { BuildableFrame } from './frame-builder';
 import frame_parser, { ParsableFrame } from './frame-parser';
 
+export type SpecificParsableFrame<FT extends FrameType> = Extract<
+  ParsableFrame,
+  { type: FT }
+>;
+export type SpecificBuildableFrame<FT extends FrameType> = Extract<
+  BuildableFrame,
+  { type: FT }
+>;
+
 // can't find a better way to remove the type conflict on listeners & rawListeners
 // than redefining the whole interface
 interface EmitterWithUntypedListeners<Events extends EventMap> {
