@@ -19,7 +19,7 @@ Installation: `npm install ts-xbee-api`
 import { XBee } from 'ts-xbee-api';
 
 const xbee = await XBee.discover('/dev/ttyUSB0', [9600, 115200]);
-const routerAddress = await xbee.address()
+const routerAddress = await xbee.address();
 const remoteAddress = '0013A20040B3B3B3';
 await xbee.transmit(Uint8Array.from([0x01, 0x02, 0x03]), remoteAddress);
 ```

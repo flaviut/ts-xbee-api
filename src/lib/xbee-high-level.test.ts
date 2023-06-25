@@ -1,4 +1,4 @@
-import { ErrorCallback } from '@serialport/stream';
+import { type ErrorCallback } from '@serialport/stream';
 import { SerialPort } from 'serialport';
 import * as stream from 'stream';
 import { SpecificParsableFrame } from 'ts-xbee-api';
@@ -8,13 +8,13 @@ import * as C from './constants';
 import { XBee } from './xbee-high-level';
 
 class PrintingSerialPort extends SerialPort {
-  constructor(options) {
+  constructor(options: any) {
     super(options);
     this.on('data', (data: Buffer) => {
       console.log(`Received ${toHex(data)}`);
     });
     this.write = new Proxy(this.write, {
-      apply(target, thisArg, args) {
+      apply(target, thisArg, args: any) {
         console.log(`Sent ${toHex(args[0])}`);
         return target.apply(thisArg, args);
       },
@@ -27,11 +27,11 @@ function messageResponsePort(
 ): typeof SerialPort {
   return class extends stream.Duplex {
     close(callback?: ErrorCallback): void {
-      if (callback) callback(undefined);
+      if (callback) callback(null);
     }
 
     open(callback?: ErrorCallback): void {
-      if (callback) callback(undefined);
+      if (callback) callback(null);
     }
 
     get isOpen(): boolean {

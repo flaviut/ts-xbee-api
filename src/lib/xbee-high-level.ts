@@ -1,16 +1,17 @@
+import { ReadlineParser } from '@serialport/parser-readline';
 import { SerialPortStream } from '@serialport/stream';
 import type { Buffer } from 'buffer';
 import * as console from 'console';
 import { CancellablePromise } from 'real-cancellable-promise';
-import { ReadlineParser, SerialPort } from 'serialport';
+import { type SerialPort } from 'serialport';
 import * as stream from 'stream';
 
 import { BufferConstructable, toHex } from './buffer-tools';
-import  {FRAME_TYPE as FrameType} from "./constants";
 import * as C from './constants';
-import { ParsableFrame } from "./frame-parser";
+import { FRAME_TYPE as FrameType } from './constants';
+import { ParsableFrame } from './frame-parser';
 import { awaitBufferStream, awaitObjectStream } from './stream-util.js';
-import { SpecificParsableFrame, XBeeBuilder, XBeeParser } from "./xbee-api";
+import { SpecificParsableFrame, XBeeBuilder, XBeeParser } from './xbee-api';
 
 function promisify<A>(fn: (cb: (args: A) => void) => void): () => Promise<A> {
   return () =>
@@ -147,8 +148,11 @@ export class XBee {
   static async discover(
     uartPath: string,
     bauds: number[],
-    SerialPortClass: typeof SerialPort = SerialPort
+    SerialPortClass: typeof SerialPort | undefined
   ): Promise<XBee> {
+    if (SerialPortClass === undefined) {
+      SerialPortClass = (await import('serialport')).SerialPort;
+    }
     const port = await discoverBaud(uartPath, bauds, SerialPortClass);
     return new XBee(port);
   }
@@ -156,8 +160,11 @@ export class XBee {
   static async withBaud(
     uartPath: string,
     baud: number,
-    SerialPortClass: typeof SerialPort = SerialPort
+    SerialPortClass: typeof SerialPort | undefined
   ): Promise<XBee> {
+    if (SerialPortClass === undefined) {
+      SerialPortClass = (await import('serialport')).SerialPort;
+    }
     const port = new SerialPortClass({
       baudRate: baud,
       path: uartPath,
@@ -180,8 +187,9 @@ export class XBee {
 
   /** MUST be called when done, or the process will hang */
   async close(): Promise<void> {
-    if (this.serial instanceof SerialPort) {
-      await promisify(this.serial.close.bind(this.serial))();
+    if ('close' in this.serial) {
+      const serial = this.serial as SerialPort;
+      await promisify(serial.close.bind(this.serial))();
     } else {
       this.serial.destroy();
     }
