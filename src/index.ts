@@ -20,4 +20,4 @@ export type SpecificBuildableFrame<FT extends FrameType> = Extract<
 
 export { ChecksumMismatchError, UnknownFrameType } from './lib/errors';
 
-export { XBeeAPIOptions, XbeeParser, XbeeBuilder } from './lib/xbee-api';
+export { XBeeAPIOptions, XBeeParser, XBeeBuilder } from './lib/xbee-api';

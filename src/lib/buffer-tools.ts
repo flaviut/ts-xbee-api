@@ -33,7 +33,7 @@ const MAP_HEX = {
 };
 
 // Fast Uint8Array to hex
-function toHex(bytes: ArrayLike<number>): string {
+export function toHex(bytes: ArrayLike<number>): string {
   return Array.from(bytes || [])
     .map((b) => HEX_STRINGS[b >> 4] + HEX_STRINGS[b & 15])
     .join('');
@@ -42,7 +42,7 @@ function toHex(bytes: ArrayLike<number>): string {
 // Mimics Buffer.from(x, 'hex') logic
 // Stops on first non-hex string and returns
 // https://github.com/nodejs/node/blob/v14.18.1/src/string_bytes.cc#L246-L261
-function fromHex(hexString: string): Uint8Array {
+export function fromHex(hexString: string): Uint8Array {
   const bytes = new Uint8Array(Math.floor((hexString || '').length / 2));
   let i;
   for (i = 0; i < bytes.length; i++) {

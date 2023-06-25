@@ -8,9 +8,9 @@
 
 import * as stream from 'stream';
 import { EventMap } from 'typed-emitter';
-import { BufferBuilder, BufferReader } from "./buffer-tools";
+import { BufferBuilder, BufferReader } from './buffer-tools';
 import { FRAME_TYPE as FrameType } from './constants';
-import { ChecksumMismatchError, ParseState, UnknownFrameType } from "./errors";
+import { ChecksumMismatchError, ParseState, UnknownFrameType } from './errors';
 import * as C from './constants';
 import FrameBuilder, { BuildableFrame } from './frame-builder';
 import frame_parser, { ParsableFrame } from './frame-parser';
@@ -76,11 +76,11 @@ const BUFFER_SIZE = 512;
  *
  * @example
  *  const serialport = new SerialPort({ ... });
- *  const parser = serialport.pipe(new XbeeParser());
+ *  const parser = serialport.pipe(new XBeeParser());
  *  parser.on("data", (frame) => { ... });
  *  parser.on("error", (err) => { ... });  // ChecksumMismatchError | UnknownFrameType
  */
-export class XbeeParser
+export class XBeeParser
   extends stream.Transform
   implements
     EmitterWithUntypedListeners<{
@@ -102,12 +102,15 @@ export class XbeeParser
   }
 
   static canParse(buffer: Uint8Array): boolean {
-    const type = XbeeParser.frameType(buffer);
+    const type = XBeeParser.frameType(buffer);
     return type in frame_parser;
   }
 
   // Note that this expects the whole frame to be escaped!
-  static parseFrame(rawFrame: Uint8Array, options: XBeeAPIOptions): ParsableFrame {
+  static parseFrame(
+    rawFrame: Uint8Array,
+    options: XBeeAPIOptions
+  ): ParsableFrame {
     // Trim the header and trailing checksum
     const reader = new BufferReader(rawFrame.subarray(3, rawFrame.length - 1));
 
@@ -205,14 +208,14 @@ export class XbeeParser
         if (this._options.raw_frames) {
           this.push(rawFrame);
         } else {
-          if (!XbeeParser.canParse(rawFrame)) {
+          if (!XBeeParser.canParse(rawFrame)) {
             this.emit(
               'error',
-              new UnknownFrameType(XbeeParser.frameType(rawFrame))
+              new UnknownFrameType(XBeeParser.frameType(rawFrame))
             );
           } else {
             try {
-              const frame: ParsableFrame = XbeeParser.parseFrame(
+              const frame: ParsableFrame = XBeeParser.parseFrame(
                 rawFrame,
                 this._options
               );
@@ -236,12 +239,12 @@ export class XbeeParser
  * Stream that takes BuildableFrames and outputs Buffers.
  *
  * @example
- *   const builder = new XbeeBuilder();
+ *   const builder = new XBeeBuilder();
  *   const serialport = new SerialPort({ ... });
  *   builder.pipe(serialport);
  *   builder.write({ type: C.FRAME_TYPE.AT_COMMAND, command: "NI" });
  */
-export class XbeeBuilder
+export class XBeeBuilder
   extends stream.Transform
   implements
     EmitterWithUntypedListeners<{
@@ -307,7 +310,7 @@ export class XbeeBuilder
     packet = packet.subarray(0, (builder.length as number) + payload.length);
 
     // Escape the packet, if needed
-    return options.api_mode === 2 ? XbeeBuilder.escape(packet) : packet;
+    return options.api_mode === 2 ? XBeeBuilder.escape(packet) : packet;
   }
 
   _transform(
@@ -316,7 +319,7 @@ export class XbeeBuilder
     cb: stream.TransformCallback
   ): void {
     try {
-      const packet = XbeeBuilder.buildFrame(
+      const packet = XBeeBuilder.buildFrame(
         frame,
         this._options,
         this.frameBuilder

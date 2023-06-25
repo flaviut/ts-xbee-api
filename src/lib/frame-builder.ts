@@ -6,10 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { BufferBuilder, BufferConstructable } from "./buffer-tools";
+import { BufferBuilder, BufferConstructable } from './buffer-tools';
 
 import * as C from './constants';
-
 
 type Uint8 = number;
 type Uint16 = number;
