@@ -7,6 +7,7 @@ export { BuildableFrame } from './lib/frame-builder';
 export * as C from './lib/constants';
 
 import { FRAME_TYPE as FrameType } from './lib/constants';
+
 export { FRAME_TYPE as FrameType, FRAME_TYPES } from './lib/constants';
 
 export type SpecificParsableFrame<FT extends FrameType> = Extract<
@@ -21,3 +22,5 @@ export type SpecificBuildableFrame<FT extends FrameType> = Extract<
 export { ChecksumMismatchError, UnknownFrameType } from './lib/errors';
 
 export { XBeeAPIOptions, XBeeParser, XBeeBuilder } from './lib/xbee-api';
+
+export { XBee } from './lib/xbee-high-level';

@@ -1,46 +1,28 @@
 # ts-xbee-api
 
-Module designed to help you communicate with Digi's XBee modules. This is a streams-based module,
-and can be used with the [serialport](https://serialport.io/) package.
+A user-friendly interface to [Digi's XBee](http://www.digi.com/xbee/) line of RF modules. This
+is made up of two parts:
+
+- a library for parsing and building XBee frames, especially in association with Node streams, such
+  as those provided by the [serialport](https://serialport.io/) package.
+- a high-level API for interacting with XBee modules, including a simple API for sending and
+  receiving data.
 
 Originally based on [xbee-api](https://github.com/jankolkmeier/xbee-api), but has been extensively
 modified, especially as of v2.0.0.
 
 ## GETTING STARTED
 
-Install the module with: **[npm](https://npmjs.org/) install ts-xbee-api**
+Installation: `npm install ts-xbee-api`
 
-```javascript
-var xbee_api = require('xbee-api');
-var C = xbee_api.C;
-var xbeeAPI = new xbee_api.XBeeAPI();
+```typescript
+import { XBee } from 'ts-xbee-api';
 
-// Something we might want to send to an XBee...
-var frame_obj = {
-  type: C.FRAME_TYPE.AT_COMMAND,
-  command: 'NI',
-  commandParameter: [],
-};
-console.log(xbeeAPI.buildFrame(frame_obj));
-// <Buffer 7e 00 04 08 01 4e 49 5f>
-
-// Something we might receive from an XBee...
-var raw_frame = new Buffer([
-  0x7e, 0x00, 0x13, 0x97, 0x55, 0x00, 0x13, 0xa2, 0x00, 0x40, 0x52, 0x2b, 0xaa,
-  0x7d, 0x84, 0x53, 0x4c, 0x00, 0x40, 0x52, 0x2b, 0xaa, 0xf0,
-]);
-
-console.log(xbeeAPI.parseFrame(raw_frame));
-// { type: 151,
-//   id: 85,
-//   remote64: '0013a20040522baa',
-//   remote16: '7d84',
-//   command: 'SL',
-//   commandStatus: 0,
-//   commandData: [ 64, 82, 43, 170 ] }
+const xbee = await XBee.discover('/dev/ttyUSB0', [9600, 115200]);
+const routerAddress = await xbee.address()
+const remoteAddress = '0013A20040B3B3B3';
+await xbee.transmit(Uint8Array.from([0x01, 0x02, 0x03]), remoteAddress);
 ```
-
-**See the [Examples](#examples) section for more useful/practical examples!**
 
 ## SUPPORTED FIRMWARES AND DEVICES
 
