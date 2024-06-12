@@ -90,8 +90,12 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
 async function discoverBaud(
   path: string,
   bauds: number[],
-  SerialPortClass: typeof SerialPort
+  SerialPortClass?: typeof SerialPort | undefined
 ): Promise<SerialPortStream> {
+  if (SerialPortClass === undefined) {
+    SerialPortClass = (await import('serialport')).SerialPort;
+  }
+
   for (const baudRate of bauds) {
     console.log(`Trying ${baudRate} baud`);
 
@@ -155,7 +159,7 @@ export class XBee {
   static async discover(
     uartPath: string,
     bauds: number[],
-    SerialPortClass: typeof SerialPort | undefined
+    SerialPortClass?: typeof SerialPort | undefined
   ): Promise<XBee> {
     if (SerialPortClass === undefined) {
       SerialPortClass = (await import('serialport')).SerialPort;
@@ -167,7 +171,7 @@ export class XBee {
   static async withBaud(
     uartPath: string,
     baud: number,
-    SerialPortClass: typeof SerialPort | undefined
+    SerialPortClass?: typeof SerialPort | undefined
   ): Promise<XBee> {
     if (SerialPortClass === undefined) {
       SerialPortClass = (await import('serialport')).SerialPort;
