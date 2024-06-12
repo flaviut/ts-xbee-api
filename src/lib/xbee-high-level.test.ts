@@ -38,6 +38,10 @@ function messageResponsePort(
       return true;
     }
 
+    drain(callback: ErrorCallback): void {
+      callback();
+    }
+
     constructor() {
       const targetStream = new stream.PassThrough();
       super({
@@ -79,7 +83,9 @@ describe('XBee', function () {
       [9600, 115200],
       messageResponsePort([
         ['7e00040801415065', []], // first 9600 API message
-        ['2b2b2b', []], // second 9600 AT message
+        ['2b', []], // second 9600 AT message
+        ['2b', []],
+        ['2b', []],
         ['7e00040801415065', ['7e0006880141500001e4']], // first 115200 API message
       ])
     );
