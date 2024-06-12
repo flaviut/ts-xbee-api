@@ -32,21 +32,50 @@ async function checkApi(port: SerialPortStream): Promise<boolean> {
     command: C.AT_COMMAND.AP,
     commandParameter: [],
   });
+  await drain(port);
   try {
-    await awaitObjectStream(parser, 100);
+    await awaitObjectStream(parser, 1500);
     return true;
   } catch (e) {
     return false;
   }
 }
 
+/** waits for all the data to be fully transmitted */
+async function drain(port: SerialPortStream): Promise<void> {
+  return new Promise((resolve, reject) => {
+    port.drain((err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 async function checkAtMode(port: SerialPortStream): Promise<boolean> {
   const parser = port.pipe(new ReadlineParser({ delimiter: '\r' }));
   await CancellablePromise.delay(1100);
-  port.write('+++');
+  for (let i = 0; i < 3; i++) {
+    port.write('+');
+    await drain(port);
+  }
   try {
-    const response = await awaitBufferStream(parser, 1100);
-    if (response.length !== 3 || response.toString() !== 'OK\r') {
+    const response = await awaitBufferStream(parser, 1500);
+    if (response.toString() !== 'OK') {
+      return false;
+    }
+
+    // returns true if the command was accepted
+    async function setAtOption(command: string): Promise<boolean> {
+      port.write(command);
+      const response = await awaitBufferStream(parser, 1500);
+      return response.toString() === 'OK';
+    }
+
+    // switch into API mode
+    if (!(await setAtOption('ATAP1\r'))) {
       return false;
     }
   } catch (e) {
@@ -54,28 +83,6 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
   } finally {
     port.unpipe(parser);
     parser.destroy();
-  }
-
-  // returns true if the command was accepted
-  async function setAtOption(command: string): Promise<boolean> {
-    port.write(command);
-    const response = await awaitBufferStream(parser, 100);
-    return response.toString() === 'OK\r';
-  }
-
-  // switch into API mode
-  if (!(await setAtOption('ATAP1\r'))) {
-    return false;
-  }
-  // write the API mode command into non-volatile memory
-  if (!(await setAtOption('ATWR\r'))) {
-    return false;
-  }
-  // exit command mode, and into API mode
-  try {
-    await setAtOption('ATCN\r');
-  } catch (e) {
-    // ignore errors
   }
   return true;
 }
