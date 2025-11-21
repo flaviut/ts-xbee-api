@@ -2,6 +2,7 @@ import { ReadlineParser } from '@serialport/parser-readline';
 import { SerialPortStream } from '@serialport/stream';
 import type { Buffer } from 'buffer';
 import * as console from 'console';
+import * as fs from 'fs/promises';
 import { CancellablePromise } from 'real-cancellable-promise';
 import { type SerialPort } from 'serialport';
 import * as stream from 'stream';
@@ -95,6 +96,9 @@ async function discoverBaud(
   if (SerialPortClass === undefined) {
     SerialPortClass = (await import('serialport')).SerialPort;
   }
+
+  // Check if path exists and is accessible, avoids a hang if it doesn't exist
+  await fs.access(path);
 
   for (const baudRate of bauds) {
     console.log(`Trying ${baudRate} baud`);

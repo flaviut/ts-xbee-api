@@ -77,6 +77,19 @@ describe('XBee', function () {
     await port.close();
   });
 
+  it('should not hang when path does not exist', async function () {
+    const NON_EXISTENT_PATH = '/dev/non-existent-path';
+    // We expect this to hang or take a long time, so we set a timeout
+    // If it resolves or rejects quickly, that's a good sign.
+    await expect(
+      XBee.discover(
+        NON_EXISTENT_PATH,
+        [9600, 115200],
+        messageResponsePort([])
+      )
+    ).rejects.toThrow(/no such file or directory/);
+  }, 1000); // 1 second timeout
+
   it('should discover connected devices (mock)', async function () {
     const port = await XBee.discover(
       '/dev/ttyUSB0',
