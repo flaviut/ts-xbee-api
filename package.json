@@ -1,7 +1,7 @@
 {
   "name": "ts-xbee-api",
   "description": "Node.js and Chrome communicate with XBee/ZigBee devices in API mode",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "homepage": "https://github.com/flaviut/ts-xbee-api",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -42,5 +42,8 @@
     "vite": "^8.0.10",
     "vitest": "^4.1.5"
   },
-  "type": "commonjs"
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  }
 }
