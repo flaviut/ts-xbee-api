@@ -1,7 +1,7 @@
 import { type ErrorCallback } from '@serialport/stream';
 import { SerialPort } from 'serialport';
 import * as stream from 'stream';
-import { SpecificParsableFrame } from 'ts-xbee-api';
+import { SpecificParsableFrame } from '../index';
 import { describe, expect } from 'vitest';
 import { fromHex, toHex } from './buffer-tools';
 import * as C from './constants';
@@ -82,11 +82,7 @@ describe('XBee', function () {
     // We expect this to hang or take a long time, so we set a timeout
     // If it resolves or rejects quickly, that's a good sign.
     await expect(
-      XBee.discover(
-        NON_EXISTENT_PATH,
-        [9600, 115200],
-        messageResponsePort([])
-      )
+      XBee.discover(NON_EXISTENT_PATH, [9600, 115200], messageResponsePort([]))
     ).rejects.toThrow(/no such file or directory/);
   }, 1000); // 1 second timeout
 

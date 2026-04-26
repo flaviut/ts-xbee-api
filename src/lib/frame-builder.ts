@@ -49,7 +49,8 @@ function FrameBuilder() {
     },
 
     getFrameId: function getFrameId(frame: { id?: Uint8 }): Uint8 {
-      frame.id = frame.id != null || frame.id === 0 ? frame.id : this.nextFrameId();
+      frame.id =
+        frame.id != null || frame.id === 0 ? frame.id : this.nextFrameId();
       return frame.id;
     },
 

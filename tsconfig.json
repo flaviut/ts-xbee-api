@@ -2,32 +2,16 @@
   "compilerOptions": {
     "rootDir": ".",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
+    "target": "es2020",
     "module": "commonjs",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2020"],
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "strict": true,
-    "noImplicitAny": true,
-    "paths": {
-      "ts-xbee-api": ["src/index.ts"]
-    },
-    "types": ["vitest"]
+    "esModuleInterop": true,
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  "include": ["src/**/*.ts", "vite.config.ts"]
 }

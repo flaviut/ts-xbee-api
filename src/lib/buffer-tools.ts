@@ -1,6 +1,8 @@
 // cross-platform buffer writer and reader. Eliminates dependency on buffer-builder and buffer-reader,
 // and avoids the need to use polyfills for nodejs Buffer in the browser.
 
+import { TextDecoder, TextEncoder } from 'util';
+
 export type BufferConstructable = number[] | ArrayBuffer | Buffer | string;
 
 type Encodings = 'utf8' | 'hex';

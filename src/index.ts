@@ -1,20 +1,15 @@
-import { ParsableFrame } from './lib/frame-parser';
-import { BuildableFrame } from './lib/frame-builder';
-
-export { ParsableFrame } from './lib/frame-parser';
-export { BuildableFrame } from './lib/frame-builder';
+export type { ParsableFrame } from './lib/frame-parser';
+export type { BuildableFrame } from './lib/frame-builder';
 
 export * as C from './lib/constants';
 export { FRAME_TYPE as FrameType, FRAME_TYPES } from './lib/constants';
 
 export { ChecksumMismatchError, UnknownFrameType } from './lib/errors';
 
+export type { XBeeAPIOptions, SpecificParsableFrame, SpecificBuildableFrame } from './lib/xbee-api';
 export {
-  XBeeAPIOptions,
   XBeeParser,
   XBeeBuilder,
-  SpecificParsableFrame,
-  SpecificBuildableFrame,
 } from './lib/xbee-api';
 
 export { XBee } from './lib/xbee-high-level';

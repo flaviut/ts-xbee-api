@@ -73,20 +73,13 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
       return false;
     }
 
-    // returns true if the command was accepted
-    async function setAtOption(command: string): Promise<boolean> {
-      port.write(command);
-      const response = await awaitBufferStream(parser, 1500);
-      return response.toString() === 'OK';
-    }
-
     // switch into API mode
-    if (!(await setAtOption('ATAP1\r'))) {
+    if (!(await setAtOption(port, parser, 'ATAP1\r'))) {
       return false;
     }
 
     // exit AT command mode so the device starts processing API frames
-    if (!(await setAtOption('ATCN\r'))) {
+    if (!(await setAtOption(port, parser, 'ATCN\r'))) {
       return false;
     }
   } catch (e) {
@@ -96,6 +89,17 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
     parser.destroy();
   }
   return true;
+}
+
+// returns true if the command was accepted
+async function setAtOption(
+  port: SerialPortStream,
+  parser: ReadlineParser,
+  command: string
+): Promise<boolean> {
+  port.write(command);
+  const response = await awaitBufferStream(parser, 1500);
+  return response.toString() === 'OK';
 }
 
 async function discoverBaud(

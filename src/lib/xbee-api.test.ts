@@ -6,10 +6,9 @@
  * Licensed under the MIT license.
  */
 
-import { FrameType, XBeeBuilder, XBeeParser, C } from '../index';
+import { FrameType, XBeeBuilder, XBeeParser, C, BuildableFrame } from '../index';
 import * as stream from 'stream';
 import { concat } from './buffer-tools';
-import { BuildableFrame } from 'ts-xbee-api';
 import { vi } from 'vitest';
 
 describe('Main', () => {

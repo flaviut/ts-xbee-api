@@ -13,7 +13,7 @@ modified, especially as of v2.0.0.
 
 ## GETTING STARTED
 
-Installation: `npm install ts-xbee-api`
+Installation: `pnpm add ts-xbee-api` (or `npm install ts-xbee-api`)
 
 ```typescript
 import { XBee } from 'ts-xbee-api';
@@ -90,8 +90,23 @@ in particular:
 
 ## Building
 
-Run `nx build new` to build the library.
+Run `pnpm run build` to build the library.
 
 ## Running unit tests
 
-Run `nx test new` to execute the unit tests via [Jest](https://jestjs.io).
+Run `pnpm run test` to execute the unit tests via [Vitest](https://vitest.dev/).
+Run `pnpm run test:watch` to run unit tests in watch mode.
+
+## Linting
+
+Run `pnpm run lint` to check for linting errors.
+Run `pnpm run lint:fix` to fix linting errors automatically.
+
+## Formatting
+
+Run `pnpm run format` to check for formatting errors.
+Run `pnpm run format:fix` to fix formatting errors automatically.
+
+## Type Checking
+
+Run `pnpm run type-check` to perform type checking.
