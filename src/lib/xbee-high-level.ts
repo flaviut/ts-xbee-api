@@ -84,6 +84,11 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
     if (!(await setAtOption('ATAP1\r'))) {
       return false;
     }
+
+    // exit AT command mode so the device starts processing API frames
+    if (!(await setAtOption('ATCN\r'))) {
+      return false;
+    }
   } catch (e) {
     return false;
   } finally {
