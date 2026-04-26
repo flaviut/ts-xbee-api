@@ -39,6 +39,11 @@ async function checkApi(port: SerialPortStream): Promise<boolean> {
     return true;
   } catch (e) {
     return false;
+  } finally {
+    port.unpipe(parser);
+    parser.destroy();
+    builder.unpipe(port);
+    builder.destroy();
   }
 }
 

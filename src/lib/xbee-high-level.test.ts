@@ -105,6 +105,31 @@ describe('XBee', function () {
     await port.close();
   });
 
+  it('should unpipe checkApi parser after successful API discovery', async function () {
+    let portInstance: any;
+    const BasePortClass: any = messageResponsePort([
+      ['7e00040801415065', ['7e0006880141500001e4']],
+    ]);
+    class TrackingPortClass extends BasePortClass {
+      constructor(options: any) {
+        super(options);
+        portInstance = this;
+      }
+    }
+
+    const xbee = await XBee.discover(
+      '/dev/ttyUSB0',
+      [9600],
+      TrackingPortClass as any
+    );
+
+    // Without the fix, checkApi's parser is still piped to the port,
+    // doubling the 'data' listener count.
+    expect(portInstance.listenerCount('data')).toEqual(1);
+
+    await xbee.close();
+  });
+
   it('should scan the network', async function () {
     const port = await XBee.withBaud(
       '/dev/ttyUSB0',
