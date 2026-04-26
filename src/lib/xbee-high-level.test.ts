@@ -8,14 +8,14 @@ import * as C from './constants';
 import { XBee } from './xbee-high-level';
 
 class PrintingSerialPort extends SerialPort {
-  constructor(options: any) {
+  constructor(options: ConstructorParameters<typeof SerialPort>[0]) {
     super(options);
     this.on('data', (data: Buffer) => {
       console.log(`Received ${toHex(data)}`);
     });
     this.write = new Proxy(this.write, {
-      apply(target, thisArg, args: any) {
-        console.log(`Sent ${toHex(args[0])}`);
+      apply(target, thisArg, args: Parameters<SerialPort['write']>) {
+        console.log(`Sent ${toHex(args[0] as Buffer)}`);
         return target.apply(thisArg, args);
       },
     });
@@ -64,7 +64,7 @@ function messageResponsePort(
         }
       });
     }
-  } as any;
+  } as unknown as typeof SerialPort;
 }
 
 describe('XBee', function () {
@@ -72,7 +72,7 @@ describe('XBee', function () {
     const port = await XBee.discover(
       '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AC00J6YC-if00-port0',
       [9600, 115200],
-      PrintingSerialPort as any,
+      PrintingSerialPort as unknown as typeof SerialPort,
     );
     await port.close();
   });
@@ -102,13 +102,14 @@ describe('XBee', function () {
   });
 
   it('should unpipe checkApi parser after successful API discovery', async function () {
-    let portInstance: any;
-    const BasePortClass: any = messageResponsePort([
+    let portInstance: stream.Duplex | undefined;
+    const BasePortClass = messageResponsePort([
       ['7e00040801415065', ['7e0006880141500001e4']],
-    ]);
+    ]) as unknown as typeof stream.Duplex;
     class TrackingPortClass extends BasePortClass {
-      constructor(options: any) {
+      constructor(options: ConstructorParameters<typeof stream.Duplex>[0]) {
         super(options);
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         portInstance = this;
       }
     }
@@ -116,12 +117,12 @@ describe('XBee', function () {
     const xbee = await XBee.discover(
       '/dev/ttyUSB0',
       [9600],
-      TrackingPortClass as any,
+      TrackingPortClass as unknown as typeof SerialPort,
     );
 
     // Without the fix, checkApi's parser is still piped to the port,
     // doubling the 'data' listener count.
-    expect(portInstance.listenerCount('data')).toEqual(1);
+    expect(portInstance!.listenerCount('data')).toEqual(1);
 
     await xbee.close();
   });

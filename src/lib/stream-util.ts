@@ -45,11 +45,11 @@ export async function awaitBufferStream(
 export async function awaitObjectStream(
   stream: Readable,
   timeoutMs: number,
-): Promise<any> {
+): Promise<unknown> {
   if (!stream.readableObjectMode) {
     throw new StreamReadError(
       'Expected stream in object mode, got stream in byte mode',
     );
   }
-  return (await awaitStream(stream, timeoutMs)) as any;
+  return (await awaitStream(stream, timeoutMs)) as unknown;
 }

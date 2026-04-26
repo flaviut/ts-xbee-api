@@ -38,7 +38,6 @@ function atCommandParser(
   builder.appendBuffer(frame.commandParameter);
 }
 
- 
 function FrameBuilder() {
   return {
     frameId: 0,
@@ -225,7 +224,6 @@ function FrameBuilder() {
   };
 }
 
- 
 type FrameBuilder = ReturnType<typeof FrameBuilder>;
 export default FrameBuilder;
 

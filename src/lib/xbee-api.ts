@@ -305,7 +305,10 @@ export class XBeeBuilder
     }
 
     // Let the builder fill the payload
-    frameBuilder[frame.type](frame as any, builder);
+    (frameBuilder[frame.type] as (f: typeof frame, b: BufferBuilder) => void)(
+      frame,
+      builder,
+    );
 
     // Calculate & Append Checksum
     let checksum = 0;

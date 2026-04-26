@@ -11,7 +11,7 @@ import * as C from './constants';
 import { BufferReader } from './buffer-tools';
 
 const parseNodeIdentificationPayload = function (
-  frame: any,
+  frame: Partial<NodeIdentification<string>>,
   reader: BufferReader,
 ): void {
   frame.remote16 = reader.nextString(2, 'hex');
@@ -21,16 +21,30 @@ const parseNodeIdentificationPayload = function (
   frame.nodeIdentifier = reader.nextStringZero('utf8');
 
   if (reader.buf.length > reader.tell()) {
-    frame.remoteParent16 = reader.nextString(2, 'hex');
-    frame.deviceType = reader.nextUInt8();
-    frame.sourceEvent = reader.nextUInt8();
-    frame.digiProfileID = reader.nextString(2, 'hex');
-    frame.digiManufacturerID = reader.nextString(2, 'hex');
+    const f = frame as NodeIdentification<string> & {
+      remoteParent16: string;
+      deviceType: Uint8;
+      sourceEvent: Uint8;
+      digiProfileID: string;
+      digiManufacturerID: string;
+    };
+    f.remoteParent16 = reader.nextString(2, 'hex');
+    f.deviceType = reader.nextUInt8();
+    f.sourceEvent = reader.nextUInt8();
+    f.digiProfileID = reader.nextString(2, 'hex');
+    f.digiManufacturerID = reader.nextString(2, 'hex');
   }
 };
 
+type IOSampleFrame = {
+  digitalSamples: Record<string, number>;
+  analogSamples: Record<string, number>;
+  numSamples: number;
+  commandStatus?: number;
+};
+
 const ParseIOSamplePayload = function (
-  frame: any,
+  frame: IOSampleFrame,
   reader: BufferReader,
   options: { vref_adc?: number },
 ): void {
@@ -319,7 +333,7 @@ const frameParser = {
     frame.remote64 = reader.nextString(8, 'hex');
     frame.remote16 = reader.nextString(2, 'hex');
     frame.receiveOptions = reader.nextUInt8();
-    ParseIOSamplePayload(frame, reader, options);
+    ParseIOSamplePayload(frame as unknown as IOSampleFrame, reader, options);
   },
 
   [C.FRAME_TYPE.AT_COMMAND_RESPONSE]: (
@@ -348,10 +362,11 @@ const frameParser = {
       frame.commandStatus === C.COMMAND_STATUS.OK &&
       reader.buf.length > reader.tell()
     ) {
-      (frame as any).nodeIdentification = {};
-      parseNodeIdentificationPayload((frame as any).nodeIdentification, reader);
+      const f = frame as { nodeIdentification: NodeIdentification<string> };
+      f.nodeIdentification = {} as NodeIdentification<string>;
+      parseNodeIdentificationPayload(f.nodeIdentification, reader);
     } else {
-      (frame as any).commandData = reader.nextAll();
+      (frame as { commandData: Uint8Array }).commandData = reader.nextAll();
     }
   },
 
@@ -382,15 +397,16 @@ const frameParser = {
     frame.command = reader.nextString(2, 'utf8') as C.AT_COMMAND;
     frame.commandStatus = reader.nextUInt8();
     if (frame.command === 'IS') {
-      ParseIOSamplePayload(frame, reader, options);
+      ParseIOSamplePayload(frame as unknown as IOSampleFrame, reader, options);
     } else if (
       frame.command === 'ND' &&
       frame.commandStatus === C.COMMAND_STATUS.OK
     ) {
-      (frame as any).nodeIdentification = {};
-      parseNodeIdentificationPayload((frame as any).nodeIdentification, reader);
+      const f = frame as { nodeIdentification: NodeIdentification<string> };
+      f.nodeIdentification = {} as NodeIdentification<string>;
+      parseNodeIdentificationPayload(f.nodeIdentification, reader);
     } else {
-      (frame as any).commandData = reader.nextAll();
+      (frame as { commandData: Uint8Array }).commandData = reader.nextAll();
     }
   },
 

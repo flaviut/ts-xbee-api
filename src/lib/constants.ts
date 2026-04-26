@@ -149,6 +149,7 @@ export enum DELIVERY_STATUS {
   INVALID_BINDING_TABLE_INDEX = 0x2b,
   RESOURCE_ERROR = 0x2c,
   ATTEMPTED_BROADCAST_WITH_APS_TRANS = 0x2d,
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   ATTEMPTED_BROADCAST_WITH_APS_TRANS_EE0 = 0x2d,
   RESOURCE_ERROR_B = 0x32,
   DATA_PAYLOAD_TOO_LARGE = 0x74,
@@ -437,9 +438,8 @@ export const PIN_COMMAND: {
   DIO4: string;
   DIO5: string;
   ASSOC: string;
-} = {
-  PIN: {},
-} as any;
+  // The remaining keys are populated by mutation below.
+} = { PIN: {} } as never;
 const pc = PIN_COMMAND;
 
 //

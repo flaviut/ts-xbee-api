@@ -37,7 +37,7 @@ async function checkApi(port: SerialPortStream): Promise<boolean> {
   try {
     await awaitObjectStream(parser, 1500);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   } finally {
     port.unpipe(parser);
@@ -82,7 +82,7 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
     if (!(await setAtOption(port, parser, 'ATCN\r'))) {
       return false;
     }
-  } catch (e) {
+  } catch {
     return false;
   } finally {
     port.unpipe(parser);
@@ -263,7 +263,10 @@ export class XBee {
       params.filter,
     );
     try {
-      return await awaitObjectStream(stream, params.timeoutMs);
+      return (await awaitObjectStream(
+        stream,
+        params.timeoutMs,
+      )) as SpecificParsableFrame<FT>;
     } finally {
       close();
     }
@@ -275,7 +278,7 @@ export class XBee {
   ): Promise<SpecificParsableFrame<FT> | null> {
     try {
       return await this.expectResponse(params);
-    } catch (e) {
+    } catch {
       return null;
     }
   }
