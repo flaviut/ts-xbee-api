@@ -3,7 +3,12 @@
 
 import { TextDecoder, TextEncoder } from 'util';
 
-export type BufferConstructable = number[] | ArrayBuffer | Buffer | string;
+export type BufferConstructable =
+  | number[]
+  | ArrayBuffer
+  | Buffer
+  | Uint8Array
+  | string;
 
 type Encodings = 'utf8' | 'hex';
 
@@ -99,7 +104,7 @@ export class BufferBuilder {
 
   appendString(
     data: BufferConstructable,
-    encoding: Encodings = 'utf8'
+    encoding: Encodings = 'utf8',
   ): BufferBuilder {
     let buf: BufferConstructable = data;
     if (encoding === 'hex') {

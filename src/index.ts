@@ -6,10 +6,11 @@ export { FRAME_TYPE as FrameType, FRAME_TYPES } from './lib/constants';
 
 export { ChecksumMismatchError, UnknownFrameType } from './lib/errors';
 
-export type { XBeeAPIOptions, SpecificParsableFrame, SpecificBuildableFrame } from './lib/xbee-api';
-export {
-  XBeeParser,
-  XBeeBuilder,
+export type {
+  XBeeAPIOptions,
+  SpecificParsableFrame,
+  SpecificBuildableFrame,
 } from './lib/xbee-api';
+export { XBeeParser, XBeeBuilder } from './lib/xbee-api';
 
 export { XBee } from './lib/xbee-high-level';

@@ -6,7 +6,7 @@ class StreamReadError extends Error {}
 
 async function awaitStream(
   stream: Readable,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<unknown> {
   let onDataCallback: (data: unknown) => void;
   const dataPromise = new CancellablePromise(
@@ -16,7 +16,7 @@ async function awaitStream(
     }),
     () => {
       stream.off('data', onDataCallback);
-    }
+    },
   );
   const timeoutPromise = CancellablePromise.delay(timeoutMs).then(async () => {
     throw new StreamReadError('Response timed out');
@@ -32,11 +32,11 @@ async function awaitStream(
 
 export async function awaitBufferStream(
   stream: Readable,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<Buffer> {
   if (stream.readableObjectMode) {
     throw new StreamReadError(
-      'Expected stream in byte mode, got stream in object mode'
+      'Expected stream in byte mode, got stream in object mode',
     );
   }
   return (await awaitStream(stream, timeoutMs)) as Buffer;
@@ -44,11 +44,11 @@ export async function awaitBufferStream(
 
 export async function awaitObjectStream(
   stream: Readable,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<any> {
   if (!stream.readableObjectMode) {
     throw new StreamReadError(
-      'Expected stream in object mode, got stream in byte mode'
+      'Expected stream in object mode, got stream in byte mode',
     );
   }
   return (await awaitStream(stream, timeoutMs)) as any;

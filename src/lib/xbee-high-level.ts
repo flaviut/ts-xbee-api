@@ -95,7 +95,7 @@ async function checkAtMode(port: SerialPortStream): Promise<boolean> {
 async function setAtOption(
   port: SerialPortStream,
   parser: ReadlineParser,
-  command: string
+  command: string,
 ): Promise<boolean> {
   port.write(command);
   const response = await awaitBufferStream(parser, 1500);
@@ -105,7 +105,7 @@ async function setAtOption(
 async function discoverBaud(
   path: string,
   bauds: number[],
-  SerialPortClass?: typeof SerialPort | undefined
+  SerialPortClass?: typeof SerialPort | undefined,
 ): Promise<SerialPortStream> {
   if (SerialPortClass === undefined) {
     SerialPortClass = (await import('serialport')).SerialPort;
@@ -168,7 +168,7 @@ export class XBee {
         },
         objectMode: true,
       }),
-    ])
+    ]),
   );
 
   private readonly builder: XBeeBuilder;
@@ -177,7 +177,7 @@ export class XBee {
   static async discover(
     uartPath: string,
     bauds: number[],
-    SerialPortClass?: typeof SerialPort | undefined
+    SerialPortClass?: typeof SerialPort | undefined,
   ): Promise<XBee> {
     if (SerialPortClass === undefined) {
       SerialPortClass = (await import('serialport')).SerialPort;
@@ -189,7 +189,7 @@ export class XBee {
   static async withBaud(
     uartPath: string,
     baud: number,
-    SerialPortClass?: typeof SerialPort | undefined
+    SerialPortClass?: typeof SerialPort | undefined,
   ): Promise<XBee> {
     if (SerialPortClass === undefined) {
       SerialPortClass = (await import('serialport')).SerialPort;
@@ -226,7 +226,7 @@ export class XBee {
 
   private filteredFrameStream<FT extends FrameType>(
     frameType: FT,
-    filter: (f: SpecificParsableFrame<FT>) => boolean
+    filter: (f: SpecificParsableFrame<FT>) => boolean,
   ): {
     stream: stream.Readable;
     close: () => void;
@@ -256,11 +256,11 @@ export class XBee {
 
   /** like awaitResponse, but throws if the expected message is not received */
   private async expectResponse<FT extends FrameType>(
-    params: AwaitResponseParams<FT>
+    params: AwaitResponseParams<FT>,
   ): Promise<SpecificParsableFrame<FT>> {
     const { stream, close } = this.filteredFrameStream(
       params.frameType,
-      params.filter
+      params.filter,
     );
     try {
       return await awaitObjectStream(stream, params.timeoutMs);
@@ -271,7 +271,7 @@ export class XBee {
 
   /** waits for the first response that matches the condition */
   private async awaitResponse<FT extends FrameType>(
-    params: AwaitResponseParams<FT>
+    params: AwaitResponseParams<FT>,
   ): Promise<SpecificParsableFrame<FT> | null> {
     try {
       return await this.expectResponse(params);
@@ -282,7 +282,7 @@ export class XBee {
 
   private async expectParameterResponse(
     frameId: number,
-    timeoutMs: number
+    timeoutMs: number,
   ): Promise<SpecificParsableFrame<FrameType.AT_COMMAND_RESPONSE>> {
     return await this.expectResponse({
       timeoutMs,
@@ -297,7 +297,7 @@ export class XBee {
     parameter: C.AT_COMMAND,
     type: FrameType.AT_COMMAND_QUEUE_PARAMETER_VALUE | FrameType.AT_COMMAND,
     value: BufferConstructable | undefined,
-    timeoutMs: number
+    timeoutMs: number,
   ): Promise<void> {
     const frameId = this.builder.nextFrameId();
     const responsePromise = this.expectParameterResponse(frameId, timeoutMs);
@@ -316,14 +316,14 @@ export class XBee {
    * will end after 60 seconds.
    */
   public async *scanNetwork(
-    timeoutMs = 60_000
+    timeoutMs = 60_000,
   ): AsyncGenerator<SpecificParsableFrame<FrameType.AT_COMMAND_RESPONSE>> {
     await this.setParameter(C.AT_COMMAND.NT, [0x3c]);
 
     const frameId = this.builder.nextFrameId();
     const { stream: scanResponseStream, close } = this.filteredFrameStream(
       FrameType.AT_COMMAND_RESPONSE,
-      (f) => f.id === frameId
+      (f) => f.id === frameId,
     );
     this.builder.write({
       type: FrameType.AT_COMMAND,
@@ -357,33 +357,33 @@ export class XBee {
   async enqueueSetParameter(
     parameter: C.AT_COMMAND,
     value: BufferConstructable,
-    timeoutMs = 100
+    timeoutMs = 100,
   ): Promise<void> {
     await this.internalSetParameter(
       parameter,
       FrameType.AT_COMMAND_QUEUE_PARAMETER_VALUE,
       value,
-      timeoutMs
+      timeoutMs,
     );
   }
 
   async setParameter(
     parameter: C.AT_COMMAND,
     value: BufferConstructable | undefined,
-    timeoutMs = 100
+    timeoutMs = 100,
   ): Promise<void> {
     await this.internalSetParameter(
       parameter,
       FrameType.AT_COMMAND,
       value,
-      timeoutMs
+      timeoutMs,
     );
   }
 
   /** returns the parameter value has a hex string */
   async getParameter(
     parameter: C.AT_COMMAND,
-    timeoutMs = 100
+    timeoutMs = 100,
   ): Promise<string> {
     const frameId = this.builder.nextFrameId();
     const responsePromise = this.expectParameterResponse(frameId, timeoutMs);
@@ -440,7 +440,7 @@ export class XBee {
     remoteAddress: string,
     parameter: C.AT_COMMAND,
     value: BufferConstructable,
-    timeoutMs = 100
+    timeoutMs = 100,
   ): Promise<void> {
     const frameId = this.builder.nextFrameId();
     const response = this.expectResponse({

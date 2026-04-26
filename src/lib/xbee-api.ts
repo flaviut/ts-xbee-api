@@ -32,18 +32,18 @@ interface EmitterWithUntypedListeners<Events extends EventMap> {
   once: <E extends keyof Events>(event: E, listener: Events[E]) => this;
   prependListener: <E extends keyof Events>(
     event: E,
-    listener: Events[E]
+    listener: Events[E],
   ) => this;
   prependOnceListener: <E extends keyof Events>(
     event: E,
-    listener: Events[E]
+    listener: Events[E],
   ) => this;
 
   off: <E extends keyof Events>(event: E, listener: Events[E]) => this;
   removeAllListeners: <E extends keyof Events>(event?: E) => this;
   removeListener: <E extends keyof Events>(
     event: E,
-    listener: Events[E]
+    listener: Events[E],
   ) => this;
 
   emit: <E extends keyof Events>(
@@ -118,7 +118,7 @@ export class XBeeParser
   // Note that this expects the whole frame to be escaped!
   static parseFrame(
     rawFrame: Uint8Array,
-    options: XBeeAPIOptions
+    options: XBeeAPIOptions,
   ): ParsableFrame {
     // Trim the header and trailing checksum
     const reader = new BufferReader(rawFrame.subarray(3, rawFrame.length - 1));
@@ -152,7 +152,7 @@ export class XBeeParser
   _transform(
     buffer: Uint8Array,
     encoding: BufferEncoding,
-    cb: stream.TransformCallback
+    cb: stream.TransformCallback,
   ): void {
     const S = this.parseState;
     for (let i = 0; i < buffer.length; i++) {
@@ -225,13 +225,13 @@ export class XBeeParser
           if (!XBeeParser.canParse(rawFrame)) {
             this.emit(
               'error',
-              new UnknownFrameType(XBeeParser.frameType(rawFrame))
+              new UnknownFrameType(XBeeParser.frameType(rawFrame)),
             );
           } else {
             try {
               const frame: ParsableFrame = XBeeParser.parseFrame(
                 rawFrame,
-                this._options
+                this._options,
               );
               this.push(frame);
             } catch (err) {
@@ -294,7 +294,7 @@ export class XBeeBuilder
     options: {
       api_mode: 1 | 2;
     } = { api_mode: 1 },
-    frameBuilder = FrameBuilder()
+    frameBuilder = FrameBuilder(),
   ): Uint8Array {
     let packet = new Uint8Array(BUFFER_SIZE); // Packet buffer
     let payload = packet.subarray(3); // Reference the buffer past the header
@@ -330,13 +330,13 @@ export class XBeeBuilder
   _transform(
     frame: BuildableFrame,
     encoding: BufferEncoding,
-    cb: stream.TransformCallback
+    cb: stream.TransformCallback,
   ): void {
     try {
       const packet = XBeeBuilder.buildFrame(
         frame,
         this._options,
-        this.frameBuilder
+        this.frameBuilder,
       );
       this.push(packet);
       cb();

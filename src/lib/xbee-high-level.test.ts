@@ -23,7 +23,7 @@ class PrintingSerialPort extends SerialPort {
 }
 
 function messageResponsePort(
-  mapping: Array<[string, string[]]>
+  mapping: Array<[string, string[]]>,
 ): typeof SerialPort {
   return class extends stream.Duplex {
     close(callback?: ErrorCallback): void {
@@ -55,7 +55,7 @@ function messageResponsePort(
       targetStream.on('data', (data: Buffer) => {
         const hexData = toHex(data);
         expect(mapping.length, 'to be done receiving messages').toBeGreaterThan(
-          0
+          0,
         );
         const [expected, responses] = mapping.shift()!;
         expect(hexData).toEqual(expected);
@@ -72,7 +72,7 @@ describe('XBee', function () {
     const port = await XBee.discover(
       '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AC00J6YC-if00-port0',
       [9600, 115200],
-      PrintingSerialPort as any
+      PrintingSerialPort as any,
     );
     await port.close();
   });
@@ -82,7 +82,7 @@ describe('XBee', function () {
     // We expect this to hang or take a long time, so we set a timeout
     // If it resolves or rejects quickly, that's a good sign.
     await expect(
-      XBee.discover(NON_EXISTENT_PATH, [9600, 115200], messageResponsePort([]))
+      XBee.discover(NON_EXISTENT_PATH, [9600, 115200], messageResponsePort([])),
     ).rejects.toThrow(/no such file or directory/);
   }, 1000); // 1 second timeout
 
@@ -96,7 +96,7 @@ describe('XBee', function () {
         ['2b', []],
         ['2b', []],
         ['7e00040801415065', ['7e0006880141500001e4']], // first 115200 API message
-      ])
+      ]),
     );
     await port.close();
   });
@@ -116,7 +116,7 @@ describe('XBee', function () {
     const xbee = await XBee.discover(
       '/dev/ttyUSB0',
       [9600],
-      TrackingPortClass as any
+      TrackingPortClass as any,
     );
 
     // Without the fix, checkApi's parser is still piped to the port,
@@ -138,7 +138,7 @@ describe('XBee', function () {
             '7e001988024e4400ed920013a20041aacaf82000fffe0100c105101ef0', // node identification
           ],
         ],
-      ])
+      ]),
     );
 
     const devices: Array<

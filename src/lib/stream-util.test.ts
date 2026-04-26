@@ -32,7 +32,7 @@ describe('awaitBufferStream', function () {
       },
     });
     await expect(awaitBufferStream(stream, 10)).rejects.toThrowError(
-      'Response timed out'
+      'Response timed out',
     );
   });
 });
@@ -68,7 +68,7 @@ describe('awaitObjectStream', function () {
       },
     });
     await expect(awaitObjectStream(stream, 10)).rejects.toThrowError(
-      'Response timed out'
+      'Response timed out',
     );
   });
 });

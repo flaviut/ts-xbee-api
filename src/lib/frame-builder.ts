@@ -29,7 +29,7 @@ function atCommandParser(
         command: C.AT_COMMAND;
         commandParameter: BufferConstructable;
       },
-  builder: BufferBuilder
+  builder: BufferBuilder,
 ): void {
   builder.appendUInt8(frame.type);
   // @ts-expect-error  this is being called in a context where `this` is set to the FrameBuilder object
@@ -38,7 +38,7 @@ function atCommandParser(
   builder.appendBuffer(frame.commandParameter);
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ 
 function FrameBuilder() {
   return {
     frameId: 0,
@@ -68,7 +68,7 @@ function FrameBuilder() {
         command: C.AT_COMMAND;
         commandParameter: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
@@ -91,7 +91,7 @@ function FrameBuilder() {
         options?: Uint8;
         data: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
@@ -117,7 +117,7 @@ function FrameBuilder() {
         options?: Uint8; // default 0
         data: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
@@ -152,7 +152,7 @@ function FrameBuilder() {
         destination16: BufferConstructable; // 16-bit
         addresses: number[]; // max 30 addresses, 16 bit integer addresses
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(0); // Frame ID is always zero for this
@@ -174,7 +174,7 @@ function FrameBuilder() {
         options?: number; // 0x00 is default
         data: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
@@ -192,7 +192,7 @@ function FrameBuilder() {
         options?: number; // 0x00 is default
         data: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendUInt8(this.getFrameId(frame));
@@ -209,7 +209,7 @@ function FrameBuilder() {
         receiveOptions?: Set<C.RECEIVE_OPTIONS>;
         data: BufferConstructable;
       },
-      builder: BufferBuilder
+      builder: BufferBuilder,
     ) {
       builder.appendUInt8(frame.type);
       builder.appendString(frame.sender64 || C.UNKNOWN_64, 'hex');
@@ -217,15 +217,15 @@ function FrameBuilder() {
       builder.appendUInt8(
         Array.from(frame.receiveOptions ?? []).reduce(
           (result: number, b) => result | b,
-          0
-        )
+          0,
+        ),
       );
       builder.appendBuffer(frame.data);
     },
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 type FrameBuilder = ReturnType<typeof FrameBuilder>;
 export default FrameBuilder;
 
